@@ -20668,6 +20668,180 @@
 		)
 		(uuid "fed32e1b-c2fc-4863-a1b3-0082f93f16d4")
 	)
+	(label "BUZZER1"
+		(at 461.01 422.91 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "004bf0a6-e118-4dc6-bc52-5829fa96fee2")
+	)
+	(label "AR0"
+		(at 742.95 387.35 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "01961003-ed41-48c5-a555-64ca293da951")
+	)
+	(label "I2C SCL"
+		(at 803.91 389.89 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "04270d2a-b47b-4ed1-ba6b-271e0a847949")
+	)
+	(label "D-"
+		(at 699.77 143.51 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "043006e9-576b-449f-8fa9-a47b6ee1beab")
+	)
+	(label "ENDODER B"
+		(at 506.73 425.45 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "044dd4d2-2f7f-4327-8c97-c70fcce4563f")
+	)
+	(label "LOAD VOLTAGE"
+		(at 506.73 359.41 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "0473f447-25ca-445e-b157-7fac594c85bd")
+	)
+	(label "USB CHARGE"
+		(at 506.73 387.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "067281dc-d60b-4826-9b9b-b4705e5bff86")
+	)
+	(label "LOAD VOLTAGE"
+		(at 590.55 219.71 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "06b20908-a922-4110-936b-142ff9943054")
+	)
+	(label "LOAD VOLTAGE"
+		(at 532.13 410.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "0711d922-a79f-4298-805b-3f57ea0ef3a7")
+	)
+	(label "I2C SCL"
+		(at 584.2 118.11 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "086f6764-fa9e-47c6-b320-563570193a27")
+	)
+	(label "AR2"
+		(at 742.95 392.43 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "09a7f77c-05cd-4fa5-a930-ebbeb65cbe39")
+	)
+	(label "FAN CONTROL 2"
+		(at 708.66 236.22 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "09d45089-9848-474b-8ec3-6536f1d5c816")
+	)
+	(label "20V SENSE"
+		(at 506.73 351.79 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "0d0210cb-f552-443e-b792-c9fad4bf3baf")
+	)
+	(label "VS-"
+		(at 590.55 214.63 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "1310c871-99c3-4daa-b899-27a0bdd8d0c2")
+	)
+	(label "FAN CONTROL 2"
+		(at 506.73 415.29 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "175fb5d1-f33a-4075-b6dc-9248aaf47710")
+	)
 	(label "3.3V"
 		(at 612.14 55.88 0)
 		(effects
@@ -20677,6 +20851,54 @@
 			(justify left bottom)
 		)
 		(uuid "17724e07-636f-4c38-96f0-ef4730f5dd20")
+	)
+	(label "AR3"
+		(at 742.95 394.97 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "180d0e56-3683-48c0-a24f-5101a7a53c76")
+	)
+	(label "TACT1"
+		(at 506.73 400.05 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "205f3ce7-c312-4291-9ff5-58fa96c210d5")
+	)
+	(label "BUZZER2"
+		(at 751.84 69.85 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "28da9309-6dfa-4f75-9bea-bf65fc2348da")
+	)
+	(label "DAC CONTROL"
+		(at 461.01 379.73 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "2abfbb8b-e3c0-4c4a-97ad-c5f578e56448")
 	)
 	(label "VCC LINE"
 		(at 215.9 27.94 0)
@@ -20688,6 +20910,40 @@
 		)
 		(uuid "2c0db4ab-52d2-4f6c-8059-94c7744770f9")
 	)
+	(label "I2C SCL"
+		(at 506.73 374.65 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "2d3e0fcf-d306-45b5-b517-3ea4b58fafda")
+	)
+	(label "I2C SDA"
+		(at 669.29 466.09 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "2dffd475-415a-41c0-81f4-a27fb0296a67")
+	)
+	(label "D+"
+		(at 311.15 185.42 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "32c11727-6575-432e-88d7-3ff81c06c09d")
+	)
 	(label "ADS2 VDD"
 		(at 662.94 219.71 0)
 		(effects
@@ -20697,6 +20953,16 @@
 			(justify left bottom)
 		)
 		(uuid "338b05e6-477c-435f-9b59-806594cf38dd")
+	)
+	(label "USB 5V"
+		(at 690.88 377.19 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "33a1e417-41c8-4d90-8433-90a235c54f0a")
 	)
 	(label "VCC LINE"
 		(at 584.2 59.69 0)
@@ -20708,6 +20974,40 @@
 		)
 		(uuid "39f7a20e-b793-489e-863f-cfc8826e1c28")
 	)
+	(label "TX"
+		(at 506.73 405.13 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "3a8a6859-1900-41f0-b51c-00fae597b858")
+	)
+	(label "FAN CONTROL 1"
+		(at 797.56 236.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "3a9741f9-2899-42a7-895f-0cd8f905afff")
+	)
+	(label "I2C SDA"
+		(at 651.51 217.17 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "3b9703be-123d-4035-952a-57edb1f34ec9")
+	)
 	(label "FULL BRIDGE RECTIFIER OUT"
 		(at 218.44 339.09 0)
 		(effects
@@ -20717,6 +21017,192 @@
 			(justify left bottom)
 		)
 		(uuid "3c0ad24c-73ef-46b1-99de-80ef8ddadf11")
+	)
+	(label "VLINE DIV"
+		(at 590.55 217.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "41595585-15f1-4798-bccb-bfcaa2accd63")
+	)
+	(label "G1"
+		(at 199.39 41.91 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "41e61793-2a0e-4c64-8cd6-4147cc9f8fae")
+	)
+	(label "20V SENSE"
+		(at 541.02 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "44dcdf99-5fc2-40f1-b4e5-4a9731a12275")
+	)
+	(label "TACT2"
+		(at 708.66 207.01 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "461e8f1a-b8fd-4e9d-9990-e6f8be65f7c0")
+	)
+	(label "RX"
+		(at 506.73 407.67 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "46e0ca69-666a-4bc1-9df1-3951bdb3cc0f")
+	)
+	(label "RCP"
+		(at 506.73 356.87 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "49db8683-1a23-4260-9d4a-ef463fe597ce")
+	)
+	(label "ENDODER A"
+		(at 506.73 422.91 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "4a666bb8-a0b8-46c2-8fe7-2e642c86d5c1")
+	)
+	(label "AR2"
+		(at 787.4 520.7 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "51a2b6b6-aeaa-4059-bc15-1061f897f0b0")
+	)
+	(label "RESET BUTTON"
+		(at 252.73 190.5 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "51e47361-4316-4ced-a528-8bd03447fce7")
+	)
+	(label "I2C SCL"
+		(at 651.51 214.63 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "544d5691-f45d-41a6-abfd-d4f25cd9de5a")
+	)
+	(label "AR0"
+		(at 203.2 50.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "58eb5a9e-13c2-4b0b-9f49-da244f9ed586")
+	)
+	(label "ENDODER A"
+		(at 356.87 177.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "644952f1-8673-4f43-888f-3d2b4455af90")
+	)
+	(label "VS-"
+		(at 574.04 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "64850b82-7541-4034-adad-3f7bb1862d1e")
+	)
+	(label "RCP"
+		(at 407.67 109.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "70fda3db-d715-4cee-a4bf-e18cf91b8251")
+	)
+	(label "I2C SDA"
+		(at 506.73 377.19 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "711d8ad1-71bd-427c-af12-0aeb3fa1ff12")
+	)
+	(label "DS18B20 DQ"
+		(at 796.29 321.31 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "75b7faa0-c11b-4e53-a15a-ebfab41919f2")
 	)
 	(label "5V"
 		(at 629.92 55.88 0)
@@ -20728,6 +21214,82 @@
 		)
 		(uuid "78903a23-62b6-41a2-88e5-1ce489722a60")
 	)
+	(label "FAN CONTROL 1"
+		(at 506.73 412.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7bd27e5e-f589-448e-baeb-1a9a29e90d8a")
+	)
+	(label "I2C SCL"
+		(at 284.48 180.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "7daa17c1-0070-4fcc-81b7-8d65b259a482")
+	)
+	(label "USB CHARGE"
+		(at 623.57 381 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "81b14e4b-d46a-4bcf-8a24-85812efb84f3")
+	)
+	(label "TACT1"
+		(at 797.56 207.01 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "875a6f37-1ff4-42f6-87cb-b694894b9833")
+	)
+	(label "RX"
+		(at 791.21 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8cbf2ac4-179b-4f47-a815-be459c746d58")
+	)
+	(label "DS18B20 DQ"
+		(at 327.66 200.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "8f63dcd9-27e8-4399-8f41-48ceed27db26")
+	)
+	(label "LOAD VOLTAGE"
+		(at 447.04 68.58 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "9166e9c3-b93e-498d-b1a2-35bf1bd5a931")
+	)
 	(label "3.3V"
 		(at 810.26 354.33 0)
 		(effects
@@ -20737,6 +21299,62 @@
 			(justify left bottom)
 		)
 		(uuid "985d30cd-de6b-4e21-b268-1d0108d63069")
+	)
+	(label "DS18B20 DQ"
+		(at 506.73 417.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "9921e811-3bdb-4e77-88b5-4b2f57729f56")
+	)
+	(label "ENDODER B"
+		(at 356.87 175.26 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9b266049-be89-4cd8-9d3d-0ec4cc178686")
+	)
+	(label "AR0"
+		(at 787.4 472.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "a31d5b61-577f-45aa-936d-b6286892c548")
+	)
+	(label "AR2"
+		(at 203.2 99.06 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "aba46139-15ea-49ca-ad56-3c10affed419")
+	)
+	(label "D+"
+		(at 699.77 140.97 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "ac18af17-c3aa-421d-be60-7018fb10e1b8")
 	)
 	(label "20V"
 		(at 656.59 54.61 0)
@@ -20748,6 +21366,30 @@
 		)
 		(uuid "aea48392-bd67-4094-b078-1396a7c925a2")
 	)
+	(label "LOAD VOLTAGE"
+		(at 590.55 212.09 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "b3d9b87a-d4f8-43e9-8d88-7422147392c2")
+	)
+	(label "AR1"
+		(at 203.2 58.42 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "b4170e6d-b116-4b70-8768-8acad98e977f")
+	)
 	(label "20V"
 		(at 260.35 339.09 0)
 		(effects
@@ -20757,6 +21399,40 @@
 			(justify left bottom)
 		)
 		(uuid "b5a5ef1b-69dd-41df-9a33-b8600b168d4c")
+	)
+	(label "VLINE DIV"
+		(at 589.28 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "b7503fa8-2dd3-4234-bb88-3b020aacc42a")
+	)
+	(label "ENDODER SW"
+		(at 356.87 180.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bd42ccf8-d9d8-49c0-b96c-ca04f0a88456")
+	)
+	(label "I2C SDA"
+		(at 593.09 115.57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "bd63c868-96aa-4876-8da9-aa89ea65d5d4")
 	)
 	(label "ADS2 VDD"
 		(at 648.97 199.39 0)
@@ -20788,6 +21464,50 @@
 		)
 		(uuid "c29b5db3-c9b4-4e3a-9cc4-a24d76918604")
 	)
+	(label "USB 5V"
+		(at 283.21 195.58 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c39eed8e-1058-42a4-b982-ed49f32530ba")
+	)
+	(label "TX"
+		(at 791.21 135.89 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c3e87fb0-f24a-4c82-aa30-aa2b7e622f6d")
+	)
+	(label "OUT CONTROL"
+		(at 373.38 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "c6c2d11d-a974-44a0-b594-23e238fb7f00")
+	)
+	(label "I2C SDA"
+		(at 803.91 392.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "c94c1f68-69cd-48bc-8917-62a1d9cde523")
+	)
 	(label "Opamp VCC"
 		(at 640.08 130.81 0)
 		(effects
@@ -20797,6 +21517,114 @@
 			(justify left bottom)
 		)
 		(uuid "ca642fa2-a7bd-4761-a82e-cadfebaa75a0")
+	)
+	(label "DAC CONTROL"
+		(at 692.15 499.11 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "ca9a9edb-d70b-4641-a72e-64dd2dd35815")
+	)
+	(label "BUZZER2"
+		(at 461.01 425.45 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "d0310bbb-d122-4449-9214-8aded729cd16")
+	)
+	(label "DS18B20 DQ"
+		(at 746.76 321.31 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "d057d513-7365-4296-bd4b-e6691e7325ce")
+	)
+	(label "BUZZER1"
+		(at 698.5 69.85 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "d6003175-c079-43e2-b8b4-9f645b1a7bc7")
+	)
+	(label "G2"
+		(at 199.39 90.17 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "d664bff3-4b8f-4d4d-a5a6-8283f2fb95ae")
+	)
+	(label "AR1"
+		(at 742.95 389.89 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify right)
+		)
+		(uuid "d989e107-0a9f-4404-a89c-e631d91faee3")
+	)
+	(label "ENDODER SW"
+		(at 506.73 427.99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "da265abe-00f2-4042-8f20-08855d49b2d8")
+	)
+	(label "OUT CONTROL"
+		(at 506.73 420.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "db58a378-fd7d-48b1-be6d-adbb94c97775")
+	)
+	(label "TACT2"
+		(at 506.73 402.59 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+				(italic yes)
+			)
+			(justify left)
+		)
+		(uuid "ded4a4b7-db95-4616-8173-6a09bb3a4e2f")
 	)
 	(label "3.3V"
 		(at 657.86 179.07 0)
@@ -20818,918 +21646,7 @@
 		)
 		(uuid "e0a72302-7d9b-45d1-9801-084e7cb62276")
 	)
-	(label "VCC LINE"
-		(at 295.91 55.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "ef542e26-8dc6-424b-b91f-fc0dc00af586")
-	)
-	(hierarchical_label "BUZZER1"
-		(shape bidirectional)
-		(at 461.01 422.91 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "004bf0a6-e118-4dc6-bc52-5829fa96fee2")
-	)
-	(hierarchical_label "AR0"
-		(shape input)
-		(at 742.95 387.35 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "01961003-ed41-48c5-a555-64ca293da951")
-	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
-		(at 803.91 389.89 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "04270d2a-b47b-4ed1-ba6b-271e0a847949")
-	)
-	(hierarchical_label "D-"
-		(shape bidirectional)
-		(at 699.77 143.51 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "043006e9-576b-449f-8fa9-a47b6ee1beab")
-	)
-	(hierarchical_label "ENDODER B"
-		(shape bidirectional)
-		(at 506.73 425.45 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "044dd4d2-2f7f-4327-8c97-c70fcce4563f")
-	)
-	(hierarchical_label "LOAD VOLTAGE"
-		(shape bidirectional)
-		(at 506.73 359.41 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "0473f447-25ca-445e-b157-7fac594c85bd")
-	)
-	(hierarchical_label "USB CHARGE"
-		(shape input)
-		(at 506.73 387.35 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "067281dc-d60b-4826-9b9b-b4705e5bff86")
-	)
-	(hierarchical_label "LOAD VOLTAGE"
-		(shape bidirectional)
-		(at 590.55 219.71 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "06b20908-a922-4110-936b-142ff9943054")
-	)
-	(hierarchical_label "LOAD VOLTAGE"
-		(shape bidirectional)
-		(at 532.13 410.21 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "0711d922-a79f-4298-805b-3f57ea0ef3a7")
-	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
-		(at 584.2 118.11 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "086f6764-fa9e-47c6-b320-563570193a27")
-	)
-	(hierarchical_label "AR2"
-		(shape input)
-		(at 742.95 392.43 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "09a7f77c-05cd-4fa5-a930-ebbeb65cbe39")
-	)
-	(hierarchical_label "FAN CONTROL 2"
-		(shape input)
-		(at 708.66 236.22 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "09d45089-9848-474b-8ec3-6536f1d5c816")
-	)
-	(hierarchical_label "20V SENSE"
-		(shape input)
-		(at 506.73 351.79 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "0d0210cb-f552-443e-b792-c9fad4bf3baf")
-	)
-	(hierarchical_label "VS-"
-		(shape input)
-		(at 590.55 214.63 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "1310c871-99c3-4daa-b899-27a0bdd8d0c2")
-	)
-	(hierarchical_label "FAN CONTROL 2"
-		(shape input)
-		(at 506.73 415.29 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "175fb5d1-f33a-4075-b6dc-9248aaf47710")
-	)
-	(hierarchical_label "AR3"
-		(shape input)
-		(at 742.95 394.97 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "180d0e56-3683-48c0-a24f-5101a7a53c76")
-	)
-	(hierarchical_label "TACT1"
-		(shape input)
-		(at 506.73 400.05 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "205f3ce7-c312-4291-9ff5-58fa96c210d5")
-	)
-	(hierarchical_label "BUZZER2"
-		(shape bidirectional)
-		(at 751.84 69.85 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "28da9309-6dfa-4f75-9bea-bf65fc2348da")
-	)
-	(hierarchical_label "DAC CONTROL"
-		(shape input)
-		(at 461.01 379.73 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "2abfbb8b-e3c0-4c4a-97ad-c5f578e56448")
-	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
-		(at 506.73 374.65 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "2d3e0fcf-d306-45b5-b517-3ea4b58fafda")
-	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
-		(at 669.29 466.09 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "2dffd475-415a-41c0-81f4-a27fb0296a67")
-	)
-	(hierarchical_label "D+"
-		(shape bidirectional)
-		(at 311.15 185.42 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "32c11727-6575-432e-88d7-3ff81c06c09d")
-	)
-	(hierarchical_label "USB 5V"
-		(shape input)
-		(at 690.88 377.19 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "33a1e417-41c8-4d90-8433-90a235c54f0a")
-	)
-	(hierarchical_label "TX"
-		(shape input)
-		(at 506.73 405.13 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "3a8a6859-1900-41f0-b51c-00fae597b858")
-	)
-	(hierarchical_label "FAN CONTROL 1"
-		(shape input)
-		(at 797.56 236.22 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3a9741f9-2899-42a7-895f-0cd8f905afff")
-	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
-		(at 651.51 217.17 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "3b9703be-123d-4035-952a-57edb1f34ec9")
-	)
-	(hierarchical_label "VLINE DIV"
-		(shape input)
-		(at 590.55 217.17 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "41595585-15f1-4798-bccb-bfcaa2accd63")
-	)
-	(hierarchical_label "G1"
-		(shape input)
-		(at 199.39 41.91 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "41e61793-2a0e-4c64-8cd6-4147cc9f8fae")
-	)
-	(hierarchical_label "20V SENSE"
-		(shape input)
-		(at 541.02 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "44dcdf99-5fc2-40f1-b4e5-4a9731a12275")
-	)
-	(hierarchical_label "TACT2"
-		(shape input)
-		(at 708.66 207.01 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "461e8f1a-b8fd-4e9d-9990-e6f8be65f7c0")
-	)
-	(hierarchical_label "RX"
-		(shape input)
-		(at 506.73 407.67 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "46e0ca69-666a-4bc1-9df1-3951bdb3cc0f")
-	)
-	(hierarchical_label "RCP"
-		(shape bidirectional)
-		(at 506.73 356.87 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "49db8683-1a23-4260-9d4a-ef463fe597ce")
-	)
-	(hierarchical_label "ENDODER A"
-		(shape bidirectional)
-		(at 506.73 422.91 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "4a666bb8-a0b8-46c2-8fe7-2e642c86d5c1")
-	)
-	(hierarchical_label "AR2"
-		(shape input)
-		(at 787.4 520.7 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "51a2b6b6-aeaa-4059-bc15-1061f897f0b0")
-	)
-	(hierarchical_label "RESET BUTTON"
-		(shape bidirectional)
-		(at 252.73 190.5 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "51e47361-4316-4ced-a528-8bd03447fce7")
-	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
-		(at 651.51 214.63 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "544d5691-f45d-41a6-abfd-d4f25cd9de5a")
-	)
-	(hierarchical_label "AR0"
-		(shape input)
-		(at 203.2 50.8 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "58eb5a9e-13c2-4b0b-9f49-da244f9ed586")
-	)
-	(hierarchical_label "ENDODER A"
-		(shape bidirectional)
-		(at 356.87 177.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "644952f1-8673-4f43-888f-3d2b4455af90")
-	)
-	(hierarchical_label "VS-"
-		(shape input)
-		(at 574.04 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "64850b82-7541-4034-adad-3f7bb1862d1e")
-	)
-	(hierarchical_label "RCP"
-		(shape bidirectional)
-		(at 407.67 109.22 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "70fda3db-d715-4cee-a4bf-e18cf91b8251")
-	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
-		(at 506.73 377.19 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "711d8ad1-71bd-427c-af12-0aeb3fa1ff12")
-	)
-	(hierarchical_label "DS18B20 DQ"
-		(shape input)
-		(at 796.29 321.31 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "75b7faa0-c11b-4e53-a15a-ebfab41919f2")
-	)
-	(hierarchical_label "FAN CONTROL 1"
-		(shape input)
-		(at 506.73 412.75 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "7bd27e5e-f589-448e-baeb-1a9a29e90d8a")
-	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
-		(at 284.48 180.34 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "7daa17c1-0070-4fcc-81b7-8d65b259a482")
-	)
-	(hierarchical_label "USB CHARGE"
-		(shape input)
-		(at 623.57 381 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "81b14e4b-d46a-4bcf-8a24-85812efb84f3")
-	)
-	(hierarchical_label "TACT1"
-		(shape input)
-		(at 797.56 207.01 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "875a6f37-1ff4-42f6-87cb-b694894b9833")
-	)
-	(hierarchical_label "RX"
-		(shape input)
-		(at 791.21 133.35 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "8cbf2ac4-179b-4f47-a815-be459c746d58")
-	)
-	(hierarchical_label "DS18B20 DQ"
-		(shape input)
-		(at 327.66 200.66 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "8f63dcd9-27e8-4399-8f41-48ceed27db26")
-	)
-	(hierarchical_label "LOAD VOLTAGE"
-		(shape bidirectional)
-		(at 447.04 68.58 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "9166e9c3-b93e-498d-b1a2-35bf1bd5a931")
-	)
-	(hierarchical_label "DS18B20 DQ"
-		(shape input)
-		(at 506.73 417.83 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "9921e811-3bdb-4e77-88b5-4b2f57729f56")
-	)
-	(hierarchical_label "ENDODER B"
-		(shape bidirectional)
-		(at 356.87 175.26 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "9b266049-be89-4cd8-9d3d-0ec4cc178686")
-	)
-	(hierarchical_label "AR0"
-		(shape input)
-		(at 787.4 472.44 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "a31d5b61-577f-45aa-936d-b6286892c548")
-	)
-	(hierarchical_label "AR2"
-		(shape input)
-		(at 203.2 99.06 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "aba46139-15ea-49ca-ad56-3c10affed419")
-	)
-	(hierarchical_label "D+"
-		(shape bidirectional)
-		(at 699.77 140.97 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "ac18af17-c3aa-421d-be60-7018fb10e1b8")
-	)
-	(hierarchical_label "LOAD VOLTAGE"
-		(shape bidirectional)
-		(at 590.55 212.09 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "b3d9b87a-d4f8-43e9-8d88-7422147392c2")
-	)
-	(hierarchical_label "AR1"
-		(shape input)
-		(at 203.2 58.42 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "b4170e6d-b116-4b70-8768-8acad98e977f")
-	)
-	(hierarchical_label "VLINE DIV"
-		(shape input)
-		(at 589.28 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "b7503fa8-2dd3-4234-bb88-3b020aacc42a")
-	)
-	(hierarchical_label "ENDODER SW"
-		(shape bidirectional)
-		(at 356.87 180.34 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "bd42ccf8-d9d8-49c0-b96c-ca04f0a88456")
-	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
-		(at 593.09 115.57 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "bd63c868-96aa-4876-8da9-aa89ea65d5d4")
-	)
-	(hierarchical_label "USB 5V"
-		(shape input)
-		(at 283.21 195.58 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "c39eed8e-1058-42a4-b982-ed49f32530ba")
-	)
-	(hierarchical_label "TX"
-		(shape input)
-		(at 791.21 135.89 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "c3e87fb0-f24a-4c82-aa30-aa2b7e622f6d")
-	)
-	(hierarchical_label "OUT CONTROL"
-		(shape input)
-		(at 373.38 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "c6c2d11d-a974-44a0-b594-23e238fb7f00")
-	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
-		(at 803.91 392.43 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "c94c1f68-69cd-48bc-8917-62a1d9cde523")
-	)
-	(hierarchical_label "DAC CONTROL"
-		(shape input)
-		(at 692.15 499.11 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "ca9a9edb-d70b-4641-a72e-64dd2dd35815")
-	)
-	(hierarchical_label "BUZZER2"
-		(shape bidirectional)
-		(at 461.01 425.45 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "d0310bbb-d122-4449-9214-8aded729cd16")
-	)
-	(hierarchical_label "DS18B20 DQ"
-		(shape input)
-		(at 746.76 321.31 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "d057d513-7365-4296-bd4b-e6691e7325ce")
-	)
-	(hierarchical_label "BUZZER1"
-		(shape bidirectional)
-		(at 698.5 69.85 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "d6003175-c079-43e2-b8b4-9f645b1a7bc7")
-	)
-	(hierarchical_label "G2"
-		(shape input)
-		(at 199.39 90.17 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "d664bff3-4b8f-4d4d-a5a6-8283f2fb95ae")
-	)
-	(hierarchical_label "AR1"
-		(shape input)
-		(at 742.95 389.89 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "d989e107-0a9f-4404-a89c-e631d91faee3")
-	)
-	(hierarchical_label "ENDODER SW"
-		(shape bidirectional)
-		(at 506.73 427.99 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "da265abe-00f2-4042-8f20-08855d49b2d8")
-	)
-	(hierarchical_label "OUT CONTROL"
-		(shape input)
-		(at 506.73 420.37 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "db58a378-fd7d-48b1-be6d-adbb94c97775")
-	)
-	(hierarchical_label "TACT2"
-		(shape input)
-		(at 506.73 402.59 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "ded4a4b7-db95-4616-8173-6a09bb3a4e2f")
-	)
-	(hierarchical_label "G1"
-		(shape input)
+	(label "G1"
 		(at 808.99 443.23 0)
 		(effects
 			(font
@@ -21741,8 +21658,7 @@
 		)
 		(uuid "e583365a-ce74-4dc4-97d5-fbc277c5b413")
 	)
-	(hierarchical_label "D-"
-		(shape bidirectional)
+	(label "D-"
 		(at 311.15 187.96 0)
 		(effects
 			(font
@@ -21752,8 +21668,7 @@
 		)
 		(uuid "e9e43c6e-a7d8-4d58-af88-c53ae20989c7")
 	)
-	(hierarchical_label "RESET BUTTON"
-		(shape bidirectional)
+	(label "RESET BUTTON"
 		(at 461.01 382.27 180)
 		(effects
 			(font
@@ -21765,8 +21680,17 @@
 		)
 		(uuid "ed9ee8ac-a982-4e4d-afc1-82de72193d41")
 	)
-	(hierarchical_label "AR3"
-		(shape input)
+	(label "VCC LINE"
+		(at 295.91 55.88 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ef542e26-8dc6-424b-b91f-fc0dc00af586")
+	)
+	(label "AR3"
 		(at 203.2 106.68 180)
 		(effects
 			(font
@@ -21778,8 +21702,7 @@
 		)
 		(uuid "f1857d26-5d0d-40a6-ae39-ab3e48cd7493")
 	)
-	(hierarchical_label "I2C SDA"
-		(shape bidirectional)
+	(label "I2C SDA"
 		(at 284.48 182.88 180)
 		(effects
 			(font
@@ -21791,8 +21714,7 @@
 		)
 		(uuid "f4bfa104-02a5-4e77-a51a-64b6f48495fb")
 	)
-	(hierarchical_label "G2"
-		(shape input)
+	(label "G2"
 		(at 808.99 491.49 0)
 		(effects
 			(font
@@ -21804,8 +21726,7 @@
 		)
 		(uuid "f6e788be-5108-4e5a-bb22-82aad076dae8")
 	)
-	(hierarchical_label "I2C SCL"
-		(shape bidirectional)
+	(label "I2C SCL"
 		(at 669.29 463.55 180)
 		(effects
 			(font
