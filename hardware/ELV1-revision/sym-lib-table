@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ELV1_Local") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/ELV1_Local.kicad_sym") (options "") (descr "Project symbols with preserved pin positions"))
+)

@@ -15,6 +15,21 @@ Kaynaklar:
 Birimler: gerilim mV, akım mA, sıcaklık 0.01 °C (int). Float kullanılabilir
 ama ELV1 tamsayı kullanıyordu.
 
+19.11.2026 - HIGH-SIDE KORUMA TASARIM NOTU (donanim henuz kesinlesmedi)
+ - Hedef DUT gerilim araligi: 0-30 V. Koruma MOSFET surucusu DUT'tan
+   bagimsiz olarak cihazin yardimci beslemesinden calisacak.
+ - Her acilis / yeniden etkinlestirmede once DAC=0 ve yuk kelepcesi aktif
+   tutularak U7/U8 yuk akimi kapatilir. Ardindan U10 acma komutu verilir.
+ - U10'un tam iletime gecmesi icin donanimla belirlenecek en kotu durum
+   bekleme suresi dolmadan yuk etkinlestirilmez. Varsa hazir/hata geri
+   bildirimi de kontrol edilir; acma komutu tek basina hazir kabul edilmez.
+ - Koruma hazir ve hata yoksa kelepce kaldirilir, ayarlanan akima soft-start
+   rampasiyla cikilir. Hata veya zaman asiminda yuk kapali kalir.
+ - Normal kapatmada once yuk akimi sifirlanir, sonra U10 kapatilir.
+   Acil donanimsal koruma firmware sirasini beklemeden kesebilmelidir.
+ - Asagidaki eski low-side U10 pin mantigi ve olcum formulleri yeni
+   high-side sema kesinlestikten sonra yeniden guncellenecektir.
+
 
 -------------------------------------------------------------------------------
  0. ÖNCE BUNLARI OKU (en önemli 12 kural)
