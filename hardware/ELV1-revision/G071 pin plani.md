@@ -1,5 +1,25 @@
 # ELV1 revision — STM32G071CBT6 pin atama planı
 
+## 22.11.2026 - Guncel pin degisiklikleri (eski tablolardan oncelikli)
+
+| Pin | Port | Guncel gorev |
+|---|---|---|
+| 11 | PA0 | ESP_TX, USART4_TX, AF4 -> R85 -> ESP GPIO20 RX |
+| 12 | PA1 | ESP_RX, USART4_RX, AF4 <- R86 <- ESP GPIO21 TX |
+| 15 | PA4 | 20V SENSE, ADC1_IN4; eski PA0 olcum olcegi ayni |
+| 20 | PB1 | POLARITY_OK girisi, U14 cikisi; dusen kenar EXTI1 kullanilabilir |
+| 13 | PA2 | DUT SENSE, AND/EN komut geri okumasi |
+| 24 | PB12 | OUT CONTROL: HIGH acma istegi, LOW guvenli |
+| 47 | PB8 | RELAY CONTROL: HIGH bobin enerjili, LOW guvenli |
+
+CH340 USART1 PB6/PB7'de kalir; ESP USART4'e ayrildi. PA0/PA1 AF4 ve
+PA4 ADC1_IN4, ST DS12232 Rev5 ile dogrulandi. U20 yerel sembolunun
+alternatif fonksiyon listesi USART4'u gostermese de bu islevler MCU'da var.
+Extra pins konnektoru kullanici tarafindan kaldirildi; geri eklenmedi.
+Asagidaki eski low-side/RCP/PA0 ADC ve bos pin anlatimlari tarihsel;
+firmware icin guncel rehberin 22.11.2026 bolumu kullanilacak.
+
+
 - Eski işlemci: U14 STM32G030F6P6 (TSSOP20)
 - Yeni işlemci: STM32G071CBT6 (LQFP48)
 - Sembol: `myCPU:STM32G071CBT6` (ELV2'deki ile aynı)

@@ -1,6 +1,6 @@
 ===============================================================================
  ELV1 REVISION - FIRMWARE REHBERI
- Donanım: ELV1 revision şematiği (18.10.2026 itibarıyla), MCU STM32G071CBT6
+ Donanım: ELV1 revision; güncel değişiklikler 22.11.2026 ekinde, MCU STM32G071CBT6
  Bu dosya, ELV1 revision için firmware yazacak kişinin bilmesi gereken her
  şeyi içerir: pinler, açılış sırası, ölçüm formülleri, kalibrasyon, korumalar,
  bilinen donanım sorunları ve STM32G071 tuzakları.
@@ -15,41 +15,126 @@ Kaynaklar:
 Birimler: gerilim mV, akım mA, sıcaklık 0.01 °C (int). Float kullanılabilir
 ama ELV1 tamsayı kullanıyordu.
 
-19.11.2026 - HIGH-SIDE KORUMA TASARIM NOTU (donanim henuz kesinlesmedi)
- - Hedef DUT gerilim araligi: 0-30 V. Koruma MOSFET surucusu DUT'tan
-   bagimsiz olarak cihazin yardimci beslemesinden calisacak.
- - Her acilis / yeniden etkinlestirmede once DAC=0 ve yuk kelepcesi aktif
-   tutularak U7/U8 yuk akimi kapatilir. Ardindan U10 acma komutu verilir.
- - U10'un tam iletime gecmesi icin donanimla belirlenecek en kotu durum
-   bekleme suresi dolmadan yuk etkinlestirilmez. Varsa hazir/hata geri
-   bildirimi de kontrol edilir; acma komutu tek basina hazir kabul edilmez.
- - Koruma hazir ve hata yoksa kelepce kaldirilir, ayarlanan akima soft-start
-   rampasiyla cikilir. Hata veya zaman asiminda yuk kapali kalir.
- - Normal kapatmada once yuk akimi sifirlanir, sonra U10 kapatilir.
-   Acil donanimsal koruma firmware sirasini beklemeden kesebilmelidir.
- - Asagidaki eski low-side U10 pin mantigi ve olcum formulleri yeni
-   high-side sema kesinlestikten sonra yeniden guncellenecektir.
+22.11.2026 - GUNCEL TASARIM VE FIRMWARE KARARLARI
+ Kaynak: ayni klasordeki guncel sematigin 22.11.2026 netlist'i ve kullanici
+ kararlari. Bu bolum eski low-side/optokuplor notlarinin ONUNE GECER.
+ Rehberin sonraki bolumlerindeki GND1, RCP, LM7815/+15V ve eski ADS2
+ diferansiyel olcum anlatimlari tarihsel tasarima aittir; uygulanmayacak.
+ Sematik halen gelistiriliyor; PCB oncesi donanim testleri tamamlanmadi.
+
+ A. Guncel kontrol sinyalleri (U20 STM32G071CBT6)
+ - PB12 / pin 24 = OUT CONTROL: LOW guvenli/kapali; HIGH acma istegi.
+   U11 AND kapisi EN = OUT CONTROL AND POLARITY_OK islevini saglar.
+ - PC6 / pin 30 = DAC CONTROL: HIGH setpoint kelepcesi aktif/yuk kapali;
+   LOW kelepce serbest. MCP4725 cikisi ayrica sifira yazilir.
+ - PB8 / pin 47 = RELAY CONTROL: LOW K1 bobini enerjisiz, NO kontak acik;
+   HIGH bobin enerjili. Onceki bos PB8 kaydi gecersizdir.
+ - PA2 / pin 13 = DUT SENSE: R97 uzerinden AND cikisini okur.
+   Bu sinyal EN komutunun geri okumasidir; bagimsiz POLARITY_OK veya
+   gate-source gerilimi / kontak konumu geri bildirimi DEGILDIR.
+   OUT CONTROL LOW iken DUT SENSE LOW olmasi ters polarite anlami tasimaz.
+ - PB1 / pin 20 = POLARITY_OK: U14 cikisi artik dogrudan MCU'ya bagli.
+   GPIO girisi, tercihen dusen kenar EXTI1 ile donanimsal ters algilama
+   bilgisi okunur. LOW durumunda yuk ve acma istegi kapatilir; hata
+   kilitlenir. HIGH tek basina pozitif DUT var demek degildir.
+ - PA0 / pin 11 = ESP_TX, USART4_TX AF4 -> R85 -> ESP GPIO20 (RX).
+ - PA1 / pin 12 = ESP_RX, USART4_RX AF4 <- R86 <- ESP GPIO21 (TX).
+   ESP artik CH340 ile ortak UART cikisi surmez. CH340 USART1 PB6/PB7'de.
+ - PA4 / pin 15 = 20V SENSE, ADC1_IN4. Olcum olcegi ayni (12k/112k);
+   eski PA0/ADC1_IN0 giris secimi firmware'de kullanilmayacak.
+ - PB1, PA0, PA1, PA4 ve PB8 artik bos pin sayilmayacak.
+ - U5 TPSI3052 ile U10 artik pozitif hatta high-side olarak kullaniliyor.
+   U5 VSSS, U10 source dugumudur; kart GND'sine birlestirilmeyecek.
+
+ B. Guvenli acilis / yeniden etkinlestirme
+ 1. GPIO cikis modundan ONCE OUT CONTROL=LOW, RELAY CONTROL=LOW,
+    DAC CONTROL=HIGH, USB CHARGE=LOW cikis degerlerini hazirla.
+    DAC kodunu da 0 yap; reset/watchdog sonrasinda onceki yuk ayarina
+    otomatik donme. Yuk icin yeniden kullanici etkinlestirmesi iste.
+ 2. MCU, I2C, zorunlu ADC/DAC ve sicaklik denetimleri tamamlanana ve
+    yardimci besleme kararliligi dogrulanana kadar yuk kapali kalir.
+ 3. Guncel semada LOAD VOLTAGE ve polarite algilama K1'in cihaz tarafinda.
+    Role acikken buradan dis DUT varligi/polaritesi dogrulanamaz.
+    OUT CONTROL=LOW ve DAC kelepcesi aktifken K1'i cek; kontak oturma
+    ve sicrama suresi donanim testinden belirlendikten sonra olcume gec.
+    Bu sirada ters DUT baglanmasi ve giris korumalari ayrica test edilecek.
+ 4. Gecerli pozitif DUT gerilimi (hedef 1-30 V) ve hata olmamasi kosuluyla
+    OUT CONTROL=HIGH yap. DUT SENSE beklenen HIGH'a gelmezse yuk kapali
+    kalir, OUT CONTROL=LOW yapilip hata kilitlenir.
+ 5. DUT SENSE HIGH olsa bile U10 tam iletimde kabul edilmez. Surucu ve
+    MOSFET icin testle belirlenecek en kotu durum acilma/yerlesme suresini
+    bekle; sabit sure henuz secilmedi. Ardindan kelepceyi serbest birak ve
+    ayarlanan yuk akimina kontrollu rampayla cik.
+ 6. Normal kapatma: kelepceyi etkinlestir, DAC=0 yap, yuk akiminin dusmesini
+    dogrula; sonra OUT CONTROL=LOW ve gerekiyorsa RELAY CONTROL=LOW.
+    Kritik hata: kelepce ve OUT CONTROL'u derhal guvenli seviyeye getir;
+    RELAY CONTROL'u de LOW yap. I2C DAC yazisinin sonucunu bekleyerek GPIO
+    kapatmalarini geciktirme. Role sigortanin yerine gecmez.
+ 7. Besleme dusmesi/brownout ve watchdog/reset sonrasinda yeniden acilis
+    bu siradan baslar. Ani enerji kesilmesinde yazilimin bu sirayi
+    tamamlayacagi varsayilamaz; donanim enerjisiz davranisi test edilecek.
+
+ C. Olcum degisiklikleri
+ - GND1 ve eski VS- bolucusu kaldirildi.
+ - U21 ADS1115 #2: AIN0 ve AIN3 LOAD VOLTAGE; AIN1 VLINE DIV;
+   AIN2, R107 uzerinden GND. Eski AIN2-AIN3 sigorta dusumu ve eski
+   AIN0-AIN1 terminal gerilimi/GND1 formulleri gecersizdir.
+ - LOAD VOLTAGE kart GND'sine gore tek uclu okunur. AIN0-AIN1 farki
+   farkli dugumlerin bolunmus gerilim farkidir, dogrudan DUT gerilimi degil.
+ - Mevcut boluculerin ve koruma diyotlarinin olcum etkisi kartta kalibre
+   edilecek; AIN0 ve AIN3 ayni sinyal oldugu icin bagimsiz iki olcum sayilmaz.
+ - DUT SENSE tek basina ters polarite ile kaynagin yoklugunu ayiramaz.
+   Bagimsiz ters algilama icin artik PB1 POLARITY_OK kullanilir.
+   Negatif gerilim degerini koruma diyotuyla kirpilmis ADC'den hesaplama.
+
+ D. Yardimci guc, NTC ve acilis akimi (DUT yuk akimindan ayri)
+ - Kullanici kablaji ayri cizecek: J1/J8 bu semada paralel olarak birakildi.
+   Gercek kablajda kaynaklar birbirine baglanmayacak; iki iletken de
+   seciciyle ayrilmali. Harici kablaj cizimi ve ortak GND/USB yollarinin
+   kontrolu bekliyor; bu sema tek basina kaynak secimini gostermiyor.
+ - LM7815 kaldirildi; +15V besleme varsayimi kullanilmayacak.
+ - Semada F1=2A Slow Blow, TH1=5R; kesin sigorta/NTC modeli ve NTC
+   uygunlugu henuz dogrulanmadi. F1, DUT yolundaki F2=15A'den farklidir.
+ - C14=6800uF ve 20V icin ideal soguk 5 ohm modelinde ilk tepe 4A,
+   zaman sabiti 34ms, kondansator enerjisi 1.36J, darbe integrali
+   yaklasik 0.272 A^2s. Yuk akimi, NTC sicakligi/toleransi ve kaynak
+   davranisi bu hesabı degistirir. 4A surekli akim olarak yorumlanmayacak.
+ - 2A sigortanin acip acmayacagi gercek modelin zaman-akim/I^2t verisiyle
+   ve soguk/sicak yeniden acilis testiyle belirlenecek. Sirf tepe 4A diye
+   sigorta buyutulmeyecek. Ilk kondansator sarj darbesini MCU engelleyemez.
+ - MCU basladiktan sonra USB sarjini ve kontrol edilebilir diger yukleri
+   kademeli ac. Besleme dusuk/kararsizsa yuk etkinlestirmesini engelle ve
+   USB sarjini kapali tut; histerezis/sureler donanim testinden belirlenecek.
+ - R60 kullanici tarafindan 6.8k yapildi: USB sarj limiti nominal 1A.
+   SY6280 veri sayfasinda 6.8k icin 0.75..1.25A araligi var; kesin 1A
+   ust siniri olarak yorumlanmayacak. Firmware mevcut enable
+   hattini kontrol eder; direncle belirlenen akim limitini degistiremez.
+ - ESP32-C3 Wi-Fi/BLE akim darbeleri guc butcesine/teste dahil edilecek;
+   STM32'nin ESP beslemesini kapatabildigi varsayilmayacak.
+ - NTC'nin yeterince isinmamasi nedeniyle yukte gerilim dusumu ve sicak
+   NTC ile hizli yeniden acilista zayif akim sinirlama test edilecek.
+
 
 
 -------------------------------------------------------------------------------
  0. ÖNCE BUNLARI OKU (en önemli 12 kural)
 -------------------------------------------------------------------------------
- 1. Açılışta PB12 (OUT CONTROL) ve PC6 (DAC CONTROL) HIGH olmalı. İkisi de
-    HIGH = güvenli. Pini çıkışa almadan ÖNCE ODR'ye 1 yaz; yoksa kısa bir LOW
-    glitch'i oluşur.
- 2. OUT CONTROL ters mantıklı: LOW = U10 açık (giriş yolu iletimde).
-    HIGH = kapalı. ELV2'de aynı rolü PB12 yapıyor ama orada HIGH = açık.
+ 1. Açılışta PB12 (OUT CONTROL)=LOW, PB8 (RELAY CONTROL)=LOW ve
+    PC6 (DAC CONTROL)=HIGH güvenlidir. Çıkış modundan ÖNCE ODR'yi hazırla.
+ 2. Güncel high-side tasarım: OUT CONTROL HIGH = açma isteği, LOW = kapalı.
+    AND kapısı ayrıca POLARITY_OK koşulunu uygular (22.11.2026 eki).
  3. DAC CONTROL: HIGH = setpoint GND'ye kelepçeli, yük kapalı.
     LOW = MCP4725 çıkışı devrede.
  4. U10 açılmadan yük akımı verme. U10 kapalıyken akım body diyodundan geçer;
     10 A'de ~8 W, soğutucusuz.
- 5. RCP (PA2) LOW = ters bağlantı. Gördüğün anda yükü kapat. Bu en yüksek
-    öncelikli korumadır.
+ 5. PA2 artık DUT SENSE, AND çıkışının geri okumasıdır. LOW tek başına
+    ters bağlantı demek değildir. Güncel hata mantığı için 22.11.2026 ekine bak.
  6. Açılışta HAL_ADCEx_Calibration_Start() çağır. Bütün dahili ADC sabitleri
     kalibrasyondan SONRA ölçülerek belirlenmeli. ELV1'deki gibi sabit ofset
     (LV_OFFSET_MV) yok.
- 7. Gerilimin asıl ölçümü ADS1115 #2 (0x49) ile, diferansiyel (AIN0-AIN1).
-    PA3 (dahili ADC) sadece hızlı koruma ve "kaynak var mı" kontrolü için.
+ 7. ADS1115 #2 (0x49) AIN0/AIN3 artık aynı LOAD VOLTAGE sinyalini
+    GND referansıyla okur. Eski AIN0-AIN1 DUT gerilimi formülünü kullanma.
+    PA3 aynı düğümü dahili ADC ile izler; ayrıntı için güncel eke bak.
  8. I2C2'nin saat kaynağı PCLK olmalı (errata 2.11.6). Sahte BERR gelirse
     sadece bayrağı temizle (errata 2.11.2).
  9. VREFBUF'u asla açma. VREF+ pini dışarıdan 3.3 V ile besleniyor.
@@ -157,8 +242,12 @@ ama ELV1 tamsayı kullanıyordu.
 -------------------------------------------------------------------------------
  Pin  Port  Sinyal          Yön / periferal         Aktif     Reset hâli / not
  ---  ----  --------------  ----------------------  --------  -----------------------------
- 11   PA0   20V SENSE       ADC1_IN0                -         R112 100k / R113 12k + C82 100 nF, k = 0.10714 (30.8 V'a kadar)
- 13   PA2   RCP             GPIO in, EXTI2          LOW=ters  R45 47k pull-up. LOW ~0.6-0.7 V (marj az, bkz. H7). ADC1_IN2 de olur
+ 11   PA0   ESP_TX          USART4_TX AF4           -         R85 100R -> ESP GPIO20 RX
+ 12   PA1   ESP_RX          USART4_RX AF4           -         R86 100R <- ESP GPIO21 TX
+ 15   PA4   20V SENSE       ADC1_IN4                -         R112 100k / R113 12k + C82 100nF, k=0.10714
+ 20   PB1   POLARITY_OK     GPIO in / EXTI1         LOW=ters  U14 cikisi; HIGH kaynak varligi kaniti degil
+ 47   PB8   RELAY CONTROL   GPIO out                HIGH=cek K1 bobini; reset degeri LOW
+ 13   PA2   DUT SENSE       GPIO in                 HIGH=EN   R97 uzerinden AND cikisi; bagimsiz polarite degil
  14   PA3   LOAD VOLTAGE    ADC1_IN3                -         R54 47k / R55 3.3k + C40. ADS2 AIN0/AIN3 ile ortak düğüm
  17   PA6   BUZZER1         TIM16_CH1 PWM           HIGH=çal  Q4 -> BZ1 (piezo, 5 V), D15 + R114 1k paralel. TIM3_CH1 KULLANMA (TACT1 ile çakışır)
  18   PA7   BUZZER2         TIM14_CH1 PWM           HIGH=çal  Q6 -> BZ2 (piezo, 5 V), D16 + R115 1k paralel. TIM3_CH2 KULLANMA (TACT2 ile çakışır)
@@ -168,7 +257,7 @@ ama ELV1 tamsayı kullanıyordu.
  43   PB4   TACT1           TIM3_CH1 input capture  -         J9 tach. R76 10k pull-up, R79 10k seri, C72 10 nF
  44   PB5   TACT2           TIM3_CH2 input capture  -         J8 tach. R75 10k pull-up, R74 10k seri, C73 10 nF
  23   PB11  DS18B20 DQ      GPIO open-drain         -         İki sensör: J4.18 (R41/R39 4.7k) + J5.2 (R70/R69 4.7k)
- 24   PB12  OUT CONTROL     GPIO out push-pull      LOW=U10   R42 10k pull-up (reset'te U10 KAPALI). Önce ODR=1
+ 24   PB12  OUT CONTROL     GPIO out push-pull      HIGH=istek R95 100k pull-down; once ODR=0
  25   PB13  ENCODER A       GPIO in, EXTI13         LOW       R33 4.7k pull-up, R36 1k + C35 100 nF
  26   PB14  ENCODER B       GPIO in, EXTI14         LOW       R31 4.7k pull-up, R35 1k + C34 100 nF
  27   PB15  ENCODER SW      GPIO in, EXTI15         LOW       R34 10k pull-up, R37 1k + C36 100 nF. UCPD strobe şart
@@ -189,9 +278,9 @@ ama ELV1 tamsayı kullanıyordu.
    - Tach'lar EXTI kullanmıyor; TIM3 input capture ile ölçülüyor.
 
  Boş pinler (geliştirme / genişleme için):
-   PA1 (ADC, TIM2), PA4, PA5 (DAC1), PA8, PB1, PB2, PB3, PB8, PC13,
+   PA5 (DAC1), PA8, PB2, PB3, PC13,
    PC14, PC15, PD0-PD3.
-   - ADS ALERT/RDY pinleri MCU'ya bağlı değil. İstenirse PB1/PB2'ye
+   - ADS ALERT/RDY pinleri MCU'ya bağlı değil. İstenirse boş PB2/PB3'e
      bağlanabilir.
 
 
@@ -356,7 +445,7 @@ ama ELV1 tamsayı kullanıyordu.
    - V_PA3 = raw x VDDA / 4095 / k   (+ kalibrasyon kazanç/ofset)
    - Örnekleme: kaynak empedansı ~3 kΩ + C40 100 nF -> 39.5 cycle yeterli.
    - Görevi: hızlı OVP (ms seviyesinde), Von/Voff kararı, kaynak var/yok.
-   - PA0 (20V SENSE): V_20V = raw x VDDA / 4095 / 0.10714.
+   - PA4 (20V SENSE, ADC1_IN4): V_20V = raw x VDDA / 4095 / 0.10714.
      - Kaynak empedansı ~10.7 kΩ + C82 100 nF; 39.5 cycle yeterli.
      - Her döngüde oku ve koruma #13'te kullan.
      - Beklenen aralık: tam yükte ~17-20 V, yüksüzken en fazla ~25.6 V.
@@ -962,5 +1051,5 @@ ama ELV1 tamsayı kullanıyordu.
        kalınlığı ister. FDM'de olmaz, reçinede kırılgan olur.
 
 ===============================================================================
- Son güncelleme: 18.10.2026
+ Son güncelleme: 22.11.2026 (güncel tasarım eki; eski bölümler tarihsel)
 ===============================================================================

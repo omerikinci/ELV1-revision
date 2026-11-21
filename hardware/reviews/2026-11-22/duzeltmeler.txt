@@ -1,0 +1,44 @@
+22.11.2026 - Kullanici onayli sematik duzeltmeleri
+
+Kullanici degisiklikleri korundu:
+- D9/D10/D11/D12 LED yonleri dogru; baglantilari degistirilmedi.
+  Yarim grid konumlari 0.635mm kaydirilarak ERC grid uyarilari duzeltildi.
+- R60=6.8k korundu (nominal 1A; kesin ust limit toleransi farkli).
+- Extra pins konnektoru geri eklenmedi; kullanilmayan MCU pinlerine NC kondu.
+
+Uygulananlar:
+- ESP UART'i, CH340 USART1 hattindan ayrilarak USART4 PA0/PA1 AF4'e tasindi.
+  ESP GPIO20 RX -> R85 -> STM32 PA0 TX;
+  ESP GPIO21 TX -> R86 -> STM32 PA1 RX.
+- 20V SENSE PA0'dan PA4/ADC1_IN4'e tasindi; bolucu/filtre ayni.
+- POLARITY_OK PB1'e dogrudan baglandi; PA2 DUT SENSE baglantisi korundu.
+- R48/R87/R88/R89/R90/R91 degerleri ayni, toleranslari %0.1 belirtildi.
+- CH340 V3 ve VCC dogrudan 3.3V'ta birlestirildi; JP1 kaldirildi.
+- CH340'in V3 pini 3.3V modunda besleme girisi oldugu icin proje kutuphanesine
+  ELV1_Local:CH340G_3V3 varyanti eklendi; V3 power_in olarak tanimlandi.
+  Orijinal genel CH340G kutuphanesi degistirilmedi.
+- WCH onerisine gore R50/R52 USB seri direncleri 22R'den 0R'a alindi.
+- Firmware rehberi ve pin plani yeni baglantilara gore guncellendi.
+
+Kullanici karariyla degistirilmeyenler:
+- K1 instance'i ve gomulu kutuphane sembolu bayt bayt ayni.
+- J1/J8 guc girisleri semada oldugu gibi kaldi. Kullanici kaynak secimi
+  kablajini ayri hazirlayacak ve kaynaklar gercekte paralel baglanmayacak.
+- PCB degistirilmedi; sematikten PCB'ye aktarim ileride kullanici yapacak.
+- F1 MTS2A icin DC kesme kapasitesi bu veri sayfasinda belgelenmis degil;
+  batarya beslemesinde uretici teyidi/uygun DC kesme degeri halen bekliyor.
+
+Dogrulama:
+- ERC: 6 hata, 0 uyari; sadece onceki K1 gizli 21/22/24 pinleri.
+- U9/U21 tum pin-net uyelikleri once/sonra ayni.
+- K1/J1/J8/F1/TH1/R60 ve besleme LED'lerinin pin-net uyelikleri ayni.
+- USART4 ve ADC pini ST DS12232 Rev5 ile dogrulandi.
+- Sematik PDF cikisi ve MCU/ESP/USB/LED bloklari gorsel olarak kontrol edildi.
+- Git diff whitespace kontrolu temiz.
+- Degisiklik oncesi yedek: /tmp/elv1-before-authorized-fixes-20261122.kicad_sch
+
+CH340 V3 aciklamasi (kullanicinin paylastigi ornek sema):
+- Ornekte V3(pin4) ve VCC(pin16), ustteki ortak +3V3 telinde birlesiyor.
+- Kullanici ayri V3 baglantisini breadboard'da calistirdigini belirtti.
+  Bu gozlem kaydedildi; uretici 3.3V beslemede V3-VCC birlestirmesini
+  istedigi icin projedeki dogrudan 3.3V baglantisi korundu.

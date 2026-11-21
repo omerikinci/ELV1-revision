@@ -1,0 +1,154 @@
+22.11.2026 - ELV1 REVISION SEMATIK VE MTS SIGORTA INCELEMESI
+
+Kapsam
+Guncel kayitli ELV1 revision.kicad_sch incelendi; untitled.kicad_sch ana
+proje olarak kullanilmadi. Sematik/PCB/kutuphaneler degistirilmedi.
+KiCad 10.0.8 ile ERC, XML netlist ve PDF ciktisi alindi. LED, koruma,
+guc girisi ve USB bloklari cizim uzerinde de kontrol edildi.
+Bu inceleme elektriksel hesap/netlist kontroludur; olculmus kart dogrulamasi,
+PCB akim/isi/SOA/EMC onayi veya tum hata senaryolari icin garanti degildir.
+
+1 - ONCELIKLI: J1 ve J8 dogrudan paralel
+J1.1 = J8.2 = F1.1; J1.2 = J8.1 = D1.2.
+J1 trafo sekonderi bagliyken J8'e DC vermek, DC'yi dogrudan trafo sargisina
+uygular. Primer anahtarinin kapali olmasi sekonderi ayirmaz.
+Kablajda iki kutuplu, ortasi kapali ve once ayirip sonra baglayan seciciyle
+iki kaynak ciftini ayir. Bu secici sematikte henuz gosterilmiyor. Harici
+kablajda secici varsa baglanti cizimini de dosyaya/notlara ekle.
+DC kaynak negatifi baska bir yol (USB/PE/diger cihaz) ile kart GND'sine
+baglanabiliyorsa koprunun ters baglanti davranisi ayrica kontrol edilmeli.
+
+2 - ONCELIKLI: CH340G ve ESP32 ortak UART cikis cakismasi
+/RX = U20.46 (PB7) + R58.1 + R86.1.
+R58.2 -> U15.2 CH340G TXD; R86.2 -> U1.21 ESP32 GPIO21 (UART0 TX).
+R58 ve R86 100R; iki push-pull TX cikisi ayni STM32 RX dugumune bagli.
+CH340 TX bosta HIGH iken ESP LOW surerse cikislar birbirini zorlar ve
+veri seviyesi bozulur. Sadece yazilimda konusma sirasi vermek yeterli degil.
+En az parca ile cozum: ESP'yi uygun bos STM32 USART/LPUART pinlerine ayir;
+GPIO alternate-function eslemesi kesinlestirilecek. Ikinci tercih uygun
+secme/yalitma devresi. Iki cikis birlikte bagliyken teste devam etme.
+STM32 TX -> CH340 RX + ESP GPIO20 girisleri fan-out olarak ayri sorundur;
+asıl ayrilacagi komut protokolune gore belirlenecek.
+
+3 - KESIN BAGLANTI HATASI: D9/D10/D11/D12 LED'ler ters
+D9.2(A)=GND; D9.1(K)->R46->3.3V.
+D10.2(A)=GND; D10.1(K)->R49->5V.
+D11.2(A)=GND; D11.1(K)->R51->20V.
+D12.2(A)=GND; D12.1(K)->R68->12V.
+Anot dirence/beslemeye, katot GND'ye gelecek sekilde duzeltilecek.
+D13 STATUS LED bu hatayi tasimiyor: pin1 katot GND, pin2 anot R80 tarafinda.
+D11/D12'de LED'in ters gerilim dayanimi asılabilir; ERC bunu yakalamiyor.
+
+4 - CH340 3.3V besleme secimi
+U15 VCC(pin16)=3.3V. V3(pin4), C58 ve JP1'in diger padine bagli.
+JP1 SolderJumper_2_Open; varsayilan netlist'te V3 ile VCC ayri.
+WCH CH340DS1 bolum 5.1'e gore 3.3V beslemede V3 ve VCC birlestirilmeli.
+JP1 montajda kapatilacaksa bunu montaj notu/BOM'da belirt veya sabit 3.3V
+kullaniminda dogrudan bagla. Mevcut acik jumper varsayimiyla dogru degil.
+WCH ayrica USB D+/D- icin harici seri direnc onermiyor; R50/R52=22R.
+Bu iki direnc kesin haberlesme arizasi olarak siniflandirilmadi; uretici
+onerisine donus/USB sinyal butunlugu kontrolu icin 0R secenegi degerlendir.
+
+5 - USB sarj limiti kullanici hedefiyle uyusmuyor
+U16 SY6280 ISET(pin3)->R60=3.3k->GND.
+Ilim_typ=6800/3300=2.06A. 1A nominal hedefi icin 6.8k gerekir.
+Datasheet Rset=6.8k icin 0.75/1.0/1.25A min/typ/max veriyor;
+6.8k kesin 1A ust siniri anlamina gelmez. Kesin maksimum hedefi icin
+limit toleransi ve Rset toleransi dikkate alinacak (or. daha buyuk Rset).
+Firmware enable hatti bu donanimsal limit degerini degistiremez.
+
+6 - MCP6541 esik direnci toleranslari belirlenmeli
+R48=100k, R87=10k, R88=11k, R89=1.65M,
+R90=10k, R91=10.3k. Direnc toleranslari deger/BOM'da belirtilmemis.
+3.3V nominal ve ideal cikis seviyeleriyle (dahili histerezis haric):
+OUT HIGH durumunda dusme esigi yaklasik -0.441V;
+OUT LOW durumunda tekrar yukselme esigi yaklasik -0.241V.
+VIN+ nominal -30..+30V giriste 0.149..3.136V; besleme varken aralik uygun.
+Tum direncler %1 bagimsiz ve VOS +/-7mV kabul edilen kose hesabinda
+HIGH->LOW esigi yaklasik -1.26..+0.36V'a kayabiliyor. Bu, -1V'ta algilama
+icin garanti vermiyor (dahili histerezis/sicaklik/besleme eklenmeden bile).
+Ayni basit hesap %0.1 direnclerle -0.65..-0.23V veriyor.
+R87/R88/R90/R91 icin en az %0.1 eslesme/tolerans hedefle; diger direncler,
+histerezis ve tum sicaklik/besleme kosullariyla nihai esik hesabi tamamlanacak.
+Mevcut yuksek direnc degerleri tek basina hata degil.
+POLARITY_OK dogrudan MCU'ya bagli degil. PA2 DUT SENSE, AND cikisinin
+R97 uzerinden okunmasi; bagimsiz polarite ya da Vgs dogrulamasi degil.
+
+7 - K1 bilinen sembol/footprint uyusmazligi suruyor
+Deger HF115F/012-1ZS3 (tek kutuplu degistirici), footprint
+Relay_DPDT_Hongfa_HF115F-2Z-x4 ve gizli 21/22/24 pinleri mevcut.
+ERC: 6 hata, 0 uyari; hepsi K1 21/22/24 pinleri (baglantisiz + surulmeyen).
+Onceki kullanici karari nedeniyle bu incelemede role degistirilmedi.
+Fiziksel pinout ve footprint PCB'ye gecmeden duzeltilmeli.
+
+8 - Pozitif dogrulamalar ve test bekleyen kosullar
+- Q1/Q2/Q3/Q4/Q5/Q6: pin1 gate, pin2 source GND, pin3 drain yuk tarafinda.
+  Onceki IRLML6344 source/drain tersligi tekrar olusmamis.
+- U10 pin2 drain F2/yuk tarafinda, pin3 source K1/DUT tarafinda.
+  U5 VSSS=U10 source; GND'ye kisa devre yok. Gate R99=22R, R118=100k G-S.
+- C88=1uF VDDH-VDDM, C89=4.7uF VDDM-VSSS. Nominal oran 4.7>=3 uygun.
+  Gerilim/tolerans/DC-bias altindaki gercek kapasitelerle oran kontrol edilmeli.
+  U5 icin C87=100nF ve C90=10uF besleme bypass'i var.
+- Role bobin sondurme yolu: D5 anodu drain, katodu D4 katodu;
+  D4 anodu +12V. 6.8V zenerli seri ters yonlu baglanti dogru.
+  Drain nominal 12+6.8+Vf seviyesine sinirlanir; gercek salinim/sicaklik/
+  bobin enerjisi ve zener darbe dayanimi testle kontrol edilecek.
+- U9/U21 I2C adresleri sirasiyla 0x48/0x49, besleme ve ortak GND mevcut.
+  U21 AIN0/AIN3 LOAD VOLTAGE, AIN1 VLINE DIV, AIN2 R107 uzerinden GND.
+  GND1 geri gelmemis; kalan ADS baglantilari bu incelemede degistirilmedi.
+- D2 BAT54S GND->LOAD VOLTAGE->3.3V yonunde; ters bagli degil.
+  U14 VIN+ ve VLINE DIV'de harici clamp yok. Nominal +/-30V ve aktif
+  3.3V icin U14 giris araligi uygun; ancak besleme duserken K1 henuz
+  birakmadan once ve yeniden acilista girisler/3.3V geri beslemesi olculmeli.
+  Relay acikken DUT'un pozitif yolu ayriliyor; kontak kapaliyken bu izolasyon
+  mevcut degil. Kisilmis clamp akimi kesin izin verilen gerilim demek degil.
+- C14 ve seramikler icin gerilim sinifi/parca kodu yazilmamis. 20V isimli
+  trafo dogrultucu hatti yuksek sebeke ve yuk yokken daha yuksek olabilir;
+  C14 icin gercek tepeye gore or. 35V sinifi ve seramiklerde DC bias kontrolu.
+- USB on panel soketinin gercek VBUS/kablaj semasi bu dosyada yok;
+  PC VBUS ile USB sarj cikisinin nasil ayrildigi bu karttan onaylanamaz.
+
+9 - Gonderilen Reomax MTS sigortasi
+Kaynak: kullanicinin MTS.pdf dosyasi, Spec SFA-MTS Version2014023,
+sayfa 4 (MTS1200A), 6 (olculer), 7 (kesme kapasitesi), 8 (zaman-akim).
+2A modeli MTS1200A; nominal erime I^2t=25.90A^2s.
+2A icin zaman-akim tablosu:
+  3A (%150): en az 60 dakika;
+  4.2A (%210): en fazla 2 dakika;
+  5.5A (%275): 0.4..10 saniye;
+  8A (%400): 0.15..3 saniye;
+  20A (%1000): 20..150 milisaniye.
+Bu tablo 4A'de tam acma zamani veya 2 dakikalik alt sinir vermiyor.
+20V,6800uF,soguk ve sabit5ohm ideal RC hesabinda:
+  Ipeak=4A; tau=34ms; t(I>2A)=23.6ms;
+  integral(I^2 dt)=V^2*C/(2R)=0.272A^2s.
+4ohm alt toleransta Ipeak=5A, integral=0.34A^2s.
+Bu sonuc nominal sigorta I^2t'sinden cok dusuk; soguk sarj darbesinin
+sigortayi acmasi beklenmez. 2A'i sirf 4A tepe var diye buyutmek gerekmiyor.
+Hesapta reguator yukleri, sicak NTC ve kaynak akim limiti yok; I^2t tabloda
+nominal ve toleransi belirtilmemis, tek basina nihai uygunluk sertifikasi degil.
+Soguk/sicak yeniden acilis ve tam yardimci yukte F1 RMS/sicaklik testi gerekir.
+AC beslemede F1'den darbeli sekonder akimi gecer; DC ortalama akimla esit degil.
+DUT'un 10A akimi F1'den gecmez; DUT yolunda F2 vardir.
+
+DC kesme kapasitesi:
+Belge 250VAC'de 35A veya 10In hangisi buyukse diyor; 2A icin 35A.
+Ayrica belgelenmis DC kesme akimi/gerilimi bulunamadi. 20V DC batarya
+kullanimini bu belgeyle kesin onaylamak dogru degil. Kaynagin olasi kisa
+devre akimina uygun DC anma/kesme degeri ureticiden teyit edilmeli.
+Soguk NTC ariza akimini azaltabilir; sicak NTC'de ayni sinir varsayilamaz.
+
+Footprint:
+MTS: 5.08+/-0.2mm bacak araligi, yaklasik8.4x4.0mm govde, phi0.6mm bacak.
+Mevcut Fuse_Littelfuse_395Series pad araligi yaklasik5.08mm, delik1mm;
+MTS icin temel delik yerlesimi uyuyor. Govde/courtyard ve yukseklik yine
+montaj oncesi kontrol edilecek; farkli marka adi tek basina uyumsuzluk degil.
+
+Kaynaklar
+https://cdn.ozdisan.com/public/product/assets/MTS.pdf
+https://www.ti.com/lit/ds/symlink/tpsi3052.pdf (9.2.2.3, 9.3)
+https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP6541-Output-Sub-Microamp-Comparators-DS20001696.pdf
+https://media.soselectronic.com/KatList/WCH/CH340DS1.PDF (5.1; WCH uretici belgesi)
+https://www.silergy.com/download/downloadFile?ftype=note&id=4369&type=product
+
+Incelenen sematik SHA256: ad783606393def046ca7539f4c9003006f005912730e1fb48fc1ea08eec742cc
