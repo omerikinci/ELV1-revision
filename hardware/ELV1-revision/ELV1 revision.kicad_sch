@@ -12719,7 +12719,7 @@
 			)
 			(embedded_fonts no)
 		)
-		
+
 		(symbol "power:PWR_FLAG"
 			(power global)
 			(pin_numbers
@@ -13057,7 +13057,7 @@
 		(color 0 0 0 0)
 		(uuid "273ae2e2-972f-412b-a1ce-aa3e355ba555")
 	)
-	
+
 	(junction
 		(at 751.84 166.37)
 		(diameter 0)
@@ -14168,7 +14168,7 @@
 		(at 732.79 156.21)
 		(uuid "f5eab2d6-1932-4825-ba1b-37f4cd247319")
 	)
-	
+
 	(wire
 		(pts
 			(xy 279.4 110.49) (xy 248.92 110.49)
@@ -16639,7 +16639,7 @@
 		)
 		(uuid "4159837f-1dba-4249-86c1-ec925e81bd85")
 	)
-	
+
 	(wire
 		(pts
 			(xy 778.51 207.01) (xy 778.51 223.52)
@@ -17510,7 +17510,7 @@
 		)
 		(uuid "5caed614-0ac0-4dcc-a47b-3b06f4bc6d85")
 	)
-	
+
 	(wire
 		(pts
 			(xy 779.78 511.81) (xy 787.4 511.81)
@@ -18121,7 +18121,7 @@
 		)
 		(uuid "6b31b747-ecf0-4704-b7c4-019a7f3ea47f")
 	)
-	
+
 	(wire
 		(pts
 			(xy 742.95 394.97) (xy 745.49 394.97)
@@ -19752,7 +19752,7 @@
 		)
 		(uuid "975c98db-b110-434f-868f-b1bec2a7b123")
 	)
-	
+
 	(wire
 		(pts
 			(xy 375.92 525.78) (xy 379.73 525.78)
@@ -21163,7 +21163,7 @@
 		)
 		(uuid "c79164a2-aefa-4d0d-865a-4d312cb7bf82")
 	)
-	
+
 	(wire
 		(pts
 			(xy 756.92 384.81) (xy 756.92 387.35)
@@ -23420,7 +23420,7 @@
 		)
 		(uuid "0f65b639-06e2-4dcd-846f-76c090100165")
 	)
-	
+
 	(label "FAN CONTROL 2"
 		(at 506.73 415.29 0)
 		(effects
@@ -23725,7 +23725,7 @@
 		)
 		(uuid "644952f1-8673-4f43-888f-3d2b4455af90")
 	)
-	
+
 	(label "I2C SDA"
 		(at 506.73 377.19 0)
 		(effects
@@ -35040,7 +35040,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "power:GND")
 		(at 646.43 392.43 0)
@@ -37218,7 +37218,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "power:+3.3V")
 		(at 383.54 492.76 0)
@@ -50924,7 +50924,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "power:GND")
 		(at 600.71 232.41 0)
@@ -54124,7 +54124,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 242.57 530.86 0)
