@@ -2449,7 +2449,7 @@
 					)
 				)
 			)
-			(pin input line
+			(pin passive line
 				(at -8.89 -2.54 0)
 				(length 2.54)
 				(name "PXFR"
@@ -2467,7 +2467,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_in line
 				(at -8.89 -6.35 0)
 				(length 2.54)
 				(name "VDDP"
@@ -2485,7 +2485,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_in line
 				(at -8.89 -10.16 0)
 				(length 2.54)
 				(name "VSSP"
@@ -2503,7 +2503,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_in line
 				(at 11.43 -10.16 180)
 				(length 2.54)
 				(name "VSSS"
@@ -2521,7 +2521,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_out line
 				(at 11.43 -6.35 180)
 				(length 2.54)
 				(name "VDDM"
@@ -2539,7 +2539,7 @@
 					)
 				)
 			)
-			(pin bidirectional line
+			(pin power_out line
 				(at 11.43 -2.54 180)
 				(length 2.54)
 				(name "VDDH"

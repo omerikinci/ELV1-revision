@@ -10220,7 +10220,7 @@
 						)
 					)
 				)
-				(pin input line
+				(pin passive line
 					(at -8.89 -2.54 0)
 					(length 2.54)
 					(name "PXFR"
@@ -10238,7 +10238,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_in line
 					(at -8.89 -6.35 0)
 					(length 2.54)
 					(name "VDDP"
@@ -10256,7 +10256,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_in line
 					(at -8.89 -10.16 0)
 					(length 2.54)
 					(name "VSSP"
@@ -10274,7 +10274,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_in line
 					(at 11.43 -10.16 180)
 					(length 2.54)
 					(name "VSSS"
@@ -10292,7 +10292,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_out line
 					(at 11.43 -6.35 180)
 					(length 2.54)
 					(name "VDDM"
@@ -10310,7 +10310,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_out line
 					(at 11.43 -2.54 180)
 					(length 2.54)
 					(name "VDDH"
@@ -12719,121 +12719,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:GND1"
-			(power global)
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "#PWR"
-				(at 0 -6.35 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "GND1"
-				(at 0 -3.81 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "GND1_0_1"
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "GND1_1_1"
-				(pin power_in line
-					(at 0 0 270)
-					(length 0)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
+		
 		(symbol "power:PWR_FLAG"
 			(power global)
 			(pin_numbers
@@ -13171,12 +13057,7 @@
 		(color 0 0 0 0)
 		(uuid "273ae2e2-972f-412b-a1ce-aa3e355ba555")
 	)
-	(junction
-		(at 568.96 68.58)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "2869d98f-6045-4164-9071-668d7147a9b7")
-	)
+	
 	(junction
 		(at 751.84 166.37)
 		(diameter 0)
@@ -14287,15 +14168,7 @@
 		(at 732.79 156.21)
 		(uuid "f5eab2d6-1932-4825-ba1b-37f4cd247319")
 	)
-	(bus_entry
-		(at 556.26 487.68)
-		(size 2.54 2.54)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "26619bb5-527c-4bf1-963a-d1b41083d824")
-	)
+	
 	(wire
 		(pts
 			(xy 279.4 110.49) (xy 248.92 110.49)
@@ -16766,16 +16639,7 @@
 		)
 		(uuid "4159837f-1dba-4249-86c1-ec925e81bd85")
 	)
-	(wire
-		(pts
-			(xy 568.96 76.2) (xy 568.96 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41946930-0a36-45c4-b4d0-596dafecf31f")
-	)
+	
 	(wire
 		(pts
 			(xy 778.51 207.01) (xy 778.51 223.52)
@@ -17646,16 +17510,7 @@
 		)
 		(uuid "5caed614-0ac0-4dcc-a47b-3b06f4bc6d85")
 	)
-	(wire
-		(pts
-			(xy 568.96 68.58) (xy 574.04 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5d443114-981b-42d6-a692-10812065440f")
-	)
+	
 	(wire
 		(pts
 			(xy 779.78 511.81) (xy 787.4 511.81)
@@ -18266,16 +18121,7 @@
 		)
 		(uuid "6b31b747-ecf0-4704-b7c4-019a7f3ea47f")
 	)
-	(wire
-		(pts
-			(xy 568.96 68.58) (xy 568.96 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6b3df0ca-ded8-4cef-84ff-7d564fc30d7d")
-	)
+	
 	(wire
 		(pts
 			(xy 742.95 394.97) (xy 745.49 394.97)
@@ -19906,16 +19752,7 @@
 		)
 		(uuid "975c98db-b110-434f-868f-b1bec2a7b123")
 	)
-	(wire
-		(pts
-			(xy 568.96 67.31) (xy 568.96 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "980a60f1-19a9-4b6f-92d2-abf8d8a3f8eb")
-	)
+	
 	(wire
 		(pts
 			(xy 375.92 525.78) (xy 379.73 525.78)
@@ -21326,16 +21163,7 @@
 		)
 		(uuid "c79164a2-aefa-4d0d-865a-4d312cb7bf82")
 	)
-	(wire
-		(pts
-			(xy 568.96 59.69) (xy 568.96 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c7f15799-476d-423a-87f3-1175dd60e6c4")
-	)
+	
 	(wire
 		(pts
 			(xy 756.92 384.81) (xy 756.92 387.35)
@@ -23592,18 +23420,7 @@
 		)
 		(uuid "0f65b639-06e2-4dcd-846f-76c090100165")
 	)
-	(label "VS-"
-		(at 590.55 217.17 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify right)
-		)
-		(uuid "1310c871-99c3-4daa-b899-27a0bdd8d0c2")
-	)
+	
 	(label "FAN CONTROL 2"
 		(at 506.73 415.29 0)
 		(effects
@@ -23908,18 +23725,7 @@
 		)
 		(uuid "644952f1-8673-4f43-888f-3d2b4455af90")
 	)
-	(label "VS-"
-		(at 574.04 68.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.1588)
-				(italic yes)
-			)
-			(justify left)
-		)
-		(uuid "64850b82-7541-4034-adad-3f7bb1862d1e")
-	)
+	
 	(label "I2C SDA"
 		(at 506.73 377.19 0)
 		(effects
@@ -24536,7 +24342,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 726.44 236.22 0)
 			(hide yes)
 			(show_name no)
@@ -25423,7 +25229,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 712.47 69.85 0)
 			(hide yes)
 			(show_name no)
@@ -35234,85 +35040,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Device:R_Small")
-		(at 568.96 73.66 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "52e4114e-5867-466a-b393-a2a88d3f63b3")
-		(property "Reference" "R102"
-			(at 575.31 72.39 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-			)
-		)
-		(property "Value" "3.3K 0.1%"
-			(at 575.31 74.93 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 568.96 73.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 568.96 73.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor, small symbol"
-			(at 568.96 73.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "2129b573-9e7a-4ddd-92aa-dd3c39bd4304")
-		)
-		(pin "1"
-			(uuid "6a0d0b4b-8a3b-495e-8a6c-d5093b4ac9ec")
-		)
-		(instances
-			(project "ELV1 revision"
-				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
-					(reference "R102")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "power:GND")
 		(at 646.43 392.43 0)
@@ -37490,84 +37218,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:GND1")
-		(at 568.96 59.69 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "60125ef3-c4ef-4420-b152-2dd7b44db782")
-		(property "Reference" "#PWR130"
-			(at 568.96 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND1"
-			(at 566.42 55.88 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 568.96 59.69 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 568.96 59.69 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND1\" , ground"
-			(at 568.96 59.69 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "82a44e15-1213-4bbf-a28b-6b3e745310f5")
-		)
-		(instances
-			(project "ELV1 revision"
-				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
-					(reference "#PWR130")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "power:+3.3V")
 		(at 383.54 492.76 0)
@@ -40710,7 +40361,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 779.78 236.22 0)
 			(hide yes)
 			(show_name no)
@@ -44586,7 +44237,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 722.63 499.11 0)
 			(hide yes)
 			(show_name no)
@@ -51273,84 +50924,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:GND")
-		(at 568.96 78.74 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d4d306ab-2bec-4073-ab6d-7737a2fcab7d")
-		(property "Reference" "#PWR131"
-			(at 568.96 85.09 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 568.96 83.82 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 568.96 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 568.96 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 568.96 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "236ad83d-3e63-44b2-ace0-d487915b6067")
-		)
-		(instances
-			(project "ELV1 revision"
-				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
-					(reference "#PWR131")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "power:GND")
 		(at 600.71 232.41 0)
@@ -52221,7 +51795,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 397.51 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -54550,85 +54124,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Device:R_Small")
-		(at 568.96 64.77 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "e70c3667-2e36-4fdf-89da-364c46b9c8ec")
-		(property "Reference" "R101"
-			(at 575.31 63.5 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-			)
-		)
-		(property "Value" "47K 0.1%"
-			(at 575.31 66.04 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 568.96 64.77 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 568.96 64.77 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor, small symbol"
-			(at 568.96 64.77 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "3c77023f-cc3e-4465-b220-84f72106dd9e")
-		)
-		(pin "1"
-			(uuid "32ebfa74-f69c-4867-a00e-fb05f7085ae8")
-		)
-		(instances
-			(project "ELV1 revision"
-				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
-					(reference "R101")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 242.57 530.86 0)
@@ -57417,7 +56913,7 @@
 				(justify left)
 			)
 		)
-		(property "Description" "6.3A Id, 20V Vds, 21mOhm Rds, N-Channel StrongIRFET Power MOSFET, SOT-23"
+		(property "Description" "5A Id, 30V Vds, N-Channel HEXFET Power MOSFET, Micro3/SOT-23; pinout 1=G 2=S 3=D"
 			(at 765.81 69.85 0)
 			(hide yes)
 			(show_name no)
@@ -57452,4 +56948,162 @@
 		)
 	)
 	(embedded_fonts no)
+
+	(symbol
+		(lib_id "power:GND")
+		(at 590.5500 217.1700 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "32bd4ffc-c5f5-4214-bd89-fa94702235dd")
+		(property "Reference" "#PWR141"
+			(at 590.5500 223.5200 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 590.5500 222.2500 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 590.5500 217.1700 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 590.5500 217.1700 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 590.5500 217.1700 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8e60d296-5d2b-46c5-b400-ed3e540f2289")
+		)
+		(instances
+			(project "ELV1 revision"
+				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
+					(reference "#PWR141")
+					(unit 1)
+				)
+			)
+		)
+	)
+
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 227.3300 132.0800 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "28ae6879-b343-4de3-abab-293640fe355d")
+		(property "Reference" "#FLG17"
+			(at 227.3300 130.1750 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 227.3300 127.0000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 227.3300 132.0800 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 227.3300 132.0800 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 227.3300 132.0800 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "09ca62e3-2757-43e3-82dd-1ff6888f2fa0")
+		)
+		(instances
+			(project "ELV1 revision"
+				(path "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8"
+					(reference "#FLG17")
+					(unit 1)
+				)
+			)
+		)
+	)
 )

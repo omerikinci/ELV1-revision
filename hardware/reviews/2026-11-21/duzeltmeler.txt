@@ -1,0 +1,26 @@
+21 Kasım 2026 — Kullanıcı onaylı şema düzeltmeleri
+
+- R101/R102 eski GND1 bölücüsü, GND1 sembolü, artık VS- etiketleri
+  ve bu bloğa ait kablo/junction kaldırıldı.
+- Kullanılmayan U21 AIN2 kanalının R107 filtre girişi GND'ye bağlandı.
+  R107, C77, C80 ve U21 pin bağlantıları korunuyor; firmware bu eski
+  VS- ölçümünü artık kullanmamalı. AIN3 ile ortak C80 filtre elemanı
+  korunarak diğer ADC giriş filtresinin topolojisi değiştirilmedi.
+- TPSI3052 özel sembol pin tipleri: PXFR passive; VDDP/VSSP/VSSS
+  power_in; VDDM/VDDH power_out. Pin numaraları ve konumları aynı.
+  Repo kütüphanesi ve ortak myIC kütüphanesi birlikte güncellendi.
+- Kayan VSSS referansının gerçek harici giriş bağlantısı için PWR_FLAG
+  eklendi; sistem GND'sine bağlanmadı.
+- Bağlantısız bus-entry kaldırıldı.
+- IRLML6344 örneklerindeki eski 20V/6.3A açıklamaları 30V/5A olarak düzeltildi.
+- Röle K1 sembol örneği ve gömülü sembolü birebir aynı bırakıldı.
+  myRELAY dosyası ve röle footprint'i değiştirilmedi.
+- DC kaynak girişi ve PCB değiştirilmedi.
+
+Doğrulama:
+- Şema netlist olarak dışa aktarıldı ve tüm pin-net üyelikleri karşılaştırıldı.
+  Yalnızca kaldırılan R101/R102 ve GND'ye alınan R107.2 değişti.
+- İki ADS1115'in (U9/U21) tüm kalan pin bağlantıları korundu.
+- SVG dışa aktarımı başarılı; git diff --check temiz.
+- ERC: 6 hata, 0 uyarı. Altı hata da kullanıcının şimdilik değiştirilmemesini
+  istediği K1'in gizli 21/22/24 pinlerinden kaynaklanıyor.
