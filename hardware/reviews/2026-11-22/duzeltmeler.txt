@@ -38,7 +38,9 @@ Dogrulama:
 - Degisiklik oncesi yedek: /tmp/elv1-before-authorized-fixes-20261122.kicad_sch
 
 CH340 V3 aciklamasi (kullanicinin paylastigi ornek sema):
-- Ornekte V3(pin4) ve VCC(pin16), ustteki ortak +3V3 telinde birlesiyor.
+- DUZELTME: Ornekte V3(pin4) yalnizca C24 uzerinden GND'ye bagli;
+  VCC(pin16) +3V3'e bagli. V3 ile VCC birlesmiyor. Onceki gorsel okuma
+  ve rapordaki ortak hat ifadesi yanlisti.
 - Kullanici ayri V3 baglantisini breadboard'da calistirdigini belirtti.
   Bu gozlem kaydedildi; uretici 3.3V beslemede V3-VCC birlestirmesini
   istedigi icin projedeki dogrudan 3.3V baglantisi korundu.
