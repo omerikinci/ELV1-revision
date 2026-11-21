@@ -1,0 +1,63 @@
+ELV1 Revision — 21 Kasım 2026 şema ve kütüphane incelemesi
+
+Bu commit mevcut tasarımın kontrol noktasıdır; üretime hazır onayı değildir.
+257 komponentli kayıtlı ana şema incelendi. ERC: 8 hata, 4 uyarı.
+Elektriksel bağlantılar değiştirilmedi; önce/sonra bütün net üyelikleri aynı.
+İki ADS1115'in tüm pin bağlantıları da bu karşılaştırmaya dahildir.
+
+ÖNCELİKLİ BULGULAR
+1. K1 myRELAY:HF115F/012-1ZS3 sembolü ikinci kutbu sadece gizlemiş.
+   Gizli 21/22/24 pinleri hâlâ mevcut ve input tipinde. ERC'de 6 hata.
+   Tek kontaklı sembolde bu artık pinler kaldırılmalı; kullanılan kontak/coil
+   pinleri üretici alt görünüşü ve PCB pad numaralarıyla doğrulanmalı.
+   Footprint hâlâ Relay_DPDT_Hongfa_HF115F-2Z-x4. Sadece değer adının
+   değiştirilmesi tek kontaklı 16 A modele doğru footprint sağlamaz.
+   Yanlış footprint ile PCB üretimi yapılmamalı. Bu incelemede pin veya
+   footprint geometrisi doğrulanmadan değiştirilmedi.
+2. R101 üst ucu GND1 netinde tek başına; DUT negatif ucu artık GND.
+   R101/R102/VS- yolu R107 üzerinden U21 AIN2'ye gidiyor fakat GND1
+   artık ölçülen bir noktaya bağlı değil. Eski low-side koruma ölçümü kalıntısı.
+   Kullanım amacı yeniden belirlenmeli veya yol kaldırılmalı.
+3. U5 TPSI3052 özel sembolünde VDDP ve VSSP bidirectional tanımlı;
+   bunlar power_in olmalı. ERC'de 2 pin-tip uyarısı oluşuyor. Diğer
+   giriş/çıkış pin tipleri de veri sayfasına göre yeniden düzenlenmeli.
+4. (556.26,487.68) mm'de bağlantısız bus-entry mevcut: 1 hata + 2 uyarı.
+5. GND1 güç sembolü (568.96,59.69) mm sürülmüyor: yukarıdaki eski
+   bölücüyle ilişkili kalan 1 ERC hatası. Sırf ERC'yi susturmak için
+   PWR_FLAG eklemek, boşta kalan ölçüm sorununu çözmez.
+6. Q3 ve diğer IRLML6344 örneklerinde Description alanı eski
+   IRLML6244'ten kalan 20 V / 6.3 A metnini taşıyor. Kütüphane sembolü
+   açıklaması doğru 30 V / 5 A; örnek açıklamaları eşitlenmeli.
+
+DOĞRULANAN BAĞLANTILAR
+- K1 NO14 DUT+ tarafında; COM11 ölçüm/koruma devresi tarafında.
+- Q3 1=G, 2=S/GND, 3=D/bobin alt ucu; bobin diğer ucu +12 V.
+- R20=100 ohm, R21=10k gate pulldown; RELAY CONTROL MCU'ya bağlı.
+- D4 MMSZ6V8 anot +12 V, katot D5 katoduna; D5 anot drain'de.
+- U10 drain yük tarafında, source giriş/ölçüm tarafında; önce görülen
+  drain-source kablo kısa devresi güncel netlistte yok.
+- TPSI3052 VSSS U10 source'a bağlı; VDDM/VDDH kondansatörleri
+  kayan ikincil tarafta, sistem GND'sine kısa devre değil.
+- ADS1115 bağlantıları bu çalışmada değiştirilmedi.
+
+KÜTÜPHANE VE ARŞİV DÜZENLEMELERİ
+- Yeni myRELAY kütüphanesi dahil edildi.
+- Ortak kullanıcı klasöründeki güncel myIC/myDiodes/myNMOS/myNTC ve
+  ESP32 sembolleri depoya alındı. TPSI3052 ve MCP6541 myIC'de mevcut.
+- ESP32 footprint + STEP modeli, U10 özel footprint'i ve ilgili özel
+  footprintler proje bağımlılığı olarak depoya alındı.
+- sym-lib-table/fp-lib-table proje bağıl yollarına geçirildi.
+- ESP32 model yolu proje bağıl yoluna geçirildi.
+- İçi tamamen boş iki kütüphane kaldırıldı: my ESP32, TPSI3052DWZR.
+  Global kütüphane kayıtları da kaldırıldı; /tmp/elv1-library-backup-20261121
+  altında geri dönüş kopyaları var.
+- Yerel _restore_backup_* klasörü silinmedi, gitignore'a eklendi.
+- Devre/pin/footprint düzeltmesi uygulanmadı; bulgular kullanıcı incelemesine
+  bırakıldı. ERC hataları gizlenmedi veya bastırılmadı.
+
+SINIRLAR
+Bu inceleme ERC + netlist + sembol/kütüphane bağımlılık kontrolüdür.
+PCB DRC, tüm paketlerin mekanik doğrulaması, analog döngü kararlılığı,
+MOSFET SOA, ters polarite ve enerjisiz giriş/zamanlama testleri yerine geçmez.
+Rölenin 16 A taşıması kısa devre akımını 30-40 V DC'de güvenle kesme
+onayı değildir; sigorta ve gerçek arıza akımı değerlendirmesi geçerlidir.

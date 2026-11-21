@@ -30,3 +30,6 @@ Desktop.ini
 *.bak
 fp-info-cache
 *.lck
+
+# Local recovery copies (original files retained on disk)
+_restore_backup_*/

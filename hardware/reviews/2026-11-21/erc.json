@@ -1,0 +1,233 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-21T22:14:43",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.8",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8",
+            "violations": [
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 24 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 101.6
+                            },
+                            "uuid": "abd3465c-be60-48a5-a631-2b84fb6cbf41"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 24 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 101.6
+                            },
+                            "uuid": "abd3465c-be60-48a5-a631-2b84fb6cbf41"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 21 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 105.41
+                            },
+                            "uuid": "f3168015-6950-408a-9d1e-63c4aed364cf"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 21 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 105.41
+                            },
+                            "uuid": "f3168015-6950-408a-9d1e-63c4aed364cf"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 22 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 109.22
+                            },
+                            "uuid": "30aeb8da-48de-4d89-bded-e4f316811e91"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 22 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 109.22
+                            },
+                            "uuid": "30aeb8da-48de-4d89-bded-e4f316811e91"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Wires not connected to anything",
+                    "items": [
+                        {
+                            "description": "Bus to wire entry",
+                            "pos": {
+                                "x": 556.26,
+                                "y": 487.68
+                            },
+                            "uuid": "26619bb5-527c-4bf1-963a-d1b41083d824"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "wire_dangling"
+                },
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol #PWR130 Pin 1 [Power input, Line]",
+                            "pos": {
+                                "x": 568.96,
+                                "y": 59.69
+                            },
+                            "uuid": "82a44e15-1213-4bbf-a28b-6b3e745310f5"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "Pins of type Bidirectional and Power output are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U5 Pin 3 [VDDP, Bidirectional, Line]",
+                            "pos": {
+                                "x": 184.15,
+                                "y": 128.27
+                            },
+                            "uuid": "c80ab97e-ae5e-4447-9694-2693f0da82dc"
+                        },
+                        {
+                            "description": "Symbol U3 Pin 5 [VOUT, Power output, Line]",
+                            "pos": {
+                                "x": 777.24,
+                                "y": 270.51
+                            },
+                            "uuid": "f23f20f4-fe86-4945-b2d2-df52f75e446e"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Pins of type Bidirectional and Power output are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U5 Pin 4 [VSSP, Bidirectional, Line]",
+                            "pos": {
+                                "x": 184.15,
+                                "y": 132.08
+                            },
+                            "uuid": "4156cc84-8e74-40fe-b6f6-d1b542b3a2a2"
+                        },
+                        {
+                            "description": "Symbol #FLG16 Pin 1 [Power output, Line]",
+                            "pos": {
+                                "x": 170.18,
+                                "y": 543.56
+                            },
+                            "uuid": "48616741-c339-4a91-8890-1484d26674ef"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Unconnected wire to bus entry",
+                    "items": [
+                        {
+                            "description": "Bus to wire entry",
+                            "pos": {
+                                "x": 556.26,
+                                "y": 487.68
+                            },
+                            "uuid": "26619bb5-527c-4bf1-963a-d1b41083d824"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "unconnected_wire_endpoint"
+                },
+                {
+                    "description": "Unconnected wire to bus entry",
+                    "items": [
+                        {
+                            "description": "Bus to wire entry",
+                            "pos": {
+                                "x": 556.26,
+                                "y": 487.68
+                            },
+                            "uuid": "26619bb5-527c-4bf1-963a-d1b41083d824"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "unconnected_wire_endpoint"
+                }
+            ]
+        }
+    ],
+    "source": "ELV1 revision.kicad_sch"
+}

@@ -1,4 +1,10 @@
 (sym_lib_table
   (version 7)
-  (lib (name "ELV1_Local") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/ELV1_Local.kicad_sym") (options "") (descr "Project symbols with preserved pin positions"))
+  (lib (name "ELV1_Local") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/ELV1_Local.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "myIC") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/myIC.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "myNMOS") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/myNMOS.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "myDiodes") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/myDiodes.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "myNTC") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/myNTC.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "myRELAY") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/myRELAY.kicad_sym") (options "") (descr "Project-local library"))
+  (lib (name "ESP32_C3_SuperMini") (type "KiCad") (uri "${KIPRJMOD}/../libraries/symbols/ESP32_C3_SuperMini.kicad_sym") (options "") (descr "Project-local library"))
 )
