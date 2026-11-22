@@ -44,3 +44,8 @@ CH340 V3 aciklamasi (kullanicinin paylastigi ornek sema):
 - Kullanici ayri V3 baglantisini breadboard'da calistirdigini belirtti.
   Bu gozlem kaydedildi; uretici 3.3V beslemede V3-VCC birlestirmesini
   istedigi icin projedeki dogrudan 3.3V baglantisi korundu.
+
+Sonraki kullanici karari: TH1 5R -> 10R deneme degerine yukseltildi.
+Net baglantilari ve footprint degistirilmedi. Nominal soguk ilk akim 2A;
++/-20% toleransta 2.5A olabilir, sicak yeniden acilista daha yuksek olabilir.
+Firmware rehberine acilis gerilim dusumu/test ve DC sigorta sinirlari eklendi.

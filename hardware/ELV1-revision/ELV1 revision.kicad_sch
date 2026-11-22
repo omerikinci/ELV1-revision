@@ -38149,7 +38149,7 @@
 				)
 			)
 		)
-		(property "Value" "5R"
+		(property "Value" "10R"
 			(at 84.7725 527.05 0)
 			(show_name no)
 			(do_not_autoplace no)

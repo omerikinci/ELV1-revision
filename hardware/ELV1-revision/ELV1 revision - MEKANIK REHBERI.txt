@@ -1,0 +1,143 @@
+===============================================================================
+ ELV1 REVISION - MEKANİK TASARIM VE SOĞUTMA NOTLARI
+ Oluşturulma: 22.11.2026
+ Durum: Tasarım notları; ölçüler ve ısıl uygunluk testle kesinleştirilecek.
+===============================================================================
+
+Bu dosya firmware rehberi gibi proje boyunca güncellenecek mekanik kararları,
+yerleşim ihtiyaçlarını ve doğrulanacak noktaları toplar. Eski ELV1 fotoğrafları
+referanstır; revision kartının kesin mekanik ölçüleri olarak kullanılmayacak.
+
+Referans:
+ https://omerikinci.com/projects/electronic-dummy-load.html
+ Blogdaki kasa, iç yerleşim, MOSFET/şönt bloğu, üst ve arka fan fotoğrafları
+ incelendi. Fanların gerçek hava yönü fotoğraftan kesinleştirilmedi.
+
+1. KARARLAR VE ÖNCELİKLER
+-------------------------------------------------------------------------------
+ - Yardımcı beslemede tek parça KBU tipi köprüyle devam edilmesi tercih edildi.
+   Dört ayrı diyottan köprü yapılmayacak. Kesin üretici/parça kodu ayrıca seçilir.
+ - Köprüye ayrı küçük soğutucu takılabilecek mekanik boşluk bırakılacak.
+ - İsteğe bağlı ek 12 V fan için konnektör footprint'i bırakılması planlanıyor;
+   henüz şemaya/PCB'ye eklenmiş kabul edilmeyecek.
+ - Ek fan zorunluluğu, mevcut fanlar ve ayrı köprü soğutucusu ile yapılan
+   kapalı kasa testinden sonra belirlenecek.
+ - Yük MOSFET'leri revision kartına doğrudan lehimlenecek şekilde planlanıyor.
+   PCB, MOSFET bacakları ve soğutucu tek mekanik düzen olarak ele alınacak.
+ - K1 rölesinin kesin footprint/pin ve kontak uygunluğu kullanıcı tarafından
+   incelenecek; mekanik yerleşim bu doğrulamadan önce kesinleştirilmeyecek.
+ - Açma/kapama anahtarı harici kablajda trafonun 230 V primerini kesecek.
+   Trafo/DC kaynak seçiminin kablajı ayrıca hazırlanacak.
+ - F1 şimdilik mevcut 2 A slow-blow olarak kalacak (kullanıcı kararı).
+   Kesin AC/DC uygunluk değerlendirmesi açık iş olarak korunuyor.
+
+2. KÖPRÜ DİYOT: ÖLÇÜLEN DURUM VE SOĞUTUCU
+-------------------------------------------------------------------------------
+ Kullanıcının mevcut KBU ile masaüstü ölçümü:
+ - Köprünün AC uçlarına 20 VDC uygulandı, DC çıkıştan 1,5 A çekildi.
+ - Çıkış yaklaşık 18,38 V; köprü gövdesi 20 dakika sonunda 65–67 °C civarı.
+ - Gerilimler doğrudan köprü uçlarında ise kayıp yaklaşık:
+       (20 - 18,38) x 1,5 = 2,43 W.
+ - Ortam sıcaklığı ve ölçüm yöntemi kaydedilmedi; bu sonuç kesin ısıl onay değil.
+   Gövde sıcaklığı, yarı iletken birleşim sıcaklığı değildir.
+ - Bu DC testi, 15 VAC + 6800 uF kondansatörle oluşan darbeli akımın testi değil.
+
+ Yerleşim:
+ - Ayrı soğutucu büyük MOSFET bloğuna temas etmeyecek; sıcak bloktan köprüye
+   ısı taşınmaması hedeflenecek. Mümkünse serin hava girişine yakın olacak.
+ - Soğutucu kanatlarına hava ulaşmalı; kablo demeti/kapak hava yolunu örtmemeli.
+ - Büyük elektrolitik kondansatör, NTC ve plastik kasa sıcak yüzeylere
+   dayandırılmayacak; aralarındaki boşluk gerçek sıcaklıklarla doğrulanacak.
+ - Seçilen KBU'nun arka yüz izolasyonu, montaj vidası/torku ve termal arayüz
+   gereksinimi kendi datasheet'inden doğrulanacak. Kasa adına bakılarak
+   elektriksel izolasyon varsayılmayacak.
+ - Köprü soğutucusunun vida ve tornavida erişimi kart monteyken mümkün olmalı.
+
+3. KASA HAVA AKIŞI VE FANLAR
+-------------------------------------------------------------------------------
+ - İki mevcut fanın her biri 12 VDC / 0,21 A: toplam etiket gücü 5,04 W.
+ - Montaj çiziminde her fanın üfleme yönü okla gösterilecek; pervane görüntüsü
+   veya etiket yüzünden varsayım yapılmayacak.
+ - Serin hava önce hassas elektronik/yardımcı güç bölgesine, ardından sıcak
+   MOSFET bloğuna yönlendirilebiliyorsa bu düzen test edilecek.
+ - Üst ve arka fan arasında kısa bir hava yolu oluşup PCB'nin geri kalanının
+   havasız kalmadığı kontrol edilecek. Gerekirse basit bir hava yönlendirici
+   düşünülecek; toplam debiyi gereksiz daraltmayacak.
+ - İki fan da dışarı üflüyorsa yeterli hava giriş açıklığı bulunmalı.
+ - Masa, duvar ve kablolar giriş/çıkışları kapatmamalı; ayak yüksekliği ve arka
+   kullanım boşluğu buna göre seçilecek.
+ - Fan ızgarası, kablolar ve filtre varsa onun etkisi son kasa testine dahil.
+ - Ek fan konnektöründe gerilim, + ve - işaretleri açıkça yazılacak. Fan akımı,
+   ilk hareket akımı, besleme payı ve gerekiyorsa sürücü ayrıca kontrol edilir.
+ - Ek fanın yeri ve montaj delikleri kapak tasarımında düşünülmeli; yalnızca
+   konnektör footprint'i bırakmak fiziksel fan alanını garanti etmez.
+
+4. MOSFET / ŞÖNT BLOĞU VE PCB MONTAJI
+-------------------------------------------------------------------------------
+ - Dört yük MOSFET'inin soğutucuya bastığı yüzeyler ve montaj düzeni gerçek
+   parçalarla kontrol edilecek. Tabların elektriksel potansiyeli netlistten
+   doğrulanmadan ortak metal bloğa yalıtımsız bağlanmayacak.
+ - İzolasyon pedi, burç ve vida gerekiyorsa bunlar 3D/mekanik ölçülere dahil.
+   Montajdan sonra gereken elektriksel izolasyon ayrıca ölçülecek.
+ - Soğutucu ağırlığını PCB ve MOSFET bacakları taşımayacak; kasa üzerinden
+   desteklenecek. Vidalar sıkılırken bacaklara/lehime gerilme uygulanmayacak.
+ - Önce mekanik hizalama yapılacak; sonrasında lehim ve sıkma sırası belirlenir.
+   Isınma-soğuma çevrimlerinden sonra bağlantılar ve izolasyon tekrar incelenir.
+ - Gate ve Kelvin ölçüm kabloları/izleri yüksek akım bağlantılarından mümkün
+   olduğunca ayrılacak. Kelvin bağlantı noktaları mekanik montajla bozulmamalı.
+ - Şöntler de ısı kaynağıdır. ADC, referans/bölücü dirençleri ve kondansatörler
+   için sıcaklık etkisi yalnızca MOSFET gövdelerine bakılarak değerlendirilmez.
+
+5. KASA, KONNEKTÖRLER VE SERVİS
+-------------------------------------------------------------------------------
+ - PCB çevresi, vida başları, yükselticiler, soğutucu ve kablo bükülme alanları
+   için keepout ayrılacak. Kasa toleransı gerçek baskıyla doğrulanacak.
+ - 3D modeli eksik/temsili parçalar için kumpasla ölçülen gerçek gövde ve
+   bacak yüksekliği kullanılacak. Kapak büyük kondansatöre basmamalı.
+ - Banana/XT60, DC giriş, USB, ekran ve anahtar için panel kalınlığı, somun,
+   kablo pabucu ve sökme/takma erişimi kontrol edilecek.
+ - Yük kablosunun çekme kuvveti PCB lehimlerine aktarılmayacak; kablolar
+   sabitlenecek ve fan pervanesi/soğutucu kenarından uzak tutulacak.
+ - DUT girişi ile cihazın besleme girişi etiket ve yerleşimle ayırt edilecek.
+ - Sigorta, röle ve fan bakım için erişilebilir kalmalı; kapağı açarken kısa
+   kabloların PCB veya paneli çekmemesi sağlanmalı.
+ - ESP32-C3 modülünün anten keepout'u kendi modül dokümanına göre korunacak;
+   büyük metal blok, trafo ve kablo demeti yanında kablosuz menzil test edilecek.
+ - Trafo primeri/şebeke kablajı düşük gerilim kartı ve DUT kablolarından ayrı
+   tutulacak; bağlantılar yalıtılacak ve mekanik sabitleme yapılacak. Gerekli
+   mesafeler seçilen yapı ve ilgili şartlara göre ayrıca doğrulanacak.
+ - 3D baskı malzemesinin sıcaklıkta yumuşaması hesaba katılacak; malzeme ve
+   soğutucu çevresindeki gerçek kasa sıcaklığı doğrulanmadan montaj onaylanmaz.
+
+6. KASA KAPANMADAN ÖNCE VE ISIL TEST PLANI
+-------------------------------------------------------------------------------
+ - Mekanik prova: kapak kapanması, vida erişimi, fan/kablo çakışması, anten
+   alanı ve sıcak parçalara temas kontrolü.
+ - Yardımcı güç testi hem 20 VDC girişte hem 15 VAC trafoyla ayrı yapılacak.
+   Soğuk açılış ve sıcak yeniden açılışta NTC/regülatör davranışı kaydedilecek.
+ - USB şarjı 1 A hedefte, iki fan, ekran ve ESP etkin durumlar birlikte denenir;
+   1 A ayarının toleransı olduğu unutulmaz. Ek fan takılırsa testi tekrarla.
+ - Ardından DUT yükü kademeli artırılıp 150–160 W hedef çalışma koşulu denenir.
+   Bu güç yük bloğunda harcanır; yardımcı köprüden DUT akımı geçmez.
+ - Ortam, köprü gövdesi/soğutucusu, MOSFET bloğu, büyük elektrolitik çevresi,
+   NTC ve yakın plastik yüzeylerin sıcaklıkları zamanla birlikte kaydedilecek.
+ - Sabit güç ve ortamda sıcaklıklar dengeye gelene kadar izle; yalnızca kısa
+   süreli ölçüm yeterli sayılmaz. Aynı koşullarda soğutucusuz/soğutuculu
+   karşılaştırma yap. Ölçüm yöntemi ve sensör konumları değişmesin.
+ - Kabul sınırları kesin parçaların datasheet'leri ve kasa malzemesine göre
+   belirlenir; bu dosyada tahmini bir sıcaklık sınırı ürün onayı sayılmaz.
+ - Kontrollü düşük güçten başlayarak fan durması/tıkanma ve sıcaklık sensörü
+   hatasında yükün güvenli kapanması doğrulanır; hasar oluşana kadar beklenmez.
+ - Son termal testten sonra konnektörler, lehimler, plastik montaj noktaları
+   ve MOSFET izolasyonu tekrar incelenecek.
+
+7. AÇIK İŞLER
+-------------------------------------------------------------------------------
+ [ ] Kesin KBU parça kodu ve ayrı soğutucunun ölçüleri.
+ [ ] Revision PCB ile kasa/soğutucu montaj deliklerinin ortak ölçü çizimi.
+ [ ] Fan yönleri ve hava giriş açıklıklarının çizimde işaretlenmesi.
+ [ ] İsteğe bağlı fan konnektörünün şema/PCB'ye eklenmesi ve fiziksel fan yeri.
+ [ ] K1 kesin parça/footprint/pin uygunluğunun tamamlanması.
+ [ ] NTC kesin parça, gövde ölçüsü ve sıcak çalışma boşluğu.
+ [ ] Panel güç seçici ve primer açma/kapama kablajının ayrı çizimi.
+ [ ] Kapalı kasa AC/DC yardımcı besleme ve tam yük sıcaklık kayıtları.

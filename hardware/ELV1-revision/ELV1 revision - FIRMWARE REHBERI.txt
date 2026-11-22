@@ -15,6 +15,19 @@ Kaynaklar:
 Birimler: gerilim mV, akım mA, sıcaklık 0.01 °C (int). Float kullanılabilir
 ama ELV1 tamsayı kullanıyordu.
 
+22.11.2026 - TH1 DENEME DEGERI 10 OHM
+ - Kullanici istegiyle TH1 5R -> 10R yapildi. NTC parca kodu ve nihai
+   uygunluk henuz secilmedi; footprint degismedi.
+ - 20V ve 6800uF, soguk/sabit 10 ohm ideal model: ilk akim 2A,
+   zaman sabiti 68ms, integral(I^2 dt)=0.136 A^2s; enerji 1.36J olarak kalir.
+   +/-20% toleransli parca 8 ohm olursa ilk akim 2.5A olabilir.
+ - Sicak NTC'de ilk akimin 2A ile sinirlandigi varsayilmayacak.
+ - Buyuyen soguk direnc acilista gerilim dusumunu artirir; regulatorlerin
+   baslamasi ve USB/fan/ESP yuklerinin kademeli etkinlesmesi test edilecek.
+   NTC'nin akim ve darbe enerjisi dayanimi ayrica dogrulanacak.
+ - Bu degisiklik MTS1200A icin eksik DC kesme kapasitesi bilgisini cozmez.
+ - Asagidaki 5 ohm hesaplari onceki tasarimin karsilastirma hesabidir.
+
 22.11.2026 - GUNCEL TASARIM VE FIRMWARE KARARLARI
  Kaynak: ayni klasordeki guncel sematigin 22.11.2026 netlist'i ve kullanici
  kararlari. Bu bolum eski low-side/optokuplor notlarinin ONUNE GECER.
@@ -93,7 +106,7 @@ ama ELV1 tamsayı kullanıyordu.
    seciciyle ayrilmali. Harici kablaj cizimi ve ortak GND/USB yollarinin
    kontrolu bekliyor; bu sema tek basina kaynak secimini gostermiyor.
  - LM7815 kaldirildi; +15V besleme varsayimi kullanilmayacak.
- - Semada F1=2A Slow Blow, TH1=5R; kesin sigorta/NTC modeli ve NTC
+ - Semada F1=2A Slow Blow, TH1=10R (deneme); kesin sigorta/NTC modeli ve NTC
    uygunlugu henuz dogrulanmadi. F1, DUT yolundaki F2=15A'den farklidir.
  - C14=6800uF ve 20V icin ideal soguk 5 ohm modelinde ilk tepe 4A,
    zaman sabiti 34ms, kondansator enerjisi 1.36J, darbe integrali
