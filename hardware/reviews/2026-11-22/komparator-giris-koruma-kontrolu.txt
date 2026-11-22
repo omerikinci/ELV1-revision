@@ -1,0 +1,45 @@
+MCP6541 GIRIS KORUMASI - 2026-11-22
+
+EKLENEN PARCALAR
+D17: Nexperia BAS70-04,215, SOT-23-3, myDiodes:BAS70-04.
+Pin 1 (A1) -> GND; pin 2 (K2) -> +3.3V;
+pin 3 (K1/A2, ortak nokta) -> U14 pin 3 VIN+ direnc toplama dugumu.
+R125: 4.7K 1%, 0805, +3.3V -> GND.
+R48 100K ve mevcut esik/histerezis direnc kombinasyonlari korunmustur.
+VIN- referans bolucusu degistirilmedi.
+
+D17 sembolu mevcut myDiodes kutuphanesine eklendi; proje kopyasi ve
+/Users/salih/Documents/Electronic/Library/symbols/myDiodes.kicad_sym
+kopyasi senkronlandi. Pin numaralari Nexperia datasheet ile eslestirildi.
+https://assets.nexperia.com/documents/data-sheet/BAS70-04.pdf
+https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP6541-Output-Sub-Microamp-Comparators-DS20001696.pdf
+
+TASARIM HESABI / KAPSAM
+Cihaz acik, 3.3V beslemesi mevcutken komparator girisinde akim sinirli
+ray kelepcesi. R125 nominal 0.702mA tuketir, kaybi 2.317mW.
+Ornek +/-60V DC hata hesabinda R48 akimi 0.6mA mertebesinin altinda.
+25C diyot verisindeki VF <=0.41V @1mA degeri ile hesap:
++60V: VIN+ 3.71V kabulunde diyot akimi ~0.184mA, R48 ~31.7mW.
+-60V: VIN+ -0.41V kabulunde diyot akimi ~0.187mA, R48 ~35.5mW.
+Bu gerilimler komparatorun mutlak maksimum giris ray tasmasi +/-1V
+icindedir; normal calisma araligi +/-0.3V ile karistirilmamalidir.
+Diyot iletirken normal esik dogrulugu/performansi garanti edilmis sayilmaz.
+Normal algilama esigi yakininda dusuk ters kacak icin BAS70-04 secildi.
+100nA net kacak, DUT tarafinda yaklasik 10mV esik kaymasina karsilik gelir;
+100nA datasheet degeri 25C icindir, tum sicakliklarin garantisi degildir.
+
+Bu hesap yalniz komparator yolunu kapsar; tum cihaza +/-60V dayanimi
+atfetmez. ADC/VLINE DIV, role, guc hatti ve enerji darbeleri ayri konudur.
+K1 acikken normalde DUT pozitif ucu bu bloktan ayrilir. R125 tek basina,
+besleme tamamen kapaliyken tum geri besleme yollarini engellemez.
+Fiziksel test henuz yapilmadi; esik, ray gerilimi ve sicaklik etkisi olculecek.
+
+DOGRULAMA
+- Eklenen D17/R125 ve yeni guc sembolleri disarida tutularak tum mevcut
+  pin-net uyelikleri onceki netlist ile birebir karsilastirildi: ayni.
+- D17: 1 GND, 2 +3.3V, 3 U14/VIN+ dogrulandi.
+- R125: 1 +3.3V, 2 GND dogrulandi.
+- ERC once/sonra ayni 6 K1 bildirimi; yeni hata yok.
+- SVG ciktisinda baglanti ve alan yazilari gorsel olarak kontrol edildi.
+- Kullanicinin yerel sema ve PCB duzenlemeleri korundu. Yeni parcalar
+  PCB'ye yerlestirilmedi; mevcut PCB cizimi yalniz yedek kaydina dahil edildi.
