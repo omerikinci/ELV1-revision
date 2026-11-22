@@ -1,0 +1,43 @@
+TPSI3052 C88 / C89 DC BIAS KONTROLU - 2026-11-22
+
+SECILEN PARCALAR
+C88: Samsung CL21B105KAFNNNE, 1uF, 25V, X7R, +/-10%, 0805.
+C89: Samsung CL31B475KAHNNNE, 4.7uF, 25V, X7R, +/-10%, 1206.
+C89 sematik footprint'i Capacitor_SMD:C_1206_3216Metric yapildi.
+C88 0805 olarak korundu. Ikisinin MPN, uretici ve datasheet alanlari dolduruldu.
+PCB yerlesimi degistirilmedi; footprint atamasi sematiktedir.
+
+KAYNAKLAR
+Samsung urun sayfalari:
+https://product.samsungsem.com/mlcc/CL21B105KAFNNN.do
+https://product.samsungsem.com/mlcc/CL31B475KAHNNN.do
+Samsung tarafindan hazirlanan karakteristik sayfalarinin dagitici kopyalari:
+https://www.ic-components.com/files/20/CL21B105KAFNNNE.pdf
+https://media.soselectronic.com/KatList/Samsung/CL31B475KAHNNNE-ds.pdf
+TI TPSI3052, bolum 9.2.2.3:
+https://www.ti.com/lit/ds/symlink/tpsi3052.pdf
+
+GRAFIK OKUMASI VE HESAP
+C88: VDDH-VDDM yaklasik 10V; grafikte yaklasik -12% -> 0.88uF.
+C89: VDDM-VSSS yaklasik 5V; grafikte yaklasik -4% -> 4.5uF.
+Bunlar 1kHz / 1Vrms karakteristik grafiginden yaklasik tipik okumalardir.
+Tipik oran: 4.5 / 0.88 = 5.11.
+Baslangic toleranslari oran icin ters yonlerde:
+(4.5 * 0.90) / (0.88 * 1.10) = 4.18 > TI'nin n >= 3 sarti.
+Her iki kapasite -10% alinirsa seri esdeger yaklasik 0.662uF.
+Ayni X7R dielektrigi ve ayni +/-10% tolerans kullaniliyor.
+25V gerilim sinifi, kondansatorlerin 10V ve 5V fark gerilimlerine pay birakiyor.
+
+SONUC VE SINIRLAR
+Tipik DC bias verisi ve baslangic toleransi acisindan mevcut yavas
+acma/kapama test devresi icin uygun secim. Bu hesap tum sicaklik,
+yaslanma, uretim dagilimi ve AC genligi icin garanti edilmis minimum
+kapasite analizi degildir. Uretici grafiklerinin kendisi tipik referans
+verisi olarak belirtilmis. Fiziksel testte VDDH-VSSS ve VDDM-VSSS
+baslangici, gate acilisindaki dusum ve kapatma davranisi olculecek.
+
+DOGRULAMA
+Degisiklik oncesi/sonrasi netlistte tum pin-net uyelikleri ayni.
+ERC sonucu ayni: onceden kalan 6 K1 bildirimi; yeni hata yok.
+SVG ciktiyla C88/C89 etiketleri ve baglantilarinin gorunumu kontrol edildi.
+Kullanicinin mevcut yerel sema duzenlemeleri korundu.
