@@ -138,6 +138,9 @@ Referans:
  [ ] Fan yönleri ve hava giriş açıklıklarının çizimde işaretlenmesi.
  [ ] İsteğe bağlı fan konnektörünün şema/PCB'ye eklenmesi ve fiziksel fan yeri.
  [ ] K1 kesin parça/footprint/pin uygunluğunun tamamlanması.
- [ ] NTC kesin parça, gövde ölçüsü ve sıcak çalışma boşluğu.
+ [x] NTC parçası: THINKING SCK13104MSY; max gövde 14,5 x 6 mm, pin aralığı
+     7,5 mm. Footprint courtyard 15,5 x 7 mm; bu montaj boşluğudur, ısıl
+     güvenlik mesafesi değildir. Yakın plastik/kondansatör sıcaklığı test edilecek.
+ [ ] NTC sıcak çalışma boşluğu ve AC/DC testlerinin doğrulanması.
  [ ] Panel güç seçici ve primer açma/kapama kablajının ayrı çizimi.
  [ ] Kapalı kasa AC/DC yardımcı besleme ve tam yük sıcaklık kayıtları.

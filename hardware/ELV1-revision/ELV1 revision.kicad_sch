@@ -12537,7 +12537,311 @@
 			)
 			(embedded_fonts no)
 		)
-)
+
+		(symbol "myNTC:SCK13104MSY"
+		(pin_numbers
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "TH"
+			(at 0 3.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SCK13104MSY 10R"
+			(at 0 2.032 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "myNTC:SCK13104MSY"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.thinking.com.tw/upload/productdesigntools2/files/en-NTC%20Thermistor-SCK%20Series.pdf"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "10 ohm +/-20% inrush NTC, 4A at 25C; SCK13 max D14.5mm T6mm, P7.5mm"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "R"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=+ 2=-"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Params" "r=\"10\""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "NTC inrush 10R 4A SCK13104MSY THINKING"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "SCK13104MSY"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "SCK13104MSY_0_1"
+			(polyline
+				(pts
+					(xy -3.683 0) (xy -1.397 0) (xy -2.159 0.254) (xy -2.159 -0.254) (xy -1.397 0) (xy -1.651 0)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type outline)
+				)
+			)
+			(rectangle
+				(start -2.54 -1.524)
+				(end 2.54 -3.556)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -1.397 -0.762) (xy -3.683 -0.762) (xy -2.921 -0.508) (xy -2.921 -1.016) (xy -3.683 -0.762)
+					(xy -3.429 -0.762)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type outline)
+				)
+			)
+			(arc
+				(start 1.905 0.254)
+				(mid 1.9794 0.4336)
+				(end 2.159 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.159 0) (xy 2.794 0)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 2.159 0)
+				(mid 1.9794 0.0744)
+				(end 1.905 0.254)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 2.413 0.635)
+				(mid 2.3165 0.5106)
+				(end 2.159 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 -0.762) (xy 1.524 -0.762) (xy -1.524 -4.318) (xy -2.54 -4.318)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 2.54 0.254)
+				(mid 2.6144 0.4336)
+				(end 2.794 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 2.794 0.508)
+				(mid 2.9736 0.4336)
+				(end 3.048 0.254)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 3.048 0.254)
+				(mid 2.9736 0.0744)
+				(end 2.794 0)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 2.794 -0.381)
+				(mid 2.5608 -0.106)
+				(end 2.54 0.254)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "SCK13104MSY_1_1"
+			(pin passive line
+				(at 3.81 -2.54 180)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -3.81 -2.54 0)
+				(length 1.27)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	)
 	(rectangle
 		(start 407.67 494.03)
 		(end 444.5 524.51)
@@ -38128,7 +38432,7 @@
 		)
 	)
 	(symbol
-		(lib_id "myNTC:NTC")
+		(lib_id "myNTC:SCK13104MSY")
 		(at 85.09 529.59 0)
 		(unit 1)
 		(body_style 1)
@@ -38149,7 +38453,7 @@
 				)
 			)
 		)
-		(property "Value" "10R"
+		(property "Value" "SCK13104MSY 10R"
 			(at 84.7725 527.05 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -38159,7 +38463,7 @@
 				)
 			)
 		)
-		(property "Footprint" "myNTC:NTC"
+		(property "Footprint" "myNTC:SCK13104MSY"
 			(at 85.09 529.59 0)
 			(hide yes)
 			(show_name no)
@@ -38170,7 +38474,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://www.thinking.com.tw/upload/productdesigntools2/files/en-NTC%20Thermistor-SCK%20Series.pdf"
 			(at 85.09 529.59 0)
 			(hide yes)
 			(show_name no)

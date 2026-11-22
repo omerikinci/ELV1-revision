@@ -15,6 +15,16 @@ Kaynaklar:
 Birimler: gerilim mV, akım mA, sıcaklık 0.01 °C (int). Float kullanılabilir
 ama ELV1 tamsayı kullanıyordu.
 
+22.11.2026 - TH1 PARÇA SEÇİMİ VE KÜTÜPHANE DOĞRULAMASI
+ - TH1 = THINKING SCK13104MSY, 10 ohm +/-20%, 4 A (25 °C ortamda).
+   Sembol: myNTC:SCK13104MSY; footprint: myNTC:SCK13104MSY.
+ - Parça seçildi; AC/DC açılış ve sıcak yeniden açılış testleri henüz yapılmadı.
+   Önceki "parça kodu seçilmedi" notları bu seçimden önceki durumu anlatır.
+ - Sıcak NTC ilk akımı 2 A ile sınırlamaz. Trafolu kullanımda NTC RMS akımı,
+   kondansatör nedeniyle DC çıkış akımından yüksek olabilir.
+ - Kart GND/ADC/ESP bağlantıları son doğrulanmış GitHub sürümüne geri alındı;
+   aşağıdaki güncel pin planı geçerlidir. F1 mevcut 2 A slow-blow olarak kaldı.
+
 22.11.2026 - TH1 DENEME DEGERI 10 OHM
  - Kullanici istegiyle TH1 5R -> 10R yapildi. NTC parca kodu ve nihai
    uygunluk henuz secilmedi; footprint degismedi.

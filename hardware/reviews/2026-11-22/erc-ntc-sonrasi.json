@@ -1,0 +1,127 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-11-22T18:07:45",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.0.8",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/a1d40612-f2bd-4e83-b9b3-fa72862cc7a8",
+            "violations": [
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 24 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 101.6
+                            },
+                            "uuid": "abd3465c-be60-48a5-a631-2b84fb6cbf41"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 24 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 101.6
+                            },
+                            "uuid": "abd3465c-be60-48a5-a631-2b84fb6cbf41"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 21 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 105.41
+                            },
+                            "uuid": "f3168015-6950-408a-9d1e-63c4aed364cf"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 21 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 105.41
+                            },
+                            "uuid": "f3168015-6950-408a-9d1e-63c4aed364cf"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Pin not connected",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 22 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 109.22
+                            },
+                            "uuid": "30aeb8da-48de-4d89-bded-e4f316811e91"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_connected"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol K1 Hidden pin 22 [Input, Line]",
+                            "pos": {
+                                "x": 370.84,
+                                "y": 109.22
+                            },
+                            "uuid": "30aeb8da-48de-4d89-bded-e4f316811e91"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                }
+            ]
+        }
+    ],
+    "source": "ELV1 revision.kicad_sch"
+}

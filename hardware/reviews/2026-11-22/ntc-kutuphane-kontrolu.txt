@@ -1,0 +1,33 @@
+22.11.2026 - SCK13104MSY kütüphane kontrolü
+
+Üretici referansı:
+https://www.thinking.com.tw/upload/productdesigntools2/files/en-NTC%20Thermistor-SCK%20Series.pdf
+SCK13: pin aralığı 7,5 +/-0,5 mm, bacak çapı 0,8 +/-0,02 mm;
+max gövde çapı 14,5 mm, kalınlık 6 mm. 10 ohm +/-20%, 4 A / 25 °C.
+
+Kullanıcı footprint'inin 7,5 mm aralığı ve 3 mm ped / 1,5 mm delikleri korundu.
+Merkez simetrik hale getirildi; yanlış SMD niteliği through_hole yapıldı.
+F.Fab max gövde sınırı eklendi; courtyard gövdeden 0,5 mm dışarı alındı.
+Referans yazısı gövde dışına taşındı. Hazır 3D model bulunmuyor.
+Parçaya özel myNTC:SCK13104MSY sembolü eklendi. Eski genel NTC korundu.
+Proje ve kullanıcının global myNTC sembol/footprint kütüphaneleri eşitlendi.
+TH1 parçaya özel sembol ve footprint'e bağlandı; elektriksel pin konumları aynı.
+Kullanıcının sildiği, projede referansı olmayan Untitled footprint'ler silinmiş
+olarak bırakıldı; boş myRES kütüphane tablo kaydı kaldırıldı. Başka projelerde
+kullanılabilecek global Untitled footprint silinmedi.
+
+Kullanıcı onayıyla, yanlışlıkla geri dönen önceki şema düzeltmeleri geri yüklendi:
+ESP UART ayrımı, 20V SENSE ADC pini, POLARITY_OK MCU bağlantısı,
+CH340G_3V3 sembolü/doğrudan besleme bağlantısı, USB seri dirençleri,
+komparatör direnç toleransları ve LED ızgara konumları.
+NTC seçimi korundu. K1 rölesi ve F1 sigortası değiştirilmedi. PCB değiştirilmedi.
+
+Doğrulama:
+- KiCad CLI XML netlist dışa aktarımı başarılı.
+- Son push edilen şemayla bütün bileşen pin/net üyelikleri aynı.
+  Özellikle ADS1115 U9 ve U21 bağlantılarının tamamı korundu.
+- Proje kütüphane yolları mevcut dosyalara çözülüyor.
+- Yeni footprint KiCad CLI ile SVG olarak başarıyla dışa aktarıldı.
+- ERC: 32 bulgudan 6 hataya / 0 uyarıya dönüldü. Kalan altı hata daha önce
+  kullanıcıya bırakılan K1 gizli 21/22/24 pinlerine ait; çözülmüş sayılmadı.
+- NTC'nin fiziksel numune uyumu ve AC/DC ısıl/açılış testleri bekliyor.
