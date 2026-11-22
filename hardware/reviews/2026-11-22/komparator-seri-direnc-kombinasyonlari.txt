@@ -1,0 +1,34 @@
+KOMPARATOR TEST DEVRESI - SERI DIRENC KOMBINASYONLARI
+2026-11-22
+
+U14: MCP6541T-I/OT korunmustur. TLV1811'e gecis yapilmadi.
+Butun direncler Resistor_SMD:R_0805_2012Metric footprint'indedir.
+
+R48: 100K 0.1% - TC0525B1003T5F
+R87, R90: 10K 0.1% - TC0525B1002T5G
+R88 (10K 0.1%) + R120 (1K 0.1%) seri = 11K +/-0.1%.
+R89 (1.5M 1%) + R121 (150K 0.1%) seri = 1.65M +/-0.91818%.
+R91 (10K 0.1%) + R122 + R123 + R124 (her biri 100R 0.1%) seri = 10.3K +/-0.1%.
+
+1K: TC0525B1001T5G
+100R: TC0525B1000T5G
+1.5M: 0805S8F1504T5E
+150K: TC0550B1503T5G
+Parcalar kullanicinin 2026-11-22 sepet ekran goruntulerindeki secimlerdir.
+
+R89 zinciri: toplam mutlak baslangic toleransi +/-15150 ohm;
+esdeger aralik 1634850 ... 1665150 ohm.
+R91 zinciri: toplam mutlak baslangic toleransi +/-10.3 ohm;
+esdeger aralik 10289.7 ... 10310.3 ohm.
+Sicaklik katsayilari ve komparator ofseti bu baslangic toleranslarina dahil degildir.
+
+DOGRULAMA:
+- Eklenen R120-R124 seri elemanlari netlistte birlestirilerek onceki netlistle karsilastirildi.
+- Tum mevcut pinlerin net uyelikleri korunuyor; ADS1115 baglantilari dahil.
+- ERC: once/sonra ayni 6 K1 bildirimi. K1 kullanici istegiyle degistirilmedi.
+- SVG ciktisi uzerinden komparator blogunun gorunumu kontrol edildi.
+
+DURUM:
+Fiziksel test henuz yapilmadi. Kullanici test basladiginda haber verecek.
+Sorun cikarsa eski optokuplorlu algilama cozumune donus yeniden degerlendirilecek;
+bu kayit test edilmis donanim onayi degildir.
