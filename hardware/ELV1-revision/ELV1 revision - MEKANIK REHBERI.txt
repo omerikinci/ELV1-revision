@@ -26,8 +26,11 @@ Referans:
    PCB, MOSFET bacakları ve soğutucu tek mekanik düzen olarak ele alınacak.
  - K1 rölesinin kesin footprint/pin ve kontak uygunluğu kullanıcı tarafından
    incelenecek; mekanik yerleşim bu doğrulamadan önce kesinleştirilmeyecek.
- - Açma/kapama anahtarı harici kablajda trafonun 230 V primerini kesecek.
-   Trafo/DC kaynak seçiminin kablajı ayrıca hazırlanacak.
+ - Güncel kablaj: arka panelde iki kutuplu kaynak seçici, ardından ön panelde
+   düşük gerilim açma/kapama anahtarı bulunacak (ayrıntı bölüm 7). Önceki
+   "ön anahtar trafo primerini keser" kararı bu düzenle geçersizdir.
+ - PCB üzerinde yardımcı besleme için yalnızca J1 kalacak; J8 kaldırıldı.
+   DUT, USB ve fan konnektörleri bu tek giriş ifadesine dahil değildir.
  - F1 şimdilik mevcut 2 A slow-blow olarak kalacak (kullanıcı kararı).
    Kesin AC/DC uygunluk değerlendirmesi açık iş olarak korunuyor.
 
@@ -131,7 +134,66 @@ Referans:
  - Son termal testten sonra konnektörler, lehimler, plastik montaj noktaları
    ve MOSFET izolasyonu tekrar incelenecek.
 
-7. AÇIK İŞLER
+7. KAYNAK SEÇİMİ, KABLAJ VE KULLANIM SIRASI (22.11.2026)
+-------------------------------------------------------------------------------
+ Kaynaklar:
+ - Trafo sekonderi 15 VAC / 30 VA. Köprü ve kondansatörden sonra yaklaşık
+   20 VDC oluşması, trafo çıkışının 20 VAC olduğu anlamına gelmez.
+ - Harici kaynak 20 VDC adaptör/batarya.
+
+ Kablaj blok düzeni (her ok iki iletkeni temsil eder):
+
+   230 VAC -> trafo -> 15 VAC sekonder ----> giriş I  +----------------+
+                                                    | arka seçici   |
+   20 VDC adaptör/batarya ----------------> giriş II |    I-0-II     |
+                                                    +-------+--------+
+                                                            |
+                                                  iki ortak çıkış
+                                                        v
+                                           ön panel açma/kapama
+                                                        |
+                                                        v
+                                           PCB tek güç girişi J1
+                                                        |
+                                                        v
+                                           F1 -> TH1 -> köprü D1
+                                                        |
+                                                        v
+                                            C14 ve regülatörler
+
+ - Arka seçici iki kutuplu ON-OFF-ON olacak: I = trafo, 0 = kaynaklar ayrık,
+   II = harici DC. İki kaynağın her iki iletkeni de seçilecek; kaynakların
+   kendi aralarında paralel bağlanmaması sağlanacak.
+ - İki ortak kontak, ön anahtar üzerinden J1'e gidecek. Terminal numaraları
+   görünüşten varsayılmadan gerçek parçanın kontak haritasıyla belirlenecek.
+ - Ön anahtar için iki kutuplu düzen tercih ediliyor; kesin parça/kontak ve
+   kablaj çizimi henüz tamamlanmadı. Kapalı konum PCB beslemesini kesmeli.
+ - Hem 15 VAC hem 20 VDC, aynı J1 üzerinden köprünün AC girişlerine ulaşır;
+   DC kaynak doğrultucu çıkışına doğrudan bağlanmayacak. Ortak TH1 her iki
+   besleme türünde kondansatörün açılış akımı yolunda kalacak.
+ - KLS7-007-23N-A-6-RE/BK seçici adayı incelendi. Kesin varyantın kontak
+   düzeni, break-before-make geçişi ve DC anahtarlama uygunluğu teyit bekliyor.
+ - Bu bağlantıda ön anahtar trafo primerini kesmez. Şebeke bağlıyken ön panel
+   kapalı veya kaynak seçimi DC olsa da trafo primeri enerjili kalabilir.
+   Ön panelde kapalı olması şebekeden tam ayırma olarak tanımlanmayacak.
+
+ Kullanım talimatı:
+ 1. Ön panel açma/kapama anahtarının KAPALI olduğundan emin ol.
+ 2. Arka paneldeki kaynak seçiciden TRAFO veya DC kaynağını seç.
+ 3. Ön panel anahtarını AÇIK konuma getirerek cihazı aç.
+ 4. Kaynak değiştirmek için önce ön panelden kapat; sonra arka seçiciyi
+    değiştir ve ön panelden yeniden aç. Cihaz çalışırken kaynak değiştirme.
+
+ Gerekçe ve sınır:
+ - Ön anahtar açık devreyken kaynak seçmek, seçicinin PCB yükünü ve C14'ün
+   şarj akımını anahtarlamasını önler; yük akımından kaynaklanan ark riskini
+   azaltır. "Seçici hiçbir koşulda ark yapmaz" garantisi olarak yazılmayacak.
+ - Kondansatör şarj darbesini artık ön anahtar da anahtarlar. NTC'nin sıcak
+   yeniden açılış davranışı ve ön anahtarın AC/DC uygunluğu ayrıca doğrulanır.
+ - Kullanım sırası mekanik kilitleme değildir; yanlış kullanımda canlı geçiş
+   mümkün olabilir. Kaynakları örtüştürmeyen kontak geçişi yine doğrulanacak.
+
+8. AÇIK İŞLER
 -------------------------------------------------------------------------------
  [ ] Kesin KBU parça kodu ve ayrı soğutucunun ölçüleri.
  [ ] Revision PCB ile kasa/soğutucu montaj deliklerinin ortak ölçü çizimi.
@@ -142,5 +204,7 @@ Referans:
      7,5 mm. Footprint courtyard 15,5 x 7 mm; bu montaj boşluğudur, ısıl
      güvenlik mesafesi değildir. Yakın plastik/kondansatör sıcaklığı test edilecek.
  [ ] NTC sıcak çalışma boşluğu ve AC/DC testlerinin doğrulanması.
- [ ] Panel güç seçici ve primer açma/kapama kablajının ayrı çizimi.
+ [x] Kaynak seçici -> ön anahtar -> tek PCB girişi düzeni ve kullanım sırası.
+ [ ] Seçici/ön anahtarın kesin terminal haritası ve iki kutuplu kablaj çizimi.
+ [ ] Seçicinin örtüşmesiz geçişi ve iki anahtarın AC/DC kontak uygunluğu.
  [ ] Kapalı kasa AC/DC yardımcı besleme ve tam yük sıcaklık kayıtları.

@@ -111,10 +111,12 @@ ama ELV1 tamsayı kullanıyordu.
    Negatif gerilim degerini koruma diyotuyla kirpilmis ADC'den hesaplama.
 
  D. Yardimci guc, NTC ve acilis akimi (DUT yuk akimindan ayri)
- - Kullanici kablaji ayri cizecek: J1/J8 bu semada paralel olarak birakildi.
-   Gercek kablajda kaynaklar birbirine baglanmayacak; iki iletken de
-   seciciyle ayrilmali. Harici kablaj cizimi ve ortak GND/USB yollarinin
-   kontrolu bekliyor; bu sema tek basina kaynak secimini gostermiyor.
+ - 22.11.2026 güncel kablaj kararı: yardımcı güçte yalnızca J1 kalacak;
+   ikinci giriş J8 kaldırıldı. J1'e arka panelde seçilmiş 15 VAC trafo veya
+   20 VDC kaynak, ön panel açma/kapama anahtarı üzerinden gelir. İki kaynak
+   kartta paralel değildir; ayrıntı aynı klasördeki MEKANİK REHBERİ bölüm 7.
+   Ön anahtar kapalıyken kaynak seçilir, ardından ön anahtardan açılır.
+   Ön anahtar düşük gerilim tarafındadır; trafo primerini kesmez.
  - LM7815 kaldirildi; +15V besleme varsayimi kullanilmayacak.
  - Semada F1=2A Slow Blow, TH1=10R (deneme); kesin sigorta/NTC modeli ve NTC
    uygunlugu henuz dogrulanmadi. F1, DUT yolundaki F2=15A'den farklidir.
