@@ -1,6 +1,7 @@
 ===============================================================================
  ELV1 REVISION - MEKANİK TASARIM VE SOĞUTMA NOTLARI
  Oluşturulma: 22.11.2026
+ Güncelleme: 25.11.2026
  Durum: Tasarım notları; ölçüler ve ısıl uygunluk testle kesinleştirilecek.
 ===============================================================================
 
@@ -15,46 +16,27 @@ Referans:
 
 1. KARARLAR VE ÖNCELİKLER
 -------------------------------------------------------------------------------
- - Yardımcı beslemede tek parça KBU tipi köprüyle devam edilmesi tercih edildi.
-   Dört ayrı diyottan köprü yapılmayacak. Kesin üretici/parça kodu ayrıca seçilir.
- - Köprüye ayrı küçük soğutucu takılabilecek mekanik boşluk bırakılacak.
- - İsteğe bağlı ek 12 V fan için konnektör footprint'i bırakılması planlanıyor;
-   henüz şemaya/PCB'ye eklenmiş kabul edilmeyecek.
- - Ek fan zorunluluğu, mevcut fanlar ve ayrı köprü soğutucusu ile yapılan
-   kapalı kasa testinden sonra belirlenecek.
- - Yük MOSFET'leri revision kartına doğrudan lehimlenecek şekilde planlanıyor.
-   PCB, MOSFET bacakları ve soğutucu tek mekanik düzen olarak ele alınacak.
- - K1 rölesinin kesin footprint/pin ve kontak uygunluğu kullanıcı tarafından
-   incelenecek; mekanik yerleşim bu doğrulamadan önce kesinleştirilmeyecek.
- - Güncel kablaj: arka panelde iki kutuplu kaynak seçici, ardından ön panelde
-   düşük gerilim açma/kapama anahtarı bulunacak (ayrıntı bölüm 7). Önceki
-   "ön anahtar trafo primerini keser" kararı bu düzenle geçersizdir.
- - PCB üzerinde yardımcı besleme için yalnızca J1 kalacak; J8 kaldırıldı.
-   DUT, USB ve fan konnektörleri bu tek giriş ifadesine dahil değildir.
- - F1 şimdilik mevcut 2 A slow-blow olarak kalacak (kullanıcı kararı).
-   Kesin AC/DC uygunluk değerlendirmesi açık iş olarak korunuyor.
+ - Dahili yardımcı besleme metal kasalı, izole Mean Well AC/DC kaynaktan
+   gelir. PCB'nin tek yardımcı besleme girişi J1 DC INPUT.
+ - F1 mevcut 2 A gecikmeli sigorta. DC kesme kapasitesi ve ters
+   polaritede paralel D1 ile davranışı tezgâhta doğrulanacak.
+ - Yük MOSFET'leri doğrudan PCB'ye lehimlenecek. Soğutucu ve PCB montajı
+   birlikte ele alınacak.
+ - K1'in parça, footprint ve kontak uygunluğu montajda doğrulanacak.
+ - İsteğe bağlı ek 12 V fan için konnektör ve montaj boşluğu kapalı
+   kasa testine göre değerlendirilecek.
 
-2. KÖPRÜ DİYOT: ÖLÇÜLEN DURUM VE SOĞUTUCU
+2. MEAN WELL MONTAJI VE SOĞUTMA
 -------------------------------------------------------------------------------
- Kullanıcının mevcut KBU ile masaüstü ölçümü:
- - Köprünün AC uçlarına 20 VDC uygulandı, DC çıkıştan 1,5 A çekildi.
- - Çıkış yaklaşık 18,38 V; köprü gövdesi 20 dakika sonunda 65–67 °C civarı.
- - Gerilimler doğrudan köprü uçlarında ise kayıp yaklaşık:
-       (20 - 18,38) x 1,5 = 2,43 W.
- - Ortam sıcaklığı ve ölçüm yöntemi kaydedilmedi; bu sonuç kesin ısıl onay değil.
-   Gövde sıcaklığı, yarı iletken birleşim sıcaklığı değildir.
- - Bu DC testi, 15 VAC + 6800 uF kondansatörle oluşan darbeli akımın testi değil.
-
- Yerleşim:
- - Ayrı soğutucu büyük MOSFET bloğuna temas etmeyecek; sıcak bloktan köprüye
-   ısı taşınmaması hedeflenecek. Mümkünse serin hava girişine yakın olacak.
- - Soğutucu kanatlarına hava ulaşmalı; kablo demeti/kapak hava yolunu örtmemeli.
- - Büyük elektrolitik kondansatör, NTC ve plastik kasa sıcak yüzeylere
-   dayandırılmayacak; aralarındaki boşluk gerçek sıcaklıklarla doğrulanacak.
- - Seçilen KBU'nun arka yüz izolasyonu, montaj vidası/torku ve termal arayüz
-   gereksinimi kendi datasheet'inden doğrulanacak. Kasa adına bakılarak
-   elektriksel izolasyon varsayılmayacak.
- - Köprü soğutucusunun vida ve tornavida erişimi kart monteyken mümkün olmalı.
+ - Montaj delikleri, vida boyu ve terminal erişimi satın alınan ünitenin
+   kasa çiziminden alınacak. Havalandırma delikleri açık kalacak.
+ - Mean Well'i sıcak yük bloğundan ve üfleme çıkışından uzak yerleştir.
+   Güç kaynağının kapalı kasadaki sıcaklığı gerçek yükte ölçülecek.
+ - Şebeke terminalleri kapak altında kalacak. Servis erişimi için
+   kablolar sabitlenecek ve güç kaynağı sökülebilir kalacak.
+ - Montaj yönünü, havalandırmayı ve toprak bağlantısını seçilen modelin
+   kurulum dokümanına göre doğrula.
+   https://www.meanwell.com/Upload/PDF/Enclosed_Type_EN.pdf
 
 3. KASA HAVA AKIŞI VE FANLAR
 -------------------------------------------------------------------------------
@@ -105,8 +87,8 @@ Referans:
  - Sigorta, röle ve fan bakım için erişilebilir kalmalı; kapağı açarken kısa
    kabloların PCB veya paneli çekmemesi sağlanmalı.
  - ESP32-C3 modülünün anten keepout'u kendi modül dokümanına göre korunacak;
-   büyük metal blok, trafo ve kablo demeti yanında kablosuz menzil test edilecek.
- - Trafo primeri/şebeke kablajı düşük gerilim kartı ve DUT kablolarından ayrı
+   büyük metal blok, Mean Well ve kablo demeti yanında kablosuz menzil test edilecek.
+ - Şebeke kablajı düşük gerilim kartı ve DUT kablolarından ayrı
    tutulacak; bağlantılar yalıtılacak ve mekanik sabitleme yapılacak. Gerekli
    mesafeler seçilen yapı ve ilgili şartlara göre ayrıca doğrulanacak.
  - 3D baskı malzemesinin sıcaklıkta yumuşaması hesaba katılacak; malzeme ve
@@ -116,17 +98,16 @@ Referans:
 -------------------------------------------------------------------------------
  - Mekanik prova: kapak kapanması, vida erişimi, fan/kablo çakışması, anten
    alanı ve sıcak parçalara temas kontrolü.
- - Yardımcı güç testi hem 20 VDC girişte hem 15 VAC trafoyla ayrı yapılacak.
-   Soğuk açılış ve sıcak yeniden açılışta NTC/regülatör davranışı kaydedilecek.
+ - Mean Well ile soğuk açılış ve sıcak yeniden açılışta DC giriş tepesi,
+   yük altındaki en düşük gerilim ve 5 V/12 V hatları kaydedilecek.
  - USB şarjı 1 A hedefte, iki fan, ekran ve ESP etkin durumlar birlikte denenir;
    1 A ayarının toleransı olduğu unutulmaz. Ek fan takılırsa testi tekrarla.
  - Ardından DUT yükü kademeli artırılıp 150–160 W hedef çalışma koşulu denenir.
-   Bu güç yük bloğunda harcanır; yardımcı köprüden DUT akımı geçmez.
- - Ortam, köprü gövdesi/soğutucusu, MOSFET bloğu, büyük elektrolitik çevresi,
-   NTC ve yakın plastik yüzeylerin sıcaklıkları zamanla birlikte kaydedilecek.
- - Sabit güç ve ortamda sıcaklıklar dengeye gelene kadar izle; yalnızca kısa
-   süreli ölçüm yeterli sayılmaz. Aynı koşullarda soğutucusuz/soğutuculu
-   karşılaştırma yap. Ölçüm yöntemi ve sensör konumları değişmesin.
+   DUT gücü yük bloğunda harcanır. Mean Well kartın yardımcı yüklerini besler.
+ - Ortam, Mean Well gövdesi, MOSFET bloğu, şöntler ve yakın plastik
+   yüzeylerin sıcaklıkları zamanla birlikte kaydedilecek.
+ - Sabit güç ve ortamda sıcaklıklar dengeye gelene kadar izle. Fan düzeni
+   karşılaştırılırsa ölçüm yöntemi ve sensör konumları aynı kalsın.
  - Kabul sınırları kesin parçaların datasheet'leri ve kasa malzemesine göre
    belirlenir; bu dosyada tahmini bir sıcaklık sınırı ürün onayı sayılmaz.
  - Kontrollü düşük güçten başlayarak fan durması/tıkanma ve sıcaklık sensörü
@@ -134,77 +115,62 @@ Referans:
  - Son termal testten sonra konnektörler, lehimler, plastik montaj noktaları
    ve MOSFET izolasyonu tekrar incelenecek.
 
-7. KAYNAK SEÇİMİ, KABLAJ VE KULLANIM SIRASI (22.11.2026)
+7. MEAN WELL VE DC GİRİŞ KABLAJI (25.11.2026)
 -------------------------------------------------------------------------------
- Kaynaklar:
- - Trafo sekonderi 15 VAC / 30 VA. Köprü ve kondansatörden sonra yaklaşık
-   20 VDC oluşması, trafo çıkışının 20 VAC olduğu anlamına gelmez.
- - Harici kaynak 20 VDC adaptör/batarya.
+ Ana güç yolu:
+   230 VAC → Mean Well L/N → Mean Well V+ / V− → ön panel DC açma/kapama
+           → PCB J1 DC INPUT → 5 V ve 12 V regülatörleri
 
- Kablaj blok düzeni (her ok iki iletkeni temsil eder):
+ - J1.1 = DC pozitif (V+, seri F1 üzerinden /20V).
+   J1.2 = DC negatif (V−, kart GND). D1 kart girişinde paralel ters
+   polarite korumasıdır. J1'e yalnızca DC bağlanır.
+ - Mean Well FG, şebeke koruma toprağına (PE) bağlanır. Erişilebilir
+   metal gövdenin koruma topraklaması ayrı doğrulanır. DC V−, kart
+   dönüşüdür. V− ile PE arasında ilave bağlantı yapmadan önce USB ve
+   DUT üzerinden oluşabilecek toprak yolları değerlendirilir.
+ - Kesin Mean Well modeli ve çıkış ayarı ünite etiketinden alınacak.
+   J1'e bağlamadan önce polariteyi ve çıkış gerilimini ölç. U6/U17
+   TPS54302 için 28 V önerilen VIN üst sınırına açılış tepesi ve
+   tolerans dahil pay bırak. Alt sınırı yükteki 12 V regülasyonu ile
+   doğrula. DUT girişindeki 30 V çalışma sınırı ayrı bir değerdir.
+ - Harici DC ile çalışma seçeneği kullanılırsa arka paneldeki eski
+   I-0-II seçici iki DC kaynağı seçer. I = Mean Well DC çıkışı,
+   0 = ayrık, II = harici DC. İki kutup da seçilir. Ortak uçlar ön
+   DC anahtarı üzerinden J1'e gider. Kontaklar örtüşmesiz olmalı.
+   Sadece dahili Mean Well kullanıldığında doğrudan ana güç yolu geçerli.
 
-   230 VAC -> trafo -> 15 VAC sekonder ----> giriş I  +----------------+
-                                                    | arka seçici   |
-   20 VDC adaptör/batarya ----------------> giriş II |    I-0-II     |
-                                                    +-------+--------+
-                                                            |
-                                                  iki ortak çıkış
-                                                        v
-                                           ön panel açma/kapama
-                                                        |
-                                                        v
-                                           PCB tek güç girişi J1
-                                                        |
-                                                        v
-                                           F1 -> TH1 -> köprü D1
-                                                        |
-                                                        v
-                                            C14 ve regülatörler
+ Kullanım:
+ 1. Ön panel DC açma/kapama anahtarı kapalıyken varsa kaynağı seç.
+ 2. Ön panelden aç. Kaynak değiştirilecekse önce ön panelden kapat.
+ 3. Ön DC anahtarı kapalıyken Mean Well'in L/N tarafı enerjili kalabilir.
+    Servis öncesi şebekeyi fiziksel olarak ayır.
 
- - Arka seçici iki kutuplu ON-OFF-ON olacak: I = trafo, 0 = kaynaklar ayrık,
-   II = harici DC. İki kaynağın her iki iletkeni de seçilecek; kaynakların
-   kendi aralarında paralel bağlanmaması sağlanacak.
- - İki ortak kontak, ön anahtar üzerinden J1'e gidecek. Terminal numaraları
-   görünüşten varsayılmadan gerçek parçanın kontak haritasıyla belirlenecek.
- - Ön anahtar için iki kutuplu düzen tercih ediliyor; kesin parça/kontak ve
-   kablaj çizimi henüz tamamlanmadı. Kapalı konum PCB beslemesini kesmeli.
- - Hem 15 VAC hem 20 VDC, aynı J1 üzerinden köprünün AC girişlerine ulaşır;
-   DC kaynak doğrultucu çıkışına doğrudan bağlanmayacak. Ortak TH1 her iki
-   besleme türünde kondansatörün açılış akımı yolunda kalacak.
- - KLS7-007-23N-A-6-RE/BK seçici adayı incelendi. Kesin varyantın kontak
-   düzeni, break-before-make geçişi ve DC anahtarlama uygunluğu teyit bekliyor.
- - Bu bağlantıda ön anahtar trafo primerini kesmez. Şebeke bağlıyken ön panel
-   kapalı veya kaynak seçimi DC olsa da trafo primeri enerjili kalabilir.
-   Ön panelde kapalı olması şebekeden tam ayırma olarak tanımlanmayacak.
-
- Kullanım talimatı:
- 1. Ön panel açma/kapama anahtarının KAPALI olduğundan emin ol.
- 2. Arka paneldeki kaynak seçiciden TRAFO veya DC kaynağını seç.
- 3. Ön panel anahtarını AÇIK konuma getirerek cihazı aç.
- 4. Kaynak değiştirmek için önce ön panelden kapat; sonra arka seçiciyi
-    değiştir ve ön panelden yeniden aç. Cihaz çalışırken kaynak değiştirme.
-
- Gerekçe ve sınır:
- - Ön anahtar açık devreyken kaynak seçmek, seçicinin PCB yükünü ve C14'ün
-   şarj akımını anahtarlamasını önler; yük akımından kaynaklanan ark riskini
-   azaltır. "Seçici hiçbir koşulda ark yapmaz" garantisi olarak yazılmayacak.
- - Kondansatör şarj darbesini artık ön anahtar da anahtarlar. NTC'nin sıcak
-   yeniden açılış davranışı ve ön anahtarın AC/DC uygunluğu ayrıca doğrulanır.
- - Kullanım sırası mekanik kilitleme değildir; yanlış kullanımda canlı geçiş
-   mümkün olabilir. Kaynakları örtüştürmeyen kontak geçişi yine doğrulanacak.
-
-8. AÇIK İŞLER
+8. ELV1 SHUNT SICAKLIK TESTİ (23 Kasım 2026)
 -------------------------------------------------------------------------------
- [ ] Kesin KBU parça kodu ve ayrı soğutucunun ölçüleri.
+ - Test edilen düzen iki MOSFET kolundan oluşuyor. Her kolda iki adet
+   Isabellenhütte VMS-R100-1.0-U (0,1 Ω, %1, 2512) paralel bağlı.
+   Kol başına nominal eşdeğer direnç 0,05 Ω.
+ - Test koşulu 12 V ve toplam 10 A (120 W). Termokuplla gözlenen en yüksek
+   sıcaklık 71 °C. Termokupl elde tutuldu ve temas belirsizdi. Termal
+   değerlendirmede 80 °C varsayıldı. Bu değer ölçülmüş bir üst sınır değil.
+ - Osiloskoba bağlı akım probuyla toplam akım 40 dakika izlendi ve
+   bu süre boyunca 10 A’in altına düşmedi. Kol akımları ayrı ölçülmedi.
+ - Akım eşit paylaşıldığında kol başına 5 A, shunt başına 2,5 A ve 0,625 W
+   düşer. Üretici 95 °C terminal sıcaklığında 3 W, 70 °C'de 4 W verir.
+   80 °C varsayımı ve eşit akım paylaşımıyla shunt'larda termal pay var.
+ - Akım paylaşımı ve sıcaklık dengesi teyit bekliyor. Tekrarda termokupl
+   elektriksel olarak yalıtılıp lehim ucuna sabitlenecek. Soğuk ve sıcak
+   durumda gerçek toplam akım ve iki kolun Kelvin gerilimleri kaydedilecek.
+   Bu test 150 W'taki MOSFET ve soğutucu sıcaklığını doğrulamıyor.
+ - Üretici verisi: https://www.isabellenhuette.com/hubfs/Files/Data-sheets/VMS.pdf
+
+9. AÇIK İŞLER
+-------------------------------------------------------------------------------
+ [ ] Mean Well modelini, çıkış ayarını, montaj ölçülerini ve FG bağlantısını kaydet.
  [ ] Revision PCB ile kasa/soğutucu montaj deliklerinin ortak ölçü çizimi.
  [ ] Fan yönleri ve hava giriş açıklıklarının çizimde işaretlenmesi.
  [ ] İsteğe bağlı fan konnektörünün şema/PCB'ye eklenmesi ve fiziksel fan yeri.
  [ ] K1 kesin parça/footprint/pin uygunluğunun tamamlanması.
- [x] NTC parçası: THINKING SCK13104MSY; max gövde 14,5 x 6 mm, pin aralığı
-     7,5 mm. Footprint courtyard 15,5 x 7 mm; bu montaj boşluğudur, ısıl
-     güvenlik mesafesi değildir. Yakın plastik/kondansatör sıcaklığı test edilecek.
- [ ] NTC sıcak çalışma boşluğu ve AC/DC testlerinin doğrulanması.
- [x] Kaynak seçici -> ön anahtar -> tek PCB girişi düzeni ve kullanım sırası.
- [ ] Seçici/ön anahtarın kesin terminal haritası ve iki kutuplu kablaj çizimi.
- [ ] Seçicinin örtüşmesiz geçişi ve iki anahtarın AC/DC kontak uygunluğu.
- [ ] Kapalı kasa AC/DC yardımcı besleme ve tam yük sıcaklık kayıtları.
+ [ ] Ön DC anahtarının terminal haritası ve DC kontak uygunluğu.
+ [ ] Harici DC seçeneği uygulanırsa seçicinin örtüşmesiz geçişi ve DC uygunluğu.
+ [ ] Kapalı kasa Mean Well çıkış gerilimi ve tam yük sıcaklık kayıtları.

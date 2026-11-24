@@ -1,1080 +1,380 @@
 ===============================================================================
- ELV1 REVISION - FIRMWARE REHBERI
- Donanım: ELV1 revision; güncel değişiklikler 22.11.2026 ekinde, MCU STM32G071CBT6
- Bu dosya, ELV1 revision için firmware yazacak kişinin bilmesi gereken her
- şeyi içerir: pinler, açılış sırası, ölçüm formülleri, kalibrasyon, korumalar,
- bilinen donanım sorunları ve STM32G071 tuzakları.
+ ELV1 REVISION  |  FIRMWARE REHBERİ
+ 25.11.2026  |  Hedef: STM32G071CBT6, LQFP48
 ===============================================================================
 
-Kaynaklar:
-  - ELV1 revision.kicad_sch (netlist'ten çıkarıldı)
-  - G071 pin plani.md (aynı klasörde; tasarım kararlarının gerekçeleri)
-  - STM32G071 datasheet DS12232 Rev 5, errata ES0418 Rev 6, AN2867
-  - ELV1 firmware: github.com/omerikinci/ELV1 (firmware/Core/Src/main.c)
+Bu rehber kaydedilmiş "ELV1 revision.kicad_sch" netlist'ini ve güncel
+kullanım kararlarını esas alır. Bağlantılar şemadan doğrulandı. Eşikler ve
+zamanlamalar, aksi belirtilmedikçe prototipte doğrulanacak. Revizyon için
+derlenmiş bir firmware veya ölçülmüş bir bellek kullanımı henüz yok.
 
-Birimler: gerilim mV, akım mA, sıcaklık 0.01 °C (int). Float kullanılabilir
-ama ELV1 tamsayı kullanıyordu.
+Firmware birimleri: mV, mA, mW ve 0,01 °C. Güç, kapasite ve enerji
+hesaplarında ara çarpımlar ile uzun süreli toplamlar için yeterli bit
+genişliği kullan. Ekranda gösterim için yuvarla, koruma hesabında ham
+çözünürlüğü koru.
 
-22.11.2026 - TH1 PARÇA SEÇİMİ VE KÜTÜPHANE DOĞRULAMASI
- - TH1 = THINKING SCK13104MSY, 10 ohm +/-20%, 4 A (25 °C ortamda).
-   Sembol: myNTC:SCK13104MSY; footprint: myNTC:SCK13104MSY.
- - Parça seçildi; AC/DC açılış ve sıcak yeniden açılış testleri henüz yapılmadı.
-   Önceki "parça kodu seçilmedi" notları bu seçimden önceki durumu anlatır.
- - Sıcak NTC ilk akımı 2 A ile sınırlamaz. Trafolu kullanımda NTC RMS akımı,
-   kondansatör nedeniyle DC çıkış akımından yüksek olabilir.
- - Kart GND/ADC/ESP bağlantıları son doğrulanmış GitHub sürümüne geri alındı;
-   aşağıdaki güncel pin planı geçerlidir. F1 mevcut 2 A slow-blow olarak kaldı.
+-------------------------------------------------------------------------------
+1. DONANIM VE BESLEME
+-------------------------------------------------------------------------------
 
-22.11.2026 - TH1 DENEME DEGERI 10 OHM
- - Kullanici istegiyle TH1 5R -> 10R yapildi. NTC parca kodu ve nihai
-   uygunluk henuz secilmedi; footprint degismedi.
- - 20V ve 6800uF, soguk/sabit 10 ohm ideal model: ilk akim 2A,
-   zaman sabiti 68ms, integral(I^2 dt)=0.136 A^2s; enerji 1.36J olarak kalir.
-   +/-20% toleransli parca 8 ohm olursa ilk akim 2.5A olabilir.
- - Sicak NTC'de ilk akimin 2A ile sinirlandigi varsayilmayacak.
- - Buyuyen soguk direnc acilista gerilim dusumunu artirir; regulatorlerin
-   baslamasi ve USB/fan/ESP yuklerinin kademeli etkinlesmesi test edilecek.
-   NTC'nin akim ve darbe enerjisi dayanimi ayrica dogrulanacak.
- - Bu degisiklik MTS1200A icin eksik DC kesme kapasitesi bilgisini cozmez.
- - Asagidaki 5 ohm hesaplari onceki tasarimin karsilastirma hesabidir.
+DUT (test edilen kaynak):
+ J6.2 → K1 NO → U22/U10 ortak source → F2 15 A → VCC LINE → U7/U8 → şöntler.
+ J6.1 kart GND'sine bağlı. K1 DUT'un pozitif hattını ayırır.
+ - U10 ve U22 IRFB4110. U5 TPSI3052'nin VSSS pini iki MOSFET'in ortak
+   source düğümünde. Her gate'e 22 Ω seri ve gate-source arasına 100 kΩ
+   bağlı. R98 (PXFR) 11 kΩ. Sağlıklı çift kapalıyken gövde diyotları ana
+   yük akımını iki yönde engeller.
+ - U14 MCP6541, K1 sonrasındaki polariteyi denetler. U11'in çıkışı,
+   U5 EN = OUT CONTROL AND POLARITY_OK. DUT SENSE, bu çıkışın MCU'daki
+   geri okuması. Fiziksel iletimi ve kontak konumunu şöntler ve gerilim
+   ölçümleri ile değerlendir.
+ - K1 HF115F/012-1ZS3, 12 V bobinli. J6.2 → pin 1, koruma yolu → pin 2,
+   pin 3 NC boş. Q3 bobini sürer. F2 bağımsız koruma olarak kalır.
+ - J7 bir DS18B20 bağlantısı. Pil kapasite testi de diğer DUT testleri
+   gibi J6'dan yapılır.
 
-22.11.2026 - GUNCEL TASARIM VE FIRMWARE KARARLARI
- Kaynak: ayni klasordeki guncel sematigin 22.11.2026 netlist'i ve kullanici
- kararlari. Bu bolum eski low-side/optokuplor notlarinin ONUNE GECER.
- Rehberin sonraki bolumlerindeki GND1, RCP, LM7815/+15V ve eski ADS2
- diferansiyel olcum anlatimlari tarihsel tasarima aittir; uygulanmayacak.
- Sematik halen gelistiriliyor; PCB oncesi donanim testleri tamamlanmadi.
+Yardımcı besleme (J1):
+ - Kaydedilmiş devre DC girişli. J1.1 pozitif uç, F1 2 A gecikmeli sigorta
+   üzerinden /20V'a gider. J1.2 GND. D1 (10A10) girişe paralel, ters
+   bağlantıda iletime geçen koruma diyodu. DC kaynakla ters bağlantıda
+   F1'in açma süresi ve diyotun maruz kalacağı enerji doğrulanacak.
+ - J1 DC INPUT, dahili Mean Well'in DC çıkışından beslenir. V+ J1.1,
+   V− J1.2. Panel ve isteğe bağlı harici DC kablajı için mekanik rehberin
+   7. bölümüne bak.
+ - U6 TPS54302 → 5 V, U17 TPS54302 → 12 V, U3 AP2112K → 3,3 V.
+   OPA2197, fanlar ve röle bobini 12 V'ta. ESP32-C3 SuperMini ve USB
+   şarj yolu 5 V'ta. "20V SENSE" yardımcı beslemeyi ölçer.
+ - TPS54302 için üreticinin önerilen VIN üst sınırı 28 V. İzole AC/DC
+   kaynağın ayarı, toleransı, açılış tepesi ve yükteki dibi ölçülecek.
+   Yardımcı besleme alt eşiği, 12 V hattının ve gate sürüşünün marjıyla
+   belirlenecek. Harici test kaynağının J6'daki 30 V sınırı ayrı.
+ - USB şarj U16 SY6280, R60 = 6,8 kΩ ile nominal 1 A. PA15 yalnızca
+   etkinleştirir. Varsayılan kapalı. Şarj, fanlar ve ESP darbe akımı
+   birlikteyken yardımcı besleme doğrulanacak.
+ - CH340G'nin VCC ve V3 pinleri kaydedilmiş şemada 3,3 V'ta. PC veri
+   bağlantısı USART1, ESP bağlantısı USART4 üzerinden bağımsız.
 
- A. Guncel kontrol sinyalleri (U20 STM32G071CBT6)
- - PB12 / pin 24 = OUT CONTROL: LOW guvenli/kapali; HIGH acma istegi.
-   U11 AND kapisi EN = OUT CONTROL AND POLARITY_OK islevini saglar.
- - PC6 / pin 30 = DAC CONTROL: HIGH setpoint kelepcesi aktif/yuk kapali;
-   LOW kelepce serbest. MCP4725 cikisi ayrica sifira yazilir.
- - PB8 / pin 47 = RELAY CONTROL: LOW K1 bobini enerjisiz, NO kontak acik;
-   HIGH bobin enerjili. Onceki bos PB8 kaydi gecersizdir.
- - PA2 / pin 13 = DUT SENSE: R97 uzerinden AND cikisini okur.
-   Bu sinyal EN komutunun geri okumasidir; bagimsiz POLARITY_OK veya
-   gate-source gerilimi / kontak konumu geri bildirimi DEGILDIR.
-   OUT CONTROL LOW iken DUT SENSE LOW olmasi ters polarite anlami tasimaz.
- - PB1 / pin 20 = POLARITY_OK: U14 cikisi artik dogrudan MCU'ya bagli.
-   GPIO girisi, tercihen dusen kenar EXTI1 ile donanimsal ters algilama
-   bilgisi okunur. LOW durumunda yuk ve acma istegi kapatilir; hata
-   kilitlenir. HIGH tek basina pozitif DUT var demek degildir.
- - PA0 / pin 11 = ESP_TX, USART4_TX AF4 -> R85 -> ESP GPIO20 (RX).
- - PA1 / pin 12 = ESP_RX, USART4_RX AF4 <- R86 <- ESP GPIO21 (TX).
-   ESP artik CH340 ile ortak UART cikisi surmez. CH340 USART1 PB6/PB7'de.
- - PA4 / pin 15 = 20V SENSE, ADC1_IN4. Olcum olcegi ayni (12k/112k);
-   eski PA0/ADC1_IN0 giris secimi firmware'de kullanilmayacak.
- - PB1, PA0, PA1, PA4 ve PB8 artik bos pin sayilmayacak.
- - U5 TPSI3052 ile U10 artik pozitif hatta high-side olarak kullaniliyor.
-   U5 VSSS, U10 source dugumudur; kart GND'sine birlestirilmeyecek.
+-------------------------------------------------------------------------------
+2. MCU, PİNLER VE ÇEVRE BİRİMLERİ
+-------------------------------------------------------------------------------
 
- B. Guvenli acilis / yeniden etkinlestirme
- 1. GPIO cikis modundan ONCE OUT CONTROL=LOW, RELAY CONTROL=LOW,
-    DAC CONTROL=HIGH, USB CHARGE=LOW cikis degerlerini hazirla.
-    DAC kodunu da 0 yap; reset/watchdog sonrasinda onceki yuk ayarina
-    otomatik donme. Yuk icin yeniden kullanici etkinlestirmesi iste.
- 2. MCU, I2C, zorunlu ADC/DAC ve sicaklik denetimleri tamamlanana ve
-    yardimci besleme kararliligi dogrulanana kadar yuk kapali kalir.
- 3. Guncel semada LOAD VOLTAGE ve polarite algilama K1'in cihaz tarafinda.
-    Role acikken buradan dis DUT varligi/polaritesi dogrulanamaz.
-    OUT CONTROL=LOW ve DAC kelepcesi aktifken K1'i cek; kontak oturma
-    ve sicrama suresi donanim testinden belirlendikten sonra olcume gec.
-    Bu sirada ters DUT baglanmasi ve giris korumalari ayrica test edilecek.
- 4. Gecerli pozitif DUT gerilimi (hedef 1-30 V) ve hata olmamasi kosuluyla
-    OUT CONTROL=HIGH yap. DUT SENSE beklenen HIGH'a gelmezse yuk kapali
-    kalir, OUT CONTROL=LOW yapilip hata kilitlenir.
- 5. DUT SENSE HIGH olsa bile U10 tam iletimde kabul edilmez. Surucu ve
-    MOSFET icin testle belirlenecek en kotu durum acilma/yerlesme suresini
-    bekle; sabit sure henuz secilmedi. Ardindan kelepceyi serbest birak ve
-    ayarlanan yuk akimina kontrollu rampayla cik.
- 6. Normal kapatma: kelepceyi etkinlestir, DAC=0 yap, yuk akiminin dusmesini
-    dogrula; sonra OUT CONTROL=LOW ve gerekiyorsa RELAY CONTROL=LOW.
-    Kritik hata: kelepce ve OUT CONTROL'u derhal guvenli seviyeye getir;
-    RELAY CONTROL'u de LOW yap. I2C DAC yazisinin sonucunu bekleyerek GPIO
-    kapatmalarini geciktirme. Role sigortanin yerine gecmez.
- 7. Besleme dusmesi/brownout ve watchdog/reset sonrasinda yeniden acilis
-    bu siradan baslar. Ani enerji kesilmesinde yazilimin bu sirayi
-    tamamlayacagi varsayilamaz; donanim enerjisiz davranisi test edilecek.
+ Pin  Port        Görev                        Bağlantı / seviye
+ ---  ----------  ---------------------------  --------------------------------
+ 8/9  PF0/PF1     HSE                          Y2, 8 MHz
+ 10   PF2/NRST    Donanım reseti                SW3, J10.4
+ 11   PA0         USART4_TX AF4                R85 → ESP GPIO20 (RX)
+ 12   PA1         USART4_RX AF4                R86 ← ESP GPIO21 (TX)
+ 13   PA2         DUT SENSE, GPIO giriş        HIGH = TPSI3052 EN komutu
+ 14   PA3         LOAD VOLTAGE, ADC1_IN3       K1 sonrası gerilim
+ 15   PA4         20V SENSE, ADC1_IN4          Yardımcı besleme
+ 17   PA6         BUZZER1, TIM16_CH1 PWM      Q4 → BZ1
+ 18   PA7         BUZZER2, TIM14_CH1 PWM      Q6 → BZ2
+ 19   PB0         STATUS LED                  D13, HIGH = yanar
+ 20   PB1         POLARITY_OK, EXTI1          U14, düşen kenar = ters algılama
+ 22   PB10        FAN CONTROL 2               Q2 → J3 FAN2, HIGH = aç
+ 23   PB11        DS18B20 DQ, open-drain      J4.18, J5.2 ve J7.2
+ 24   PB12        OUT CONTROL                 HIGH = açma isteği, reset LOW
+ 25   PB13        Encoder A, EXTI13           Aktif LOW
+ 26   PB14        Encoder B, EXTI14           Aktif LOW
+ 27   PB15        Encoder SW, EXTI15          Aktif LOW
+ 30   PC6         DAC CONTROL                 HIGH = kelepçe, reset HIGH
+ 31   PC7         Panel butonu, EXTI7         J4.13, aktif HIGH, 10 kΩ pull-down
+ 33   PA11        I2C2_SCL                    J4.5, ADS'ler ve DAC
+ 34   PA12        I2C2_SDA                    J4.7, ADS'ler ve DAC
+ 35   PA13        SWDIO                       J10.2
+ 36   PA14        SWCLK                       J10.3
+ 37   PA15        USB CHARGE                  HIGH = etkin, reset LOW
+ 43   PB4         TACT1, TIM3_CH1 capture     J2.1, FAN1 tach
+ 44   PB5         TACT2, TIM3_CH2 capture     J3.1, FAN2 tach
+ 45   PB6         USART1_TX                   CH340G RXD
+ 46   PB7         USART1_RX                   CH340G TXD
+ 47   PB8         RELAY CONTROL               HIGH = bobin enerjili, reset LOW
+ 48   PB9         FAN CONTROL 1               Q5 → J2 FAN1, HIGH = aç
 
- C. Olcum degisiklikleri
- - GND1 ve eski VS- bolucusu kaldirildi.
- - U21 ADS1115 #2: AIN0 ve AIN3 LOAD VOLTAGE; AIN1 VLINE DIV;
-   AIN2, R107 uzerinden GND. Eski AIN2-AIN3 sigorta dusumu ve eski
-   AIN0-AIN1 terminal gerilimi/GND1 formulleri gecersizdir.
- - LOAD VOLTAGE kart GND'sine gore tek uclu okunur. AIN0-AIN1 farki
-   farkli dugumlerin bolunmus gerilim farkidir, dogrudan DUT gerilimi degil.
- - Mevcut boluculerin ve koruma diyotlarinin olcum etkisi kartta kalibre
-   edilecek; AIN0 ve AIN3 ayni sinyal oldugu icin bagimsiz iki olcum sayilmaz.
- - DUT SENSE tek basina ters polarite ile kaynagin yoklugunu ayiramaz.
-   Bagimsiz ters algilama icin artik PB1 POLARITY_OK kullanilir.
-   Negatif gerilim degerini koruma diyotuyla kirpilmis ADC'den hesaplama.
+ - J2/J3: pin 1 tach, pin 2 +12 V, pin 3 anahtarlanan fan dönüşü.
+ - Ek STM32 pin konnektörü kaldırıldı. Boş GPIO'lara bağlı özellik veya
+   ADS ALERT/RDY kesmesi tanımlama. İki ADS'nin ALERT/RDY ucu MCU'ya gitmiyor.
+ - HSE 8 MHz, PLL M=1 / N=16 / R=2 ile 64 MHz hedef. Flash gecikmesini
+   besleme/clock ayarına göre CubeMX ile doğrula. HSE arızasında güvenli
+   çıkış seviyelerini koru. HSI16 yedek modunda saat, UART ve timer
+   ayarlarını yeniden doğrulamadan yükü etkinleştirme.
+ - VREF+ harici 3,3 V (FB3). VREFBUF kapalı. PB15 encoder için
+   UCPD dead-battery pull-down'ı devre dışı bırakılmalı. CubeMX'in
+   ürettiği ilgili HAL_SYSCFG_StrobeDBattpinsConfig çağrısını koru.
+ - I2C2 kernel saati PCLK. ES0418, I2C 2.11.2 ve 2.11.6: sahte BERR
+   durumunda bayrağı temizle; geçerli aktarım gereksiz kesilmesin.
+   APB/I2C saat oranı için errata koşulunu kontrol et. APB bölücüsü 1.
+ - I2C adresleri (7 bit): U9 0x48, U21 0x49. MCP4725'in A0 pini GND;
+   adresi sipariş edilen varyanttan doğrula. Panel LCD için PCF8574
+   takılırsa adresi ve bus hızını modülden doğrula. Standart 100 kHz
+   PCF8574 ile aynı bus 100 kHz kullanır. Pull-up gerilimini panelle
+   birlikte doğrula. ADS/DAC örnekleme bütçesinde LCD trafik süresi var.
+ - IWDG'yi başlat ve ölçüm/kontrol döngüsü sağlıklı ilerlediğinde besle.
+   Watchdog ve brownout sonrasında yük kendiliğinden açılmasın.
 
- D. Yardimci guc, NTC ve acilis akimi (DUT yuk akimindan ayri)
- - 22.11.2026 güncel kablaj kararı: yardımcı güçte yalnızca J1 kalacak;
-   ikinci giriş J8 kaldırıldı. J1'e arka panelde seçilmiş 15 VAC trafo veya
-   20 VDC kaynak, ön panel açma/kapama anahtarı üzerinden gelir. İki kaynak
-   kartta paralel değildir; ayrıntı aynı klasördeki MEKANİK REHBERİ bölüm 7.
-   Ön anahtar kapalıyken kaynak seçilir, ardından ön anahtardan açılır.
-   Ön anahtar düşük gerilim tarafındadır; trafo primerini kesmez.
- - LM7815 kaldirildi; +15V besleme varsayimi kullanilmayacak.
- - Semada F1=2A Slow Blow, TH1=10R (deneme); kesin sigorta/NTC modeli ve NTC
-   uygunlugu henuz dogrulanmadi. F1, DUT yolundaki F2=15A'den farklidir.
- - C14=6800uF ve 20V icin ideal soguk 5 ohm modelinde ilk tepe 4A,
-   zaman sabiti 34ms, kondansator enerjisi 1.36J, darbe integrali
-   yaklasik 0.272 A^2s. Yuk akimi, NTC sicakligi/toleransi ve kaynak
-   davranisi bu hesabı degistirir. 4A surekli akim olarak yorumlanmayacak.
- - 2A sigortanin acip acmayacagi gercek modelin zaman-akim/I^2t verisiyle
-   ve soguk/sicak yeniden acilis testiyle belirlenecek. Sirf tepe 4A diye
-   sigorta buyutulmeyecek. Ilk kondansator sarj darbesini MCU engelleyemez.
- - MCU basladiktan sonra USB sarjini ve kontrol edilebilir diger yukleri
-   kademeli ac. Besleme dusuk/kararsizsa yuk etkinlestirmesini engelle ve
-   USB sarjini kapali tut; histerezis/sureler donanim testinden belirlenecek.
- - R60 kullanici tarafindan 6.8k yapildi: USB sarj limiti nominal 1A.
-   SY6280 veri sayfasinda 6.8k icin 0.75..1.25A araligi var; kesin 1A
-   ust siniri olarak yorumlanmayacak. Firmware mevcut enable
-   hattini kontrol eder; direncle belirlenen akim limitini degistiremez.
- - ESP32-C3 Wi-Fi/BLE akim darbeleri guc butcesine/teste dahil edilecek;
-   STM32'nin ESP beslemesini kapatabildigi varsayilmayacak.
- - NTC'nin yeterince isinmamasi nedeniyle yukte gerilim dusumu ve sicak
-   NTC ile hizli yeniden acilista zayif akim sinirlama test edilecek.
+-------------------------------------------------------------------------------
+3. AÇILIŞ VE KULLANICI DURUŞU
+-------------------------------------------------------------------------------
 
+1. GPIO çıkış modundan önce PB12=LOW, PB8=LOW, PC6=HIGH ve PA15=LOW
+   hazırla. Fan, LED ve PWM çıkışları güvenli başlangıç seviyelerinde.
+2. ADC1 kalibrasyonunu yap. Kalibrasyon kaydını ve zorunlu sensörleri
+   kontrol et. DAC çıkışını sıfırla. DAC EEPROM'unda başlangıç kodu 0
+   olmalı; programlama/serviste doğrula. Her açılışta EEPROM yazma.
+3. K1 açıkken U23 ve ADS2 kararlı olduktan sonra AIN2 ile J6'yı oku.
+   Geçerli ve doğru polaritede 1–30 V, sağlıklı yardımcı besleme ve
+   kullanıcı başlatma isteği varsa K1'i çek. Kontak oturunca K1 sonrası
+   LOAD VOLTAGE ve POLARITY_OK'u doğrula.
+4. PB12=HIGH yap, DUT SENSE'i kontrol et. Sürücü ve MOSFET'ler için
+   ölçülmüş yerleşme süresini bekle. Bu süre boyunca PC6=HIGH ve DAC=0.
+5. PC6=LOW yap ve akımı sıfırdan hedefe rampala.
+
+Örnek, 12 V kaynak ve 3 A hedef: AIN2 K1 açıkken +12 V okur → K1 çekilir
+→ K1 sonrası gerilim/polarite doğrulanır → U10/U22 açılır → akım 3 A'e
+rampalanır. −12 V, 0 V veya +40 V ile açılış doğrulanmaz; K1 açık kalır.
+
+Normal durdurma: PC6=HIGH ve DAC=0 → iki şöntten taze örnekle sıfır
+akımı doğrula → PB12=LOW ile U10/U22'yi kapat → PB8=LOW ile K1'i bırak.
+Şönt akımı ayrılan sürede düşmezse bölüm 6'daki arıza sırasına geç.
+
+-------------------------------------------------------------------------------
+4. ÖLÇÜM VE SETPOINT
+-------------------------------------------------------------------------------
+
+U9 ADS1115 #1 (0x48), Kelvin akım ölçümü:
+ - MUX 000: AIN0−AIN1 = AR0−AR1, U7 şöntü R18 || R116.
+ - MUX 011: AIN2−AIN3 = AR2−AR3, U8 şöntü R19 || R117.
+ - Şönt başına 0,05 Ω nominal. PGA ±0,512 V (100), 15,625 µV/LSB,
+   yaklaşık 0,3125 mA/LSB. Ölçek kanal kazancı ve sıfır ofsetiyle
+   düzeltilir. Toplam = I1 + I2. 6 A/kanal analog ölçek örneğidir.
+ - NT1–NT4 Kelvin bağlantılarıdır. Akım paylaşımını iki şöntten izle.
+
+U21 ADS1115 #2 (0x49), giriş gerilimleri:
+ - AIN0 ve AIN3: K1 sonrası LOAD VOLTAGE, PA3 ile aynı düğüm.
+ - AIN1: VLINE DIV, MOSFET çifti ve F2 sonrasındaki VCC LINE.
+ - AIN2: DUT PRE SENSE, K1 öncesindeki J6.2, TLP222A (U23) üzerinden.
+   U23 ADS2 VDD ile açılır, kart enerjisizken ölçüm kolunu ayırır.
+   C80 kaldırıldı. AIN2 ve AIN3 ayrı tek uçlu girişlerdir.
+ - Tek uçlu MUX sırası AIN0=100, AIN1=101, AIN2=110, AIN3=111.
+   LOAD VOLTAGE ve VLINE için nominal k = 3,3 / (47 + 3,3) = 0,065606.
+   PGA ±2,048 V (010) için 62,5 µV/LSB, yaklaşık 0,953 mV/LSB DUT
+   ölçeğinde. Bu PGA ile bölücülü kanallar yaklaşık 31,2 V'ta doyar.
+   Doyum bir geçersiz/üst sınır olayıdır.
+ - AIN2 için şemadaki R130=150 kΩ, R131=10 kΩ, R132=4,7 kΩ ile nominal
+   V_AIN2 = 0,31305 × V_ADS2_VDD + 0,02087 × V_DUT. Besleme 3,3 V iken
+   0 V yaklaşık 1,03 V, ±30 V yaklaşık 0,41–1,66 V. J6 boşta R129 ve
+   bölücünün ofseti ölçülür. AIN2 ofseti ve eğimi ayrıca kalibre edilir.
+ - ±60 V yanlış bağlantı hedefi, mevcut ölçüm kolunda doğrulanmış
+   değildir. 220 kΩ R130 ve daha yüksek bloklama gerilimli PhotoMOS
+   değerlendirilmiş adaylardır. Şemadaki U23 ve R130 yukarıdaki gibidir.
+   30 V üzeri DUT, yük etkinleştirme için geçersizdir.
+ - AIN0/AIN3 ortak düğümü okur. AIN1, giriş zincirinin ardından
+   gerilim varlığını kontrol edebilir. Tek başına sigorta veya kontak
+   arızasının yerini belirlemez. K1 açıkken kaynak varlığını AIN2'den oku.
+
+STM32 ADC:
+ - HAL_ADCEx_Calibration_Start çağrısını ADC ölçümlerinden önce çalıştır.
+   VREFINT ile VDDA'yı uygun örnekleme süresinde ölç. Gerçekçi olmayan
+   VDDA değeri ölçüm hatasıdır.
+ - PA3 = LOAD VOLTAGE. PA4 = /20V, R112 100 kΩ / R113 12 kΩ, nominal
+   k=0,10714. Ham değeri VDDA, bölücü katsayısı ve kalibrasyonla çevir.
+   PA3, K1 çekiliyken hızlı üst sınır izlemede kullanılabilir; analog
+   RC ve yazılım tepki süresini tezgâhta ölç.
+
+Örnekleme:
+ - Single-shot modda her MUX değişiminde yeni dönüşüm başlat. Dönüşüm
+   bitişi için OS bitini kullan. İki ADS paralel başlatılabilir, aynı
+   ADS'deki kanallar ardışık okunur. Her sonuca zaman damgası ver.
+ - Ölçüm doygun, eski veya geçersizse kontrol hesabına katma. Güç ve
+   korumada gerilim/akım örneklerinin zaman farkını sınırlandır. Darbe
+   kenarları taramalar arasına düşebilir. LCD, ses ve UART yüzünden
+   örnekleme aralığının uzamasını engelle.
+
+Akım setpoint'i:
+ - U2 MCP4725 → R2 22 kΩ / R4 2,2 kΩ → Q1 kelepçe → U4 OPA2197.
+   DAC beslemesi 3,3 V nominal, bölücü oranı 0,09091. Tam skala
+   yaklaşık 300 mV, ideal kanal başına 6 A. Bu bir analog ölçek,
+   cihazın akım/güç/ısıl sınırları bölüm 5 ve 6'da uygulanır.
+ - İki yük MOSFET'i (U7/U8 IRFP260N) tek setpoint'i paylaşır. 220 kΩ
+   op-amp geri beslemesi, gate sürüşü ve sıcaklık ideal ölçeğe hata
+   ekler. Başlama kodu ve eğimi ölç. Taze toplam akımla yavaş düzeltme
+   yap, iki kanalın akım paylaşımını ayrı izle. Doyumda düzeltme
+   integralini biriktirme. Dijital döngünün hızını prototipte ayarla.
+
+-------------------------------------------------------------------------------
+5. TEST MODLARI VE GERİLİM DÜŞÜŞÜ
+-------------------------------------------------------------------------------
+
+ - CC: akım hedefini korur. Akım, güç, sıcaklık ve MOSFET SOA sınırları
+   isteğin üstüne çıkarılmasını engeller.
+ - CV: ayarlanan gerilimi tutmak için çekilen akımı değiştirir. Kaynak
+   gerilimi hedefin altındaysa akım talebini azaltır.
+ - CP: I_hedef = P_hedef / V_DUT. Bölmeden önce gerilimin geçerli ve alt
+   çalışma sınırının üzerinde olduğunu doğrula. Akımı ayrıca sınırla.
+ - Pil kapasite testi: NiMH, Li-ion ve LiPo profilleri. Başlatmadan önce
+   kimyayı, seri hücre sayısını, akımı ve kesme gerilimini onaylat.
+   Alt eşiğe inince deşarjı bitir. Seri pakette toplam gerilim, tek tek
+   hücreleri göstermez. Taze ölçümlerle mAh, Wh ve süreyi hesapla.
+ - Gerilim düşüşü, profil ayarı: "Testi bitir" veya "Sonraki darbeyi
+   bekle". Pil testinde bitir. Darbe testinde 0 V, normal bekleme
+   aralığı olabilir. Akımın kesildiği doğrulanırsa K1 çekili kalabilir;
+   U10/U22 kapalı ve akım hedefi sıfır kalır.
+ - Darbe geri gelince ve test hâlâ etkinse geçerli gerilim/polariteyi
+   doğrula, U10/U22'yi aç, yerleşme sonrası akımı sıfırdan rampala.
+   K1 bırakılmışsa tam açılış sırasını çalıştır. Alt çalışma eşiği,
+   yeniden başlama histerezisi ve kararlılık süresi testle belirlenir.
+ - Örnek: 30 V bir dakika → 0 V → yeniden 30 V. Bekleme modunda test
+   aynı oturumda devam eder. Kullanıcı durdurursa yeni darbeyi
+   etkinleştirme. İlk darbede K1 ve akım rampası nedeniyle gecikme var.
+ - 1 V, doğru bağlanmış DUT'u tanıma hedefidir. Regüle edilebilen en
+   düşük gerilim, ayarlanan akıma göre prototipte ölçülür.
+
+-------------------------------------------------------------------------------
+6. KORUMALAR VE KRİTİK ARIZA
+-------------------------------------------------------------------------------
+
+ - Ters polarite: K1 açıkken AIN2 üzerinden açılışı engelle. K1
+   çekiliyken U14 ve U11, TPSI3052 EN'i donanımdan kesebilir. PB1
+   düşen kenarından firmware de güvenli çıkışları uygular.
+ - Aşırı gerilim, akım, güç, sıcaklık, kanal dengesizliği, fan durması,
+   yardımcı besleme düşmesi ve zorunlu ölçüm kaybını değerlendir.
+   1–30 V DUT hedef aralığı, 10 A ve yaklaşık 150–160 W tasarım hedefleri.
+   Nihai sınırlar kanal akımı, IRFP260N DC SOA, soğutucu, kablo,
+   konnektör ve test sonuçlarına göre belirlenir. Eski sabitleri taşıma.
+ - Kısa devre veya kritik arıza: PC6=HIGH ile akım hedefini sıfırla,
+   PB12=LOW ile U10/U22'yi hemen kapat. GPIO, DAC/I2C ve arayüz
+   işlemlerini beklemez. Sağlıklı seri MOSFET çifti, yük MOSFET'lerinden
+   biri kısa devre olsa bile ana akımı kesebilir.
+ - Taze iki şönt ölçümüyle kesmeyi doğrula. Akım sıfır bandına inerse K1
+   akımsız bırakılır. Akım sürerse veya kritik durumda kısa doğrulama
+   süresinde kesildiği doğrulanamazsa K1 son çaredir. Acil fiziksel
+   ayırma kararı verildiği anda PB8=LOW uygula. F2, kullanıcı, ekran
+   ve buzzer komutları PB8'i geciktirmesin.
+ - K1 acil ayırmasına gidildiğinde arızayı kilitle, iki buzzer ile
+   sabit güçlü alarmı başlat ve ekranda "DUT güç kaynağını hemen ayırın"
+   göster. Kontak bırakma süresinden sonra şöntleri tekrar kontrol et.
+   Sıfır akım mekanik kontak geri bildirimi yerine geçmez. DC arıza
+   akımında kontak kapasitesi ve F2'nin açma süresi ayrıca sınırlayıcıdır.
+ - Ters polarite, aşırı gerilim ve kritik ölçüm kaybı darbe bekleme
+   modunu keser. Kullanıcı onayı ve geçerli ölçümle ancak güvenli bir
+   başlangıç yapılabilir. Reset/watchdog sonrasında otomatik yük verme.
+ - Ani yardımcı enerji kesilmesinde yazılımın normal kapatma sırasını
+   tamamlayacağı varsayılmaz. Testte K1 ve her iki VGS zamanlamasını ölç.
+
+-------------------------------------------------------------------------------
+7. SICAKLIK, FANLAR, ARAYÜZ VE HABERLEŞME
+-------------------------------------------------------------------------------
+
+ - DS18B20, PB11 üzerinde tek 1-Wire ağı. J4.18, J5 ve J7 için üç
+   şematik bağlantı var. Takılı sensörleri ROM search ile bul. ROM
+   kimliklerine göre soğutucu/ortam rolleri atanır. Tüm sensörlerin
+   dönüşümü engellemeden zamanlanır. Scratchpad'i Match ROM ve CRC ile
+   oku. Zorunlu soğutucu sensörü geçersizse yükü kapat.
+ - FAN1: J2, PB9, PB4 capture. FAN2: J3, PB10, PB5 capture. Low-side
+   anahtarlama nedeniyle tach ölçümü için aç/kapa kullan. Fan kalkış
+   süresini dikkate al. Gerçek darbe/devir oranını fanla doğrula.
+   İki darbe/devir olduğu doğrulanırsa RPM = 30 × f_tach.
+ - Ön panel kısa basış, test sırasında durdurur. Boştayken uzun basış
+   menüyü açar. Panel butonu PC7 ve encoder butonu PB15 ayrı girişler.
+   Türkçe/English seçimi ortak arayüz koduyla çalışır. Türkçe karakterleri
+   takılacak LCD'de doğrula. LCD güncellemelerini parça parça gönder.
+ - Sabit bildirim ve alarm biplerini kullanıcı değiştiremez. İki pasif
+   piezo 5 V'ta ve ayrı PWM timer'larında. Melodi boşta veya testte
+   menüden isteğe bağlı dinlenir; en düşük öncelikte ve beklemesiz
+   çalışır. Her uyarı bipi melodiyi keser. K1 acil ayırması sabit alarmı
+   iki buzzer ile, sürücülerin izin verdiği tam seviyede çalar.
+ - CH340G üzerinden USART1, ESP32-C3 üzerinden USART4. BLE/Wi-Fi ESP32'de
+   çalışır. STM32 seri komutları, ölçümleri ve test durumunu taşır.
+   Uzaktan ayar/başlatma komutu yerel güvenlik koşullarından geçer.
+   Yerel durdurma ve acil koruma haberleşme tamponlarını beklemez.
+   Protokol ve bağlantı kesildiğinde testin davranışı belirlenecek.
+
+-------------------------------------------------------------------------------
+8. KALİBRASYON VE KAYIT
+-------------------------------------------------------------------------------
+
+ - Referans multimetre ve akım sınırlı kaynakla doğrula. K1 açık ve yük
+   kapalıyken iki şöntün sıfır ofsetini ölç. Sıfır bandını gürültü ve
+   sıcaklık değişimine göre belirle.
+ - Gerilim kalibrasyonu: J6 üzerinde örneğin 2 V ve 25 V kullan.
+   K1 açıkken AIN2 ofset/eğim kalibrasyonu yap. LOAD VOLTAGE, PA3 ve
+   VLINE'ı eriştikleri düğümlerde ayrı kalibre et. VLINE ölçümü için
+   sağlıklı F2 ve iletimdeki U10/U22 gerekir. Kalibrasyon yük hedefini
+   sıfırda tutabilir. K1 ve MOSFET durumunu test prosedüründe belirt.
+ - Akımda iki referans noktasıyla toplamı doğrula. Kanal kazancını ayrı
+   ayarlayacaksan her kanal için bağımsız referans kullan. Düşük ve
+   yüksek uçta sapma, dengesizlik ve DAC başlangıç kodunu kaydet.
+ - Flash ayar yapısı sürüm, CRC, kanal katsayıları, sensör ROM/rolleri,
+   dil ve profil ayarlarını içerir. Ayrılacak alan linker'da tanımlanır.
+   128 KiB Flash'ın son 2 KiB sayfası 0x0801F800'de. 4 KiB ayrılırsa
+   son iki sayfa kullanılır. Yazma/silme ayrıntıları ST errata ve
+   linker ile doğrulanır. Flash işlemlerini yük kapalıyken planla.
+ - Saatler süren test için mAh ve Wh toplamını her örnekte güncelle.
+   Ayrıntılı kayıt gerekiyorsa tamponlu PC/ESP32 aktarımı düşünülür.
+
+-------------------------------------------------------------------------------
+9. BELLEK BÜTÇESİ
+-------------------------------------------------------------------------------
+
+ - Eski ELV1, STM32G030F6 ve 32 KiB Flash kullanıyor. Depodaki kaynak,
+   CubeIDE'nin GNU araçlarıyla yeniden derlendi. -O0 derlemesi
+   26.364 bayt (%80,46), -Os derlemesi 16.668 bayt (%50,87) Flash
+   kullandı. Linker'ın statik RAM ve ayrılmış heap/stack toplamı
+   iki derlemede de 2.216 bayt. Bunlar revizyon ölçümü değildir.
+ - Revizyondaki STM32G071CBT6'da 128 KiB Flash ve 36 KiB SRAM var
+   (SRAM paritesi etkinse 32 KiB kullanılabilir). Notaya 4 bayt
+   ayrılırsa 10 × 200 nota 8.000 bayt Flash tutar. 100 mesajın iki
+   dildeki kopyaları, mesaj başına ortalama 25 baytta yaklaşık
+   5.000 bayt metin tutar. İki örnek sürücü ve menü kodunu içermez.
+ - 2–3 saatlik ölçümde mAh ve Wh değerlerini örnek geldikçe topla.
+   Bütün ölçümleri RAM'de saklamaya gerek yok. Ayrıntılı kayıt
+   istenirse ESP32/PC'ye aktarım ayrı değerlendirilir.
+ - Revizyonun tahmini toplamı: 50–82 KiB Flash, 7–14 KiB RAM.
+   128 KiB Flash'ta 46–78 KiB, 36 KiB RAM'de 22–29 KiB boş kalır.
+   Bu planlama tahmini CC/CV/CP, korumalar, darbe ve pil kapasite
+   testleri, Türkçe/İngilizce menü, melodiler ve PC/ESP32 seri
+   haberleşmesini içerir. Wi-Fi ve BLE ESP32 üzerinde çalışır.
+ - Planlama hedefi 80 KiB Flash ve 14 KiB RAM. Bu seviyede 48 KiB
+   Flash ve 22 KiB RAM boş kalır. Flash'ta ayar ve kalibrasyon için
+   4 KiB ayrılırsa uygulamaya kalan Flash payı 44 KiB olur.
+ - Bellek bütçesi daralırsa ilk çıkarılacak özellik, cihazdaki
+   isteğe bağlı melodi çalar ve nota tablolarıdır. Melodiler bu
+   durumda yalnızca PC bağlantısı üzerinden PC uygulamasında
+   çalınabilir. Cihazdaki sabit uyarı ve acil alarm bipleri korunur.
+ - Revizyon derlendiğinde linker haritasından Flash, .data, .bss ve
+   ayrılmış kalibrasyon/ayar alanını kontrol et. Koruma, ölçüm,
+   haberleşme ve ses birlikte çalışırken en yüksek stack kullanımını
+   ayrıca ölç.
 
 
 -------------------------------------------------------------------------------
- 0. ÖNCE BUNLARI OKU (en önemli 12 kural)
+10. PROTOTİP DOĞRULAMASI
 -------------------------------------------------------------------------------
- 1. Açılışta PB12 (OUT CONTROL)=LOW, PB8 (RELAY CONTROL)=LOW ve
-    PC6 (DAC CONTROL)=HIGH güvenlidir. Çıkış modundan ÖNCE ODR'yi hazırla.
- 2. Güncel high-side tasarım: OUT CONTROL HIGH = açma isteği, LOW = kapalı.
-    AND kapısı ayrıca POLARITY_OK koşulunu uygular (22.11.2026 eki).
- 3. DAC CONTROL: HIGH = setpoint GND'ye kelepçeli, yük kapalı.
-    LOW = MCP4725 çıkışı devrede.
- 4. U10 açılmadan yük akımı verme. U10 kapalıyken akım body diyodundan geçer;
-    10 A'de ~8 W, soğutucusuz.
- 5. PA2 artık DUT SENSE, AND çıkışının geri okumasıdır. LOW tek başına
-    ters bağlantı demek değildir. Güncel hata mantığı için 22.11.2026 ekine bak.
- 6. Açılışta HAL_ADCEx_Calibration_Start() çağır. Bütün dahili ADC sabitleri
-    kalibrasyondan SONRA ölçülerek belirlenmeli. ELV1'deki gibi sabit ofset
-    (LV_OFFSET_MV) yok.
- 7. ADS1115 #2 (0x49) AIN0/AIN3 artık aynı LOAD VOLTAGE sinyalini
-    GND referansıyla okur. Eski AIN0-AIN1 DUT gerilimi formülünü kullanma.
-    PA3 aynı düğümü dahili ADC ile izler; ayrıntı için güncel eke bak.
- 8. I2C2'nin saat kaynağı PCLK olmalı (errata 2.11.6). Sahte BERR gelirse
-    sadece bayrağı temizle (errata 2.11.2).
- 9. VREFBUF'u asla açma. VREF+ pini dışarıdan 3.3 V ile besleniyor.
-10. Flash'a kalibrasyon yazarken sayfayı silip yaz. Programlanmış bir double
-    word'ün üzerine 0 yazma (errata 2.2.5).
-11. MCP4725'in EEPROM'unda 0 kayıtlı olmalı. Böylece açılışta çıkış 0 V olur.
-12. Ekranda değerleri KESME, YUVARLA: (mv + 50) / 100.
 
+[ ] J1 DC besleme polaritesi, F1 ve D1 tepkisi, giriş sınırı ve panel
+    kablajını doğrula. 5 V/12 V hatlarını fan, USB şarj ve kablosuz
+    yükle birlikte ölç.
+[ ] J6 ön ölçümünde boş giriş, +1 V, doğru ve ters polarite, 30 V üstü,
+    kart enerjisiz ve K1 açık durumlarını akım sınırlı kaynakla ölç.
+    ±60 V hedefi için ölçüm kolunu ve açık K1 dahil ilgili parçaları
+    ayrı doğrula. K1 çekiliyken korunacak düğümleri ayrıca değerlendir.
+[ ] Her iki VGS'yi ortak source'a göre ölç. Açılış, normal kapatma,
+    ani besleme kesilmesi ve acil ayırma sırasında zamanlamayı doğrula.
+    K1 bobin komutu ile fiziksel bırakma arasındaki farkı ölç.
+[ ] Yük kapatma arızası ve geçersiz şönt ölçümünü akım sınırlı
+    düzenekte test et. K1'in akımsız açılmasıyla acil son kesmeyi
+    ayrı doğrula. Alarm, uyarı ve reset sonrası kilidi dene.
+[ ] Akım paylaşımı, uzun süreli şönt sıcaklığı, kapalı kasa soğutma
+    ve MOSFET SOA kontrollerinden sonra limitleri kesinleştir.
+[ ] Gerilim basamaklarıyla darbe bekleme, durdurma komutu, yeniden
+    rampa ve koruma önceliklerini dene. Menü, LCD, melodi ve UART
+    çalışırken örnekleme gecikmesini ölç.
 
--------------------------------------------------------------------------------
- 1. DONANIM ÖZETİ
--------------------------------------------------------------------------------
- Güç yolu (DUT = test edilen kaynak):
-
-   J6.2 (DUT +) --F2 15A-- VCC LINE --+-- U7 IRFP260N --R18||R116 0.05R-- GND
-                                      +-- U8 IRFP260N --R19||R117 0.05R-- GND
-   J6.1 (DUT -) = GND1 --U10 IRFB4110 (D=GND1, S=GND)-- kart GND
-
-   J7 (batarya XT60): J7.2 = VCC LINE, J7.1 = kart GND
-     -> F2'yi, U10'u ve ters polarite algılamasını ATLAR (bkz. 15. bölüm).
-
- Kontrol döngüsü (iki kanal, ortak setpoint):
-   MCP4725 (I2C) -> R2 22k / R4 2.2k (x0.0909) -> C11/C13 filtre -> Q1 kelepçe
-   -> U4A/U4B OPA2197 -> U7/U8 gate. Geri besleme şöntlerden.
-
- Ölçüm:
-   ADS1115 #1 (U9, 0x48):  AIN0-AIN1 = R18 şöntü (kanal 1, U7)
-                           AIN2-AIN3 = R19 şöntü (kanal 2, U8)
-   ADS1115 #2 (U21, 0x49): AIN0-AIN1 = DUT terminal gerilimi (J6.2 - GND1)
-                           AIN2-AIN3 = F2 sigortası üzerindeki düşüm
-   STM32 ADC PA3 = LOAD VOLTAGE (J6.2 / 15.24, kart GND'sine göre)
-
- Beslemeler:
-   - Trafo: Profuse CX6632 P2, giriş 220 V / 50 Hz, çıkış 15 VAC, 30 W
-     (ELV1 ile aynı). Şematikteki "30VAC" yazısı aslında 30 VA demek.
-   - DC hat (adı "20V"): tam yükte ~19.4 V tepe, şebeke -%10'da ~17.3 V,
-     yüksüzken şebeke +%10'da ~25.6 V.
-   - Kullanılabilir DC güç ~18-21 W (30 VA x 0.6-0.7, kondansatör girişli
-     doğrultucu).
-   - Trafo -> KBU8M -> "20V" hattı. Buradan şunlar beslenir:
-       LM7815 (+15V: op-amp, U10 gate),
-       TPS54302 -> 5 V -> AP2112 3.3 V,
-       TPS54302 -> 12 V (fanlar).
-   - 5 V ayrıca USB şarj çıkışını besler (SY6280, ~2 A limit).
-
-
--------------------------------------------------------------------------------
- 2. MCU VE SAAT AYARLARI (CubeMX)
--------------------------------------------------------------------------------
- - MCU: STM32G071CBT6 (LQFP48), 128 KB flash, 36 KB RAM.
- - HSE: 8 MHz kristal (Y2 ABM7, C54/C55 22 pF) PF0/PF1'de.
-   PLL: M=1, N=16, R=2 -> 64 MHz SYSCLK. Flash latency 2.
-   HSE başlamazsa HSI16'ya geri dön ve uyarı göster (UART için HSI yeterli).
- - APB bölücü = 1 tutulmalı. TIM16/17 errata'sı (2.8.6, Rev B) bu sayede
-   etkisiz kalır.
- - VREFBUF: KAPALI. VREF+ = 3.3 V (FB3 + C56/C57).
- - UCPD: kullanılmıyor. CubeMX'in HAL_MspInit içinde ürettiği
-   HAL_SYSCFG_StrobeDBattpinsConfig(...) satırını SİLME. PB15 (encoder SW)
-   UCPD1_CC2 pinidir; bu satır dead-battery pull-down'ını kaldırır.
- - PA9 (pin 29) ve PA10 (pin 32) NC. Kodda kullanma.
- - Option byte'lara dokunma (nBOOT_SEL, NRST modu, RDP). Rev B çipte yarıda
-   kalan bir option byte yazımı çipi kilitleyebilir (errata 2.2.9).
-   Çip revizyonunu oku: DBGMCU->IDCODE REV_ID; 0x2000 = Rev B,
-   0x2001 = Y/1/2, 0x2003 = X/3. Rev B ise ekranda uyar.
- - YEDEK MCU (G071CBT6 stokta yoksa) - LQFP48, PCB DEĞİŞMEDEN takılabilenler
-   (CubeMX 6.13 veritabanından pin pin karşılaştırıldı, 18.10.2026):
-     Parça            Flash/RAM     Pin farkı                  Not
-     ---------------  ------------  -------------------------  ---------------------------------
-     STM32G071C8T6    64 KB/36 KB   yok                        Aynı çip, flash yarısı. 1. TERCİH.
-     STM32G081CBT6    128 KB/36 KB  yok                        G071 + AES. Kod aynen çalışır.
-     STM32G0B1CBT6    128 KB/144 KB yok (pin 10 adı farklı)    USB+FDCAN'lı büyük kardeş;
-     (CCT6/CET6)      256-512 KB                               CubeMX'te işlemciyi değiştirip
-                                                               kodu yeniden üret.
-     STM32G070CBT6    128 KB/36 KB  pin 10 sadece NRST,        Değer serisi: DAC/COMP/UCPD yok;
-                                    29/32 NC                   bu tasarımda kullanılmıyor. Uygun.
-     STM32G051C8T6    64 KB/18 KB   29/32 NC                   DAC var. Uygun.
-     STM32G031C8T6    64 KB/8 KB    29/32 NC                   RAM az (8 KB); son çare.
-   Hepsinde kullanılan fonksiyonlar mevcut:
-     - ADC1_IN0/2/3,
-     - I2C2 (PA11/PA12),
-     - USART1 (PB6/PB7),
-     - TIM3_CH1/CH2 (PB4/PB5), TIM16_CH1 (PA6), TIM14_CH1 (PA7),
-     - HSE (PF0/PF1), SWD.
-   TEDARİK (18.10.2026, Chrome ile bakıldı; KDV hariç):
-     - STM32G071CBT6, Farnell TR (tr.farnell.com, kod 2980900): 18.665 stok,
-       1+ 3,84 €, 10+ 2,46 €, 25+ 2,22 €, 100+ 2,00 €.
-     - STM32G071CBT6, Mouser TR (511-STM32G071CBT6): 582 stok (+3000 beklenen
-       22.02.2027), 1 adet 3,89 €, 10 adet 2,75 €, 100 adet 2,20 €.
-     - Octopart: element14 21.518; Arrow 3.736; G071C8T6 Arrow 3.967.
-     - Özdisan'da G071 ve yedeklerin hiçbiri stokta yoktu.
-   UYMAYANLAR:
-     - STM32C0 serisi: pin 4 VBAT değil PF3; SWD pinleri farklı.
-     - STM32G030C: pin dizilimi uyar ama 8 KB RAM; G031 ile aynı kategori.
-   Değişince firmware'de: CubeMX'te işlemci seçimi, linker script
-   (flash/RAM boyutu) ve o parçanın errata'sı kontrol edilir. Kalibrasyon
-   flash sayfası (12.5) son sayfadır; adres flash boyutuna göre değişir.
-     64 KB -> sayfa 31, 0x0800F800
-     128 KB -> sayfa 63, 0x0801F800
- - IWDG (bağımsız watchdog) aç. Önerilen süre ~500 ms. Ana döngüde besle.
-   Reset olursa donanım pull'ları yükü zaten kapatır.
-
-
--------------------------------------------------------------------------------
- 3. PİN TABLOSU
--------------------------------------------------------------------------------
- Pin  Port  Sinyal          Yön / periferal         Aktif     Reset hâli / not
- ---  ----  --------------  ----------------------  --------  -----------------------------
- 11   PA0   ESP_TX          USART4_TX AF4           -         R85 100R -> ESP GPIO20 RX
- 12   PA1   ESP_RX          USART4_RX AF4           -         R86 100R <- ESP GPIO21 TX
- 15   PA4   20V SENSE       ADC1_IN4                -         R112 100k / R113 12k + C82 100nF, k=0.10714
- 20   PB1   POLARITY_OK     GPIO in / EXTI1         LOW=ters  U14 cikisi; HIGH kaynak varligi kaniti degil
- 47   PB8   RELAY CONTROL   GPIO out                HIGH=cek K1 bobini; reset degeri LOW
- 13   PA2   DUT SENSE       GPIO in                 HIGH=EN   R97 uzerinden AND cikisi; bagimsiz polarite degil
- 14   PA3   LOAD VOLTAGE    ADC1_IN3                -         R54 47k / R55 3.3k + C40. ADS2 AIN0/AIN3 ile ortak düğüm
- 17   PA6   BUZZER1         TIM16_CH1 PWM           HIGH=çal  Q4 -> BZ1 (piezo, 5 V), D15 + R114 1k paralel. TIM3_CH1 KULLANMA (TACT1 ile çakışır)
- 18   PA7   BUZZER2         TIM14_CH1 PWM           HIGH=çal  Q6 -> BZ2 (piezo, 5 V), D16 + R115 1k paralel. TIM3_CH2 KULLANMA (TACT2 ile çakışır)
- 19   PB0   STATUS LED      GPIO out                HIGH=yan  R80 330R -> D13 (18.10.2026'da yönü düzeltildi)
- 22   PB10  FAN CONTROL 2   GPIO out                HIGH=açık R53 1k / R71 10k pull-down -> Q2 -> J8 MAIN FAN
- 48   PB9   FAN CONTROL 1   GPIO out                HIGH=açık R81 1k / R82 pull-down -> Q5 -> J9 VENTILATION FAN
- 43   PB4   TACT1           TIM3_CH1 input capture  -         J9 tach. R76 10k pull-up, R79 10k seri, C72 10 nF
- 44   PB5   TACT2           TIM3_CH2 input capture  -         J8 tach. R75 10k pull-up, R74 10k seri, C73 10 nF
- 23   PB11  DS18B20 DQ      GPIO open-drain         -         İki sensör: J4.18 (R41/R39 4.7k) + J5.2 (R70/R69 4.7k)
- 24   PB12  OUT CONTROL     GPIO out push-pull      HIGH=istek R95 100k pull-down; once ODR=0
- 25   PB13  ENCODER A       GPIO in, EXTI13         LOW       R33 4.7k pull-up, R36 1k + C35 100 nF
- 26   PB14  ENCODER B       GPIO in, EXTI14         LOW       R31 4.7k pull-up, R35 1k + C34 100 nF
- 27   PB15  ENCODER SW      GPIO in, EXTI15         LOW       R34 10k pull-up, R37 1k + C36 100 nF. UCPD strobe şart
- 30   PC6   DAC CONTROL     GPIO out push-pull      HIGH=kes  R5 10k pull-up (reset'te yük KAPALI). Önce ODR=1
- 31   PC7   RESET BUTTON    GPIO in, EXTI7          HIGH      R29 10k PULL-DOWN; buton ön panelde (J4.13) 3.3 V'a çeker
- 33   PA11  I2C2_SCL        I2C2                    -         ADS #1, ADS #2, MCP4725, J4 (LCD). R110 4.7k pull-up
- 34   PA12  I2C2_SDA        I2C2                    -         aynı. R111 4.7k pull-up
- 35   PA13  SWDIO           SWD                     -         J10
- 36   PA14  SWCLK / BOOT0   SWD                     -         J10
- 37   PA15  USB CHARGE      GPIO out                HIGH=açık R62 100k pull-down -> SY6280 EN (USB 5 V çıkışı, ~2 A)
- 45   PB6   USART1_TX       USART1                  -         -> CH340G RXD (USB-UART)
- 46   PB7   USART1_RX       USART1                  -         <- CH340G TXD
- 8/9  PF0/1 OSC_IN/OUT      HSE                     -         8 MHz kristal (R77/R78 0R)
- 10   PF2   NRST            -                       -         SW3 + R100 10k + C69 100 nF
-
- EXTI hatları: 2 (RCP), 7 (RESET), 13/14/15 (encoder). Çakışma yok.
-   - EXTI2_3, EXTI4_15 kesmeleri.
-   - Tach'lar EXTI kullanmıyor; TIM3 input capture ile ölçülüyor.
-
- Boş pinler (geliştirme / genişleme için):
-   PA5 (DAC1), PA8, PB2, PB3, PC13,
-   PC14, PC15, PD0-PD3.
-   - ADS ALERT/RDY pinleri MCU'ya bağlı değil. İstenirse boş PB2/PB3'e
-     bağlanabilir.
-
-
--------------------------------------------------------------------------------
- 4. GÜVENLİ AÇILIŞ SIRASI
--------------------------------------------------------------------------------
- 1. HAL_Init. GPIO ayarı yapılmadan önce ODR'yi hazırla:
-      PB12=1 (U10 kapalı), PC6=1 (kelepçe), PB9=0, PB10=0 (fanlar kapalı),
-      PA6=0, PA7=0 (buzzer'lar), PA15=0 (USB şarj kapalı), PB0=0.
-    Sonra bu pinleri çıkış moduna al.
-    (CubeMX'te "GPIO output level" alanlarını buna göre ayarla.)
- 2. Saat: HSE -> PLL 64 MHz. Başarısızsa HSI16.
- 3. ADC1:
-    a. CubeMX init.
-    b. HAL_ADCEx_Calibration_Start().
-    c. VREFINT ile VDDA ölçümü (bkz. 7.3).
- 4. I2C2 400 kHz, saat kaynağı PCLK. Bus taraması yap:
-      0x48 ADS1115 #1 (akım)       -> zorunlu
-      0x49 ADS1115 #2 (gerilim)    -> zorunlu
-      0x60-0x67 MCP4725 (setpoint) -> zorunlu. A0 GND'de; adres parça
-                                      ekine göre 0x60/0x62/0x64/0x66
-      0x27 / 0x3F LCD (PCF8574)    -> isteğe bağlı
-    Zorunlu biri yoksa: hata ekranı göster ve yükü KİLİTLE.
- 5. MCP4725:
-    - Çıkışı 0'a yaz.
-    - EEPROM değeri 0 değilse "DAC + EEPROM yaz" komutuyla bir kez 0 yaz.
-      Her açılışta yazma; EEPROM'un yazma ömrü sınırlı.
- 6. Flash'tan kalibrasyonu oku (CRC kontrolü ile). Yoksa varsayılanları kullan
-    ve ekranda "KALIBRASYON YOK" göster.
- 7. DS18B20: ROM search yap ve iki sensörün ROM kodunu bul. Hangi sensörün
-    soğutucuda olduğunu kalibrasyon menüsünde seçtir ve kaydet.
- 8. Kendi kendine test (DAC CONTROL HIGH, U10 kapalı):
-    - ADS #1 iki kanalı ~0 A okumalı. Bu değerler sıfır ofseti olarak kaydedilir.
-    - ADS #2 ve PA3 makul değerler vermeli.
-    - RCP HIGH olmalı. LOW ise "TERS BAĞLANTI".
- 9. IWDG'yi başlat. Ana döngüye geç.
-
-
--------------------------------------------------------------------------------
- 5. GİRİŞ YOLU (U10) VE TERS POLARİTE
--------------------------------------------------------------------------------
- U10 (IRFB4110), DUT'un eksi hattında N-MOSFET. Body diyodu doğru polaritede
- iletir, ters polaritede bloklar.
- - Gate, işlemciden bağımsız olarak +15 V'tan R38 100k ile çekilir ve D4 ile
-   12 V'a kelepçelenir.
- - Q3, gate'i GND'ye çeker. Q3'ün gate'i = OUT CONTROL (PB12).
-   HIGH -> Q3 iletimde -> U10 KAPALI.
-   LOW  -> U10 AÇIK.
- - Açılma süresi: R38 100k ile ~1-2 ms. Kapanma Q3 ile hızlıdır.
- - Ters bağlantıda U13 (LTV-817) optokuplörü:
-     a. U10'un gate'ini D5 üzerinden donanımsal olarak çeker (MCU'dan bağımsız),
-     b. RCP (PA2) hattını LOW yapar.
-
- Kurallar:
- - RCP LOW olduğunda (kesme ile, en yüksek öncelik):
-     PC6=1 (kelepçe), DAC=0, PB12=1 (U10 kapalı), buzzer alarmı,
-     ekranda "TERS BAGLANTI".
-     Kilitli kalır: RCP HIGH olsa bile kullanıcı reset butonuna basana kadar
-     açılmaz.
- - U10'u açma koşulları:
-     RCP HIGH + kaynak gerilimi >= Von + aktif hata yok.
- - U10'u kapatma koşulları:
-     Kaynak gerilimi Voff'un altına düştü (kaynak söküldü), herhangi bir hata,
-     ya da yük kapatıldı.
-     Sıra: önce PC6=1 ve DAC=0, ~10 ms sonra PB12=1.
- - Ters algılama eşiği (ELV1'de ölçülen: 1.71 V, RCP).
-   Revizyon için tahmin: RCP ~1.7 V, U10 gate kapatma ~2.2 V.
-   Kart gelince ölçülüp datasheet'e yazılacak.
-   Bu eşiklerin altındaki ters gerilimlerde koruma yine çalışır (body diyodu
-   bloklar), ama uyarı gelmeyebilir.
- - Negatif akım koruması: ADS #1 kanallarından biri -50 mA'den daha negatifse,
-   U7/U8 body diyotlarından ters akım geçiyor demektir. Hemen yükü ve U10'u
-   kapat.
- - U10 iletim kontrolü (sadece J6 yolu):
-     V_U10 = -(ADS2 AIN1 tek uçlu) / k   (GND1, kart GND'sinin altında kalır)
-     Akım > 0.5 A iken V_U10 > 0.25 V ise U10 tam açılmamış ya da arızalı.
-     Yükü kapat, "U10 HATASI" göster.
-
-
--------------------------------------------------------------------------------
- 6. YÜK (SETPOINT) KONTROLÜ
--------------------------------------------------------------------------------
- Zincir:
-   MCP4725 kodu -> Vdac = kod x 3300 / 4096  (referans = 3.3 V besleme)
-   Vset = Vdac x 2.2 / 24.2 = Vdac x 0.09091   (R2 22k / R4 2.2k, H18)
-   Tam skala (kod 4095): Vset = 300 mV -> kanal başına ~6.0 A, toplam ~12.0 A
-   1 LSB = 0.0733 mV setpoint = kanal başına ~1.47 mA (toplam ~2.9 mA)
-   Şönt kanal başına 0.05 Ohm (R18||R116, R19||R117; 2 x VMS-R100).
-
- Gerçek akım (kanal başına, yaklaşık):
-   I = (1.0045 x Vset - Vgate / 220) / 0.05 Ohm
-   - Vgate/220 terimi R8 220k geri beslemesinden gelir: 14-20 mV ≈ 0.28-0.4 A
-     ofset.
-   - Bu terim MOSFET'e, sıcaklığa ve akıma göre değişir.
-   - Sonuç: açık döngü setpoint YETERSİZ. Firmware, ADS #1 ile ölçülen toplam
-     akıma göre DAC kodunu düzeltmeli:
-       * Yavaş PI veya basit integral döngü.
-       * ±2 LSB ölü bant (ölçüm gürültüsünde salınmasın).
-       * Güncelleme ~50-100 Hz (setpoint RC filtresi ~18 ms).
-   - Başlangıç kodu kalibrasyondaki "akım başlama kodu" + eğim ile hesaplanır
-     (bkz. 12.4).
-
- Açma sırası:
-   1. U10 açık ve hata yok.
-   2. DAC = 0, sonra PC6 = 0 (kelepçeyi bırak).
-   3. Soft-start: hedefe rampa ile çık (örneğin 100 ms'de). Kaynağı ve
-      kabloları zorlamamak için.
-   4. Kapalı döngü düzeltmeyi başlat.
- Kapatma: PC6 = 1 (anında), DAC = 0.
-
- Not: İki kanal tek DAC'tan beslenir; ayrı ayrı ayarlanamaz. ADS #1 iki kanalı
- ayrı ölçer:
- - Toplam akım = I1 + I2.
- - Dengesizlik = |I1 - I2|. Toplam > 0.5 A iken toplamın %20'sinden fazlaysa
-   uyarı (MOSFET veya şönt arızası olabilir).
-
-
--------------------------------------------------------------------------------
- 7. ÖLÇÜMLER
--------------------------------------------------------------------------------
- 7.1 ADS1115 #1 (U9, 0x48) - AKIM
-   - MUX 000 (AIN0-AIN1) = kanal 1 (U7, R18)
-   - MUX 011 (AIN2-AIN3) = kanal 2 (U8, R19)
-   - PGA ±0.512 V (FSR kodu 100)  (H18: şönt 0.05 Ohm)
-     -> 1 LSB = 15.625 µV = 0.3125 mA; kanal başına 10.24 A'e kadar.
-     Tam skala 6 A'de 0.3 V. ±0.256 V YETMEZ (5.12 A'de doyuma girer).
-   - I_ch [mA] = (kod x 15.625 µV - ofset_ch) / 0.05 Ohm x kazanç_ch
-   - Şöntler Kelvin bağlı (NetTie NT1-NT4). Giriş filtresi: 100R +
-     22 nF ortak mod + 220 nF diferansiyel.
-   - Single-shot mod, 475 veya 860 SPS. Her MUX değişiminden sonra yeni
-     dönüşüm başlat.
-
- 7.2 ADS1115 #2 (U21, 0x49) - GERİLİM
-   k = 3.3k / (47k + 3.3k) = 0.065606 (bölücüler %0.1, eşleşmiş)
-   - MUX 000 (AIN0-AIN1): V_DUT = (V_AIN0 - V_AIN1) / k
-       -> J6 terminalleri arası gerçek gerilim; U10 ve GND bakır düşümleri
-          ölçüme girmez.
-   - MUX 011 (AIN2-AIN3): V_F2 = (V_AIN2 - V_AIN3) / k
-       -> sigorta + J6.2 ile VCC LINE arası düşüm (normalde < 0.1 V).
-   - MUX 110 (AIN2 tek uçlu): V_LINE = V_AIN2 / k
-       -> VCC LINE'ın kart GND'sine göre gerilimi.
-   - MUX 101 (AIN1 tek uçlu): V_GND1 = V_AIN1 / k
-       -> GND1'in kart GND'sine göre gerilimi; negatif çıkar (bkz. 5).
-   - PGA ±2.048 V (kod 010) -> 1 LSB = 62.5 µV = 0.953 mV giriş;
-     31.2 V'a kadar ölçer.
-   - Ters bağlantıda AIN0/AIN3 ~ -2 V'a iner. Okuma geçersizdir; RCP zaten
-     LOW olur.
-
-   Kaynak hangi girişte? (doğrulanmalı)
-   - U10 kapalı ve J6'da kaynak varsa: bölücü akımı U10 body diyodundan döner,
-     GND1 ≈ -0.4…-0.5 V olur. Bu durumda V_GND1 < -0.15 V -> "J6 girişi".
-   - J7'de (batarya XT60) kaynak varsa: GND1, R101/R102 üzerinden ≈ 0 V
-     olur. V_LINE var ama |V_GND1| < 0.05 V -> "J7 girişi".
-     U10 gerekmez; ters polarite koruması YOK.
-
- 7.3 STM32 ADC - PA3 (LOAD VOLTAGE) ve VDDA
-   - Açılışta HAL_ADCEx_Calibration_Start() çağır (ADC kapalıyken).
-   - VDDA: ADC_CHANNEL_VREFINT, örnekleme >= 4 µs.
-       (160.5 cycle @ 32 MHz = 5 µs; SamplingTimeCommon2'ye ata.)
-       VDDA = __HAL_ADC_CALC_VREFANALOG_VOLTAGE(raw, ADC_RESOLUTION_12B)
-       2.9-3.6 V dışında çıkarsa 3300 kullan.
-   - V_PA3 = raw x VDDA / 4095 / k   (+ kalibrasyon kazanç/ofset)
-   - Örnekleme: kaynak empedansı ~3 kΩ + C40 100 nF -> 39.5 cycle yeterli.
-   - Görevi: hızlı OVP (ms seviyesinde), Von/Voff kararı, kaynak var/yok.
-   - PA4 (20V SENSE, ADC1_IN4): V_20V = raw x VDDA / 4095 / 0.10714.
-     - Kaynak empedansı ~10.7 kΩ + C82 100 nF; 39.5 cycle yeterli.
-     - Her döngüde oku ve koruma #13'te kullan.
-     - Beklenen aralık: tam yükte ~17-20 V, yüksüzken en fazla ~25.6 V.
-     Ekranda gösterilmez.
-   - U10 kapalıyken ~0.45 V düşük okur (body diyodu). Bu normaldir.
-   - Donanım oversampling (16x, shift 4) kullanılabilir.
-
- 7.4 Örnekleme planı (öneri)
-   - İki ADS paralel çalışır: ADS #1 akım (k1, k2), ADS #2 gerilim (V_DUT ve
-     sırayla V_F2 / V_LINE / V_GND1).
-   - 475 SPS ile her ADS'de iki kanal: ~4.2 ms'de bir güncelleme
-     (~240 Hz/kanal).
-   - Dönüşüm bitti bilgisi: config register'ın OS biti yoklanır (ALERT
-     bağlı değil).
-   - Güç = V_DUT x (I1 + I2). V ve I aynı anda ölçüldüğü için güç hesabı
-     tutarlı olur.
-
-
--------------------------------------------------------------------------------
- 8. KORUMALAR (öncelik sırasıyla)
--------------------------------------------------------------------------------
- Tüm korumalarda tepki:
-   PC6=1, DAC=0, PB12=1 (U10 kapalı), alarm, hata nedeni ve değeri ekranda.
-   Kilitli kalır; reset butonu ile açılır.
- Eşikler EEPROM / flash ayarı olsun. Aşağıdakiler başlangıç önerisi.
-
-  #  Koruma                 Koşul                                         Not
- --- ---------------------- --------------------------------------------- ----------------------------
-  1  Ters bağlantı          RCP LOW                                       EXTI, anında
-  2  Negatif akım           I1 veya I2 < -50 mA                           body diyot ters akımı
-  3  Aşırı gerilim (OVP)    V_DUT veya V_PA3 > 30.0 V (2 örnek)           ölçüm üst sınırı 31.2 V
-  4  Aşırı akım (OCP)       I1 veya I2 > 6.0 A, ya da toplam > set+%10    3 örnek onay
-  5  Aşırı güç (OPP)        P > OPP_MAX                                   soğutucuya göre; ELV1: 150 W
-  6  Aşırı sıcaklık (OTP)   soğutucu > 85 °C (uyarı 70 °C)                DS18B20
-  7  Voltaj çökmesi         V_DUT < set_V ve toplam I > 10 mA (2 onay)    ELV1'de 10 mA test edildi, sorunsuz
-  8  Sigorta attı           V_DUT > 1 V ama V_LINE < 0.5 V                ADS #2 AIN2
-  9  U10 iletmiyor          J6 yolu, I > 0.5 A ve V_U10 > 0.25 V          bkz. 5
- 10  Fan durdu              fan açık, 1 s boyunca tach darbesi yok        ilk 2 s yok say
- 11  Kanal dengesizliği     |I1-I2| > %20 toplam (toplam > 0.5 A)        uyarı; tekrarlarsa kes
- 12  I2C hatası             ADS veya DAC okunamıyor (3 deneme)            bus recovery dene
- 13  Besleme düşük          20V SENSE < 16.8 V (uyarı 17.5 V)             LM7815'in payı bitmeden kes (H12)
- 14  Güç bütçesi            USB şarj açık + yük açık + iki fan açık       uyarı göster (H10)
-
- OPP için soğutucu ve MOSFET SOA'sına göre gerçek değer belirlenmeli
- (IRFP260N lineer modda çalışıyor).
-
-
--------------------------------------------------------------------------------
- 9. FANLAR VE TACH
--------------------------------------------------------------------------------
- - FAN CONTROL 1 (PB9)  -> Q5 -> J9 VENTILATION FAN; tach = TACT1 (PB4)
- - FAN CONTROL 2 (PB10) -> Q2 -> J8 MAIN FAN;        tach = TACT2 (PB5)
- - Fanlar 3 pinli (GND, +12V, TACH). Low-side anahtarlamalı, AÇ/KAPA
-   kullanılıyor. PWM YAPMA: Q kapalıyken fanın GND'si yükselir, tach
-   referansı kaybolur ve ölçüm bozulur.
- - Tach open-collector, devir başına 2 darbe:
-     RPM = 30 x f_tach   (örneğin 50 Hz -> 1500 RPM)
-   TIM3 input capture: CH1 = PB4, CH2 = PB5. Periyodu ölç. Timer taşmasıyla
-   "darbe yok" zaman aşımını say.
- - Tach girişinde 10k seri + 10 nF RC var (~800 Hz kesim); 6000 RPM'e
-   (200 Hz) kadar yeterli.
- - Kontrol: soğutucu sıcaklığına göre histerezisli aç/kapa. Örneğin MAIN fan
-   40 °C'de açılır, 35 °C'de kapanır; VENTILATION fan güç > X W iken açık.
- - Fan açıldıktan sonraki ilk 2 s tach'ı yok say (kalkış).
-
-
--------------------------------------------------------------------------------
- 10. SICAKLIK (DS18B20 x2, PB11)
--------------------------------------------------------------------------------
- - Tek 1-Wire hattında iki sensör var (J4.18 ön panel ve J5). İki ayrı 4.7k
-   pull-up paralel bağlı (~2.35k).
- - ROM search ile iki adresi bul. Okurken Match ROM kullan; Skip ROM KULLANMA.
- - 12 bit dönüşüm 750 ms sürer. Bloklamayan bir durum makinesiyle oku
-   (ELV1'deki ds_state yapısı uygun).
- - CRC hatası 3 kez üst üste gelirse sensör geçersiz sayılır. Soğutucu sensörü
-   geçersizse yük 2 A ile sınırlanır ya da kesilir.
- - 1-Wire zamanlaması µs hassasiyetinde. Kesmeleri sadece kısa bit
-   aralıklarında kapat; DWT veya timer ile gecikme üret.
-
-
--------------------------------------------------------------------------------
- 11. KULLANICI ARAYÜZÜ
--------------------------------------------------------------------------------
- - LCD: ön panel (J4) üzerinden I2C, PCF8574 tabanlı (0x27 veya 0x3F).
-   ELV1'deki lcd_* fonksiyonları taşınabilir.
-   Arka ışık:
-     - PCF8574'ün P3 biti (0x08) ile AÇ/KAPA yapılır.
-     - ELV1 kodu bu biti her yazmada sabit 1 gönderiyor (LCD_BL_BIT). Bunu bir
-       değişkene bağla (lcd_bl_state).
-     - Değiştirmek için sadece bu biti içeren tek bir byte yazmak yeter.
-       Diğer bitler o anki RS/EN durumunu korumalı.
-     - Öneri: X dakika işlem yoksa kapat; tuş, encoder veya alarm gelince aç.
-     - Parlaklık ayarı PCF8574 ile YAPILAMAZ (sadece aç/kapa). I2C üzerinden
-       PWM, bus'ı ADS1115'lerle paylaştığı için önerilmez.
-     - Dimmer istenirse: modüldeki "LED" jumper'ını çıkar ve arka ışığı
-       MCU'dan bir PWM pini + MOSFET ile sür.
-       Boş PWM pini: PB3 (TIM2_CH2).
-       J4'te boş pin kalmadı (H16); konnektöre pin eklemek gerekir.
- - Encoder A/B (PB13/PB14): EXTI ile yazılım dekodu (Gray tablosu).
-   - Donanım RC'si var (1k + 100 nF), ek debounce'a gerek yok. Sadece geçersiz
-     geçişleri at.
-   - PB13/PB14'te donanım encoder modu yok. TIM2 encoder için ileride PA0/PA1
-     kullanılabilir.
- - Encoder SW (PB15) ve RESET BUTTON (PC7):
-   - SW aktif LOW; RESET aktif HIGH (pull-down var!).
-   - 20-50 ms yazılım debounce. Uzun basış ile menü / kalibrasyon girişi.
- - Buzzer'lar: SANCON EPT-14A4009P035D, PİEZO, sürücüsüz (transducer),
-   9 V nominal, 4 kHz, Ø14 x 6.4 mm, pin aralığı 7.6 mm.
-   +5V'tan low-side MOSFET ile sürülüyor (bkz. H17).
-   - BUZZER1 PA6 -> TIM16_CH1, BUZZER2 PA7 -> TIM14_CH1.
-     İki ayrı timer = iki bağımsız frekans = 2 sesli müzik
-     (melodi + bas/armoni).
-   - TIM3'ü KULLANMA; tach'lar TIM3'te.
-   - Nota çalma: frekans = timer periyodu (ARR), ses = duty (%50 en yüksek;
-     %5-50 arası kaba ses ayarı). Sessizlik = CCR 0.
-   - Piezonun rezonansı ~4 kHz ve dar: ~3-5 kHz arasında yüksek, 1 kHz
-     altında çok zayıf çalar. Alarmlar için 4 kHz kullan. Melodileri
-     C7-C8 (2-4 kHz) oktavlarına kaydır; düşük notalar neredeyse duyulmaz.
-   - Engellemeyen nota kuyruğu kullan. ELV1'deki buzzer_tone() HAL_Delay ile
-     bekliyordu; yeni yapıda her kanalın kendi kuyruğu olsun ve SysTick
-     (1 ms) ile ilerlesin.
-   - Öncelik: koruma alarmları müziği her zaman keser.
-   - PC komutları (öneri):
-       "TONE <kanal> <Hz> <ms> [duty]"
-       "MELODY <kanal> <nota dizisi>"   (örn. RTTTL formatı)
-       "STOP"
-       "VOL <0-100>"
-   - Daha zengin ses istenirse (ileride): boştaki DAC (PA4/PA5) +
-     PAM8302 benzeri sınıf-D amfi + küçük hoparlör. Firmware'de dalga
-     tablosuyla 4+ ses karıştırılabilir. Bu durumda buzzer'lar alarm için
-     kalır.
- - STATUS LED (PB0): HIGH = yanar.
-   Kalp atışı: 1 Hz yanıp sönme; hata varsa hızlı yanıp sönme.
- - USB CHARGE (PA15): HIGH = ön paneldeki USB 5 V çıkışı açık (SY6280,
-   ~2 A sınırlı). Varsayılan kapalı; menüden açılır.
- - UART (USART1, CH340G): 115200 8N1 önerilir.
-   - Kayıt satırı:
-     "t_ms;V_mV;I1_mA;I2_mA;P_mW;T_c;durum"
-   - Komut seti (öneri): SET I, SET V, ON, OFF, CAL, LOG.
- - Von / Voff (bekleme modu): yük kurulu kalır, V_DUT >= Von olunca açılır,
-   Voff'un altında kapanır. Kapatılıp açılabilen regülatör testleri için.
-   İsteğe bağlı: Von geçildiğinde V ve I'yı hızlı kaydederek regülatörün yük
-   altında açılma eğrisini çıkar.
-
-
--------------------------------------------------------------------------------
- 12. KALİBRASYON
--------------------------------------------------------------------------------
- Gerekli ekipman: referans multimetre (Brymen BM257s), ayarlı güç kaynağı,
- seri bağlanacak ampermetre (veya bilinen bir şönt).
- Ortam ~25 °C. Cihaz 10 dakika ısınsın.
-
- 12.1 Sıfırlar (otomatik, her açılışta):
-   DAC CONTROL HIGH, U10 kapalı:
-   - ADS #1 kanal ofsetleri ölçülür (ofset_ch1, ofset_ch2).
-   - ±3 mA'den büyükse uyarı ver.
-
- 12.2 Gerilim - ADS #2 (iki nokta):
-   1. Kaynağı ~2.000 V'a ayarla. Multimetre ile J6 terminallerinden oku.
-      ADS ham değeriyle birlikte kaydet.
-   2. ~25.000 V'ta tekrarla.
-   3. kazanc_V = (V2_ref - V1_ref) / (V2_ham - V1_ham)
-      ofset_V = V1_ref - kazanc_V x V1_ham
-   4. Aynı kazanç F2 ölçümüne (AIN2-AIN3) ve V_LINE'a da uygulanır.
-      Bölücüler aynı tip olduğu için yeterli.
-
- 12.3 Gerilim - PA3 (dahili ADC, iki nokta):
-   12.2 ile aynı noktalarda, ADC kalibrasyonu ve VDDA düzeltmesinden SONRA
-   ölç. U10 AÇIK olmalı; yoksa body diyodu yüzünden ~0.45 V düşük okur.
-
- 12.4 Akım - ADS #1 (kanal başına iki nokta):
-   1. Kaynak 12 V, seri ampermetre.
-   2. DAC'ı artırarak toplam ~0.5 A ve ~4 A noktalarını ölç.
-   3. Kanal kazançları için kanallardan birini ayrıca doğrulamak gerekir.
-      Pratik yol: iki kanalın toplamını ampermetreyle eşle ve aynı kazancı
-      iki kanala da ver; şöntler aynı (0.05 Ohm, 2 x 2512 paralel).
-   4. Kayıt: kazanc_I1, kazanc_I2.
-   5. Aynı ölçümlerden setpoint modeli: kod_baslangic (akımın başladığı DAC
-      kodu, ~200-270; H18 ölçeğiyle) ve egim (mA / kod).
-
- 12.5 Kayıt formatı (flash):
-   - G071CB: 128 KB, sayfa 2 KB. Son sayfa = sayfa 63, 0x0801F800.
-   - Yapı:
-       magic 0x454C5631 ("ELV1")
-       versiyon (uint16)
-       kazanç ve ofset değerleri
-       DS18B20 ROM'ları ve rolleri
-       koruma eşikleri
-       CRC32
-   - Yazma: HAL_FLASHEx_Erase (sayfa 63) -> HAL_FLASH_Program
-     (FLASH_TYPEPROGRAM_DOUBLEWORD), 8 bayt hizalı.
-   - Errata 2.2.5: Programlanmış bir double word'ün üzerine 0 YAZMA. Her
-     güncellemede sayfayı sil.
-   - Okurken CRC veya magic tutmazsa varsayılanlara dön ve ekranda uyar.
-
-
--------------------------------------------------------------------------------
- 13. STM32G071 TUZAKLARI (errata ES0418 Rev 6)
--------------------------------------------------------------------------------
- - 2.11.6 I2C: APB / I2C kernel saat oranı 1.5-3 arasındaysa ilk byte'tan
-   sonra kilitlenebiliyor. I2C2 saati = PCLK (oran 1) tut.
- - 2.11.2 I2C: Controller modunda sahte BERR. Bayrağı temizle, transfer devam
-   eder. HAL error callback'inde transferi İPTAL ETME.
- - 2.2.5 Flash: 0xFF..FF yazılmış double word'ün üzerine 0x00..00 yazılamaz.
- - 2.6.2 / 2.6.4 ADC: ADEN=1 iken CFGR1/CFGR2 yazma. HAL sırası uygun.
- - 2.6.5 ADC: 1.5 ve 3.5 cycle örnekleme 1 cycle uzun sürer; bu projede
-   etkisiz.
- - 2.2.9 (Rev B): Option byte uyuşmazlığında çip kilitlenir. Option byte'a
-   dokunma.
- - 2.8.6 (Rev B): TIM16/17 SYSCLK ile saatleniyor. APB bölücü 1 ise fark
-   etmez.
- - HSE: OSC_IN/OSC_OUT ayrı pinlerde (PF0/PF1). G030 TSSOP20'deki kristal
-   sorunu burada YOK.
- - VREFBUF: açılırsa harici 3.3 V ile çakışır. Açma.
- - UCPD dead-battery: StrobeDBattpinsConfig satırını silme (PB15).
-
-
--------------------------------------------------------------------------------
- 14. ELV1'DEN ALINAN DERSLER
--------------------------------------------------------------------------------
- - ELV1'de ADC kalibrasyonu yapılmıyordu. Sabitler (LV_OFFSET_MV = 1500,
-   ISET 30-118, sıfır ölü bantları) kalibrasyonsuz ADC'nin ~100 LSB'lik
-   ofsetine göre deneyerek ayarlanmıştı. Kalibrasyon açılınca okuma
-   1-1.8 V kaydı ve ISET 0'a düştü (commit 9eba3c0, geri alındı: c9ee6af).
-   -> Revizyonda: önce kalibrasyon, sonra ölçülerek sabit. Sabitlerin hepsi
-      tek bir kalibrasyon yapısında dursun; koda gömülü sihirli sayı olmasın.
- - Ekranda kesme hatası: 4.96 V "4.9" görünüyordu. Yuvarla.
- - V-drop koruması için 10 mA akım eşiği ELV1'de denendi; boşta kendiliğinden
-   tetiklenmedi.
- - Kondansatörü olmayan yüksek empedanslı bölücü (ELV1'de PB7, 31 kΩ) ADC'de
-   sınırda çalışır. Revizyondaki bölücülerde C40 / ADS RC filtresi var.
-
-
--------------------------------------------------------------------------------
- 15. BİLİNEN DONANIM SORUNLARI (firmware'i etkileyenler ve düzeltmeler)
--------------------------------------------------------------------------------
- H1  [DÜZELTİLDİ 18.10.2026] STATUS LED D13 ters takılıydı. 180° çevrildi:
-     anot R80'e, katot GND'ye. ELV2'deki D11'de aynı hata hâlâ var.
- H2  [DÜZELTİLDİ 18.10.2026] I2C pull-up'ı yoktu. R110 (SCL) ve R111 (SDA),
-     4.7k, 3.3 V'a eklendi.
-     - Ön paneldeki LCD modülünde de pull-up varsa paralel bağlanırlar
-       (~2.4k); 400 kHz için uygun.
-     - Firmware: bus takılırsa (SDA LOW kalırsa) 9 SCL darbesiyle bus recovery
-       yap; olmazsa yükü kilitle.
- H3  J7 (batarya XT60): F2'yi, U10'u ve ters algılamayı atlıyor. Ters takılı
-     batarya veya MOSFET kısa devresinde sigorta yok. Firmware bunu
-     algılayamaz; kullanım kılavuzunda uyar. Öneri: J7'yi J6'ya paralel bağla.
- H4  [DÜZELTİLDİ 18.10.2026] TH1 0 Ohm yapıldı (footprint aynı; köprü teli
-     veya 0R takılabilir). Eski durum: 10 Ohm NTC, 15 VAC trafoda AC akımı
-     ~0.9-2 A RMS.
-     - Soğuk NTC'de bu akım ~9-20 V RMS düşüme denk geliyor; ısınınca azalır
-       ama küçük akımda yeterince ısınmaz.
-     - Öneri: 0 Ohm (köprü teli) veya en fazla 1 Ohm / en az 3 A NTC. Her
-       1 Ohm, tam yükte tepe gerilimden ~2-3 V götürür ve LM7815'i düşürür.
-     - İlk dolma akımı (NTC yokken) yalnızca trafonun eşdeğer direnciyle
-       sınırlı. 30 VA trafo %15-20 regülasyon varsayımıyla sekonder tarafta
-       ~1.1-1.5 Ohm, kötü durumda 0.5 Ohm.
-     - Tahmin: tepe ~13-20 A (en kötü ~40 A), I²t ~0.9-1.6 A²s
-       (en kötü ~3 A²s), ~10 ms'de söner.
-         * KBU8M: IFSM 200 A, sorun yok.
-         * Trafo: ms seviyesindeki darbe ısıtmaz, sorun yok.
-         * C14: snap-in elektrolitik için normal.
-         * F1 (2 A gecikmeli, Littelfuse 395 serisi): nominal erime I²t'si
-           datasheet'ten kontrol edilmeli. Darbe I²t'si, sigortanın nominal
-           I²t'sinin ~%20-30'unun altında kalmalı; yoksa sigorta zamanla
-           yorulur ve ani açmalarda atar. Gerekirse T3.15A kullan.
-     - Ara çözüm (istenirse): 2.5-5 Ohm, Imax 2-3 A'lik küçük bir NTC.
-       Tepe akım ~4-8 A'e iner; çalışırken ısınıp ~0.2-0.5 Ohm'a düşer.
-       10 Ohm / yüksek akımlı tip ısınmadığı için sorun çıkarıyordu.
-     - Şebeke tarafındaki trafo mıknatıslanma akımı (açılışta) NTC'den
-       bağımsızdır; primerdeki sigorta veya filtre bunu karşılar.
- H5  [DÜZELTİLDİ 18.10.2026] J1 değeri "15VAC 30VA Transformer out" yapıldı.
-     Eskiden "30VAC" yazıyordu; trafo 15 VAC / 30 VA (Profuse CX6632 P2). 15 VAC ile en kötü tepe ~25.6 V, TPS54302 (en fazla 28 V)
-     için güvenli.
- H6  Ters algılama: LTV-817 CTR sınıfına bağlı. BOM'da LTV-817C/D yaz.
-     Eşikler kartta ölçülüp datasheet'e yazılacak (bkz. 5).
- H7  RCP LOW seviyesi ~0.6-0.7 V, VIL ~1 V; marj az. Sorun çıkarsa PA2'yi
-     ADC ile oku (ADC1_IN2) ya da D8'i BAT54 yap.
- H8  Açılış sırası: +15V, 3.3 V'tan önce gelirse U10 birkaç ms açılabilir
-     (Q3 gate'i henüz HIGH değil). Firmware engelleyemez. Kartta U10 gate'ini
-     osiloskopla ölç.
- H9  ADS ALERT/RDY MCU'ya bağlı değil; firmware OS biti yoklar. İstenirse
-     PB1/PB2'ye bağlanabilir.
- H10 C14 6800 µF KALSIN: 15 VAC trafo ile en kötü durumda (şebeke -%10,
-     0.9 A DC) ripple 1.3 V, dip gerilim ~16.0 V. 2200 µF ile dip ~13 V'a
-     iner ve +15V regülasyonu kaybolur.
-     Güç bütçesi:
-       - Trafodan alınabilecek DC güç ~18-21 W.
-       - USB şarj (5 V x 2 A = 10 W) + iki fan (~5 W) + kart (~2 W)
-         + çevrim kayıpları ~19 W -> sınırda.
-     Firmware:
-       - USB şarj varsayılan KAPALI kalsın.
-       - USB şarj ve iki fan birlikte açıksa uyar.
-       - Gerekirse SY6280'in akım sınırını düşür: R60 3.3k -> 6.8k,
-         ~1 A. Formül I = 6800 / R_SET, datasheet'ten teyit edilmeli.
- H11 Setpoint tek DAC'tan; iki MOSFET ayrı ayarlanamaz. Dengesizlik sadece
-     ölçülür (bkz. 6).
- H12 LM7815 (U1) KALDI (kullanıcı kararı, 18.10.2026).
-     - ELV1'de köprü çıkışı ~20 V ölçüldü (DC ortalama; ölçüm koşulları:
-       hafif yük, nominal şebeke).
-     - TH1 artık 0 Ohm olduğu için yükteki gerilim ELV1'dekinden yüksek olur.
-     - Teorik en kötü durum: girişte en az ~17 V gerekiyor, en kötü dip
-       ~16.0 V (bkz. H10). Bu durumda +15V düşebilir.
-     - Firmware 20V SENSE ile izleyip koruma #13'le keser.
-     - Kart gelince kontrol et: USB şarj + iki fan + tam yükte 20V hattının
-       dibini osiloskopla ölç. 17 V altına iniyorsa U1'i LM7812 yap.
-     - 12 V yeterli mi? (IRFP260N datasheet: VGS(th) 2-4 V, gfs >= 27 S
-       @ 28 A)
-         * En kötü VGS(th) = 4 V ile gerekli gate: kanal başına 5 A'de
-           ~4.9 V, 10 A'de ~5.2 V.
-         * Şönt düşümü eklenince op-amp çıkışında 5 A'de ~5.4 V, 10 A'de
-           ~6.2 V gerekiyor.
-         * OPA2197 12 V'ta ~11-11.8 V verir: yaklaşık 2 kat pay var.
-         * Düşük DUT geriliminde sınırı op-amp değil şönt (0.05 Ohm) ve
-           R_DS(on) belirler: kanal başına 5 A'de en az ~0.5 V + U10 düşümü.
-         * U10 gate'i 12 V ile ~11.9 V olur (IRFB4110 R_DS(on) 10 V'ta
-           tanımlı).
-         * Sıcaklık arttıkça VGS(th) düşer; daha az gate gerilimi gerekir.
-     Eski analiz:
-     +15V'u kullananlar:
-       - U4 OPA2197 (gate sürücü op-amp),
-       - R38 (U10 gate pull-up, D4 12 V ile kelepçeli),
-       - R43 -> D6.
-     Öneri: U1'i LM7812 yap (aynı TO-220 pin dizilimi). Gerekli giriş
-     ~14 V, 2 V pay kalır.
-       - OPA2197 12 V ile IRFP260N gate'ini ~11.7 V'a kadar sürebilir
-         (6 A için ~6.5 V yeterli).
-       - U10'un gate'i ~12 V olur.
-     Firmware tarafında bir değişiklik gerekmez.
- H14 ŞEBEKE TARAFI - FİŞTE ÇARPMA (ELV1'de yaşandı, kart dışı kablolama):
-     - Belirti: cihaz düğmeden kapatılıp sonra fiş prizden çekilince, fişin
-       pinlerine dokunan kişi çarpılıyor.
-     - Neden: EMI filtresinin X kondansatörü (L-N arası, 0.1-0.33 µF) en
-       fazla 325 V'a kadar şarjlı kalıyor. Düğme kapalı olduğu için trafo
-       primeri devrede değil ve kondansatör boşalamıyor. 0.33 µF'ta ~17 mJ.
-     - Çözüm: X kondansatörüne paralel, düğmeden ÖNCE (giriş soketi / filtre
-       girişi tarafında) 2 x 470k seri boşaltma direnci (toplam 940k).
-         * Her direnç en az 250 V çalışma gerilimli olmalı (0.5 W THT veya
-           şebeke sınıfı 1206).
-         * Boşalma: 0.33 µF'ta ~0.5 s'de 60 V'un altına iner (IEC 62368:
-           1 s'de < 60 V).
-         * Kayıp: ~56 mW.
-       Alternatif: bleeder'ı dahili olan bir EMI filtresi kullanmak
-       (etiketinde "R: 1MΩ" yazar).
-     - Kullanılan filtre: JHKE CW2A-6A-T(01). Sigorta yuvalı IEC giriş
-       soketi, 115/250 V, 6 A.
-         * Etiket: CX 0.1 µF (X2), CY 2 x 3300 pF (Y2), L 2 x 0.6 mH.
-         * Boşaltma direnci YOK.
-         * Direnç, filtrenin arkasındaki "LOAD" tarafının L ve N uçlarına
-           lehimlenir (düğmeden önce). Bobinler DC'yi geçirdiği için giriş
-           tarafındaki CX de bu dirençten boşalır.
-         * 0.1 µF için 2 x 1M (toplam 2 MΩ) da yeterli: 60 V'a ~0.34 s,
-           kayıp ~26 mW.
-         * KARAR (18.10.2026): L-N arası tek 1 MΩ, 1 W THT.
-     - ELV1 TAMAM (20.10.2026): 1 MΩ 1 W THT takıldı, geçici dirençler
-       kalktı. Revizyonda da aynı direnç kullanılacak.
-     - ELV1'de önceki GEÇİCİ çözüm (kullanıcı, 18.10.2026):
-         * Yapılan: 12 x 10 MΩ (1/8-1/4 W) paralel, ölçülen ~790k, AC
-           girişe paralel. Kapat-fişi çek-dokun testinde çarpma olmadı.
-         * Dikkat: paralel bağlantıda her direnç tam şebeke tepe gerilimini
-           (325 V) görür. 1/4 W metal film tipik 250 V, 1/8 W 150-200 V
-           çalışma gerilimlidir; bu dirençler sınır üstünde çalışıyor.
-         * Kalıcı çözüm: stoktaki MF02WJJ0105A19 (1 MΩ 1 W, 500 V) ile
-           değiştir.
-         * Ara çözüm: aynı 12 direnci 2 seri x 6 paralel bağla.
-             - Toplam ~3.3 MΩ, direnç başına ~163 V tepe.
-             - 0.1 µF'ta 60 V'a ~0.56 s.
-             - 1/8 W dirençlerin gerilim değeri yine sınırda olabilir.
-         * Ölçerek test: fişi çektikten hemen sonra fiş pinleri arasında
-           multimetre DC V ile 60 V altını gör (elle dokunmadan).
-             - 60 V'a ~0.17 s'de iner, kayıp ~53 mW.
-             - Direncin "maks. çalışma gerilimi" en az 350 V, tercihen
-               500 V olmalı (metal film / metal oksit; datasheet'ten bak).
-               Şebeke tepe değeri 325 V.
-             - Direnç kısa devre olarak arızalanırsa sigorta atar; çarpma
-               riski oluşturmaz.
-             - Stoktaki parça: Royalohm MF02WJJ0105A19 (metal film, 2 W normal
-               boy, 1 MΩ, ±%5, 200 ppm, axial).
-               Royalohm datasheet (Downloads/metal film.pdf, s.3), MF02W
-               (MF 200):
-                 * Maks. çalışma gerilimi 500 V, maks. aşırı yük 1000 V,
-                   dielektrik dayanım 1000 V.
-                 * ±%5'te değer aralığı 10 Ω - 1 MΩ; 1 MΩ aralık içinde.
-                 * Derating: 70 °C'ye kadar tam güç.
-               -> 325 V tepe için UYGUN (TEYİT EDİLDİ).
-         * Gövdedeki delikli tırnak PE / gövde ucu.
-     - Topraklama: Giriş soketinin PE ucu, EMI filtresinin toprak vidasına
-       bağlı olmalı. Bağlı değilse Y kondansatörleri yüzünden filtrenin metal
-       gövdesi şebekenin yarı gerilimine çıkar.
-     - Kontrol: Düğme kapalıyken fişi çek ve BM257s ile fiş pinleri arasında
-       DC gerilimi ölç. 1 s içinde 60 V'un altına inmeli.
-     - Firmware'i etkilemez; ELV1 revision kutusu kablolanırken yapılmalı.
- H15 [DÜZELTİLDİ 18.10.2026] BZ1/BZ2 sembolleri çevrildi: "+" -> +5V,
-     "-" -> Q4/Q6 drain.
-     Flyback diyotları eklendi: D15 (BZ1), D16 (BZ2); SS14, 40 V / 1 A
-     Schottky. Katot +5V'a, anot drain'e.
-     NOT (18.10.2026): Buzzer'ın manyetik değil PİEZO olduğu ortaya çıktı
-     (bkz. H17). Aşağıdaki bobin akımı notu geçersiz. D15/D16 zararsız,
-     kalabilir; ama piezo için asıl gereken paralel boşaltma direnci (H17).
-     Eski durum (bilgi için): BUZZER'LARDA FLYBACK DİYOTU YOKTU, POLARİTE
-     TERSTİ:
-     - BZ1/BZ2 manyetik (bobinli) pasif buzzer. Q4/Q6 kapanırken bobin
-       gerilim darbesi üretir. IRLML6344 (30 V) için risklidir.
-       Düzeltme: her buzzer'a paralel 1N4148W veya SS14
-       (katot +5V'a, anot MOSFET drain'ine).
-     - Şematikte buzzer'ın "+" pini MOSFET drain'ine, "-" pini +5V'a bağlı.
-       Ters. Manyetik buzzer ters de çalar ama ses seviyesi ve ton
-       değişebilir. "+" -> +5V, "-" -> drain olacak şekilde çevir.
-     - Akım: 5 V buzzer'ların bobini tipik olarak 16-42 Ohm -> 120-310 mA
-       tepe. İki buzzer aynı anda %50 duty ile 5V hattından ~0.3 A çekebilir
-       (H10 güç bütçesi). Buzzer datasheet'ine bak; gerekirse seri 22-47 Ohm
-       ekle veya firmware'de duty'yi sınırla.
- H17 [DÜZELTİLDİ 18.10.2026] R114 (BZ1) ve R115 (BZ2), 1 kΩ 0805, piezolara
-     paralel eklendi. BZ1/BZ2 footprint'i Buzzer_15x7.5RM7.6 yapıldı.
-     Besleme +5V'ta kaldı (kullanıcı kararı).
-     Eski durum: PİEZO BUZZER'DA BOŞALTMA DİRENCİ YOKTU (SES ÇIKMAZ VEYA ÇOK
-     KISIK):
-     - EPT-14A4009P035D sürücüsüz bir piezo, yani bir kondansatör gibi
-       davranır (tipik ~10-20 nF; datasheet yok).
-     - Low-side MOSFET açılınca piezo 5 V'a dolar. Kapanınca boşalacak yol
-       olmadığı için şarjlı kalır; diyot da ters kutuplu olduğu için akım
-       geçirmez. Sonuç: sadece ilk darbede ses çıkar, sonra sessizlik ya da
-       çok kısık ses.
-     - Düzeltme: her piezoya PARALEL 1 kΩ (0805).
-         * τ = 1k x 15 nF ≈ 15 µs; 4 kHz'te yarım periyot 125 µs, her
-           çevrimde tam boşalır.
-         * MOSFET açıkken direnç 5 mA çeker; %50 duty ile ~12 mW.
-     - Ses seviyesi: piezo 9 V için belirtilmiş; 5 V ile tam sesinden
-       ~5 dB daha kısık. Daha yüksek ses istenirse piezoyu +12V'tan (fan
-       hattı) besle ve direnci 2.2 kΩ yap. IRLML6344 30 V, sorun yok.
-     - Akım çok düşük: ortalama ~C x V x f ≈ 0.3 mA. H10 güç bütçesi
-       endişesi yok.
-     - Footprint: Buzzer_12x9.5RM7.6 (Ø12 mm) yerine Buzzer_15x7.5RM7.6
-       (Ø15 mm, pin aralığı yine 7.6 mm). Piezo Ø14 mm, eski courtyard
-       küçük kalıyor.
- H16 [DÜZELTİLDİ 18.10.2026] J4.8 ve J4.14 düzenleme sırasında GND'den
-     kopmuştu. Yeniden GND'ye bağlandı (netlist ile doğrulandı).
-     J4'te artık boş pin yok. LCD arka ışık PWM'i istenirse ön panel
-     konnektörüne yeni pin gerekir.
- H13 [EKLENDİ 18.10.2026] 20V SENSE: 20V hattı -> R112 100k / R113 12k +
-     C82 100 nF -> PA0 (ADC1_IN0).
-     - k = 0.10714, 30.8 V'a kadar ölçer.
-     - 100k / 15k önerilmişti; ama yüksüz ve şebeke +%10'da 25.6 V olabilir,
-       15k ile ADC 3.3 V'u aşardı. Bu yüzden 12k seçildi.
-     - Firmware: koruma #13 (20V < 16.8 V -> kes).
- H18 [UYGULANDI 20.10.2026] ŞÖNT ISINMASI (ELV1'de görüldü, revizyonda da aynı):
-     - ELV1'de 4 x 10 W çimento şönt söküldü. 2 MOSFET'e
-       Isabellenhütte VMS-R100 (0.1 Ohm, 2512, <20 ppm/K) takıldı.
-       12 V 10 A'de şöntler çok ısınıyor; akım kayması ise yok.
-     - Hesap:
-         * Kanal başına 5 A -> P = 5^2 x 0.1 = 2.5 W.
-         * Eski: kanal başına 2.5 A -> 0.625 W, 10 W gövdede (%6).
-         * VMS: 3 W @ uç sıcaklığı 95 °C. 170 °C'de 0'a düşer.
-         * 2.5 W için izin verilen uç sıcaklığı ~107 °C.
-         * İç ısıl direnç < 25 K/W -> eleman = uç sıcaklığı + ~62 °C.
-       Yani parça sınırının %83'ünde çalışıyor; ısıyı PCB bakırı çekmezse
-       uçlar 107 °C'yi geçer. Düşük TCR sayesinde sıcakken bile kayma
-       ~%0.2.
-     - Revizyonda R18/R19 aynı durumda (kanal başına tek 0.1 Ohm 2512,
-       5 A).
-     - Öneri (revizyon, şematik değişikliği):
-         * Kanal başına 2 x VMS-R200-1.0 (0.2 Ohm, 2512, %1) paralel.
-           Toplam yine 0.1 Ohm; firmware ve setpoint ölçeği değişmez.
-         * Parça başına 1.25 W (%42).
-         * Kelvin uçları iki direncin ortak pad düğümlerinden alınır.
-         * Her pad'e geniş bakır alan, iki yüzde döküm ve termal via.
-     - Stoktaki parçayla (VMS-R100-1.0-U, 0.1 Ohm) aynı sonuç, kanal başına
-       4 adet:
-         * Bağlantı: (R100 || R100) seri (R100 || R100) = 0.05 + 0.05
-           = 0.1 Ohm. Firmware ve setpoint ölçeği değişmez.
-         * Parça başına 2.5 A -> 2.5^2 x 0.1 = 0.625 W (%21).
-         * İki kanal için 8 adet.
-         * ELV1'de de uygulanabilir.
-     - VMS-R020 (20 mOhm) ile 0.1 Ohm için kanal başına 5 seri gerekir. 6
-       adet var, bu yüzden yalnız bir kanala yeter.
-     - Alternatif: 0.05 Ohm (VMS-R050). Isı yarıya iner ama şönt gerilimi
-       de yarıya iner. Setpoint ölçeği (DAC -> op-amp) ve firmware
-       katsayıları değişir; düşük akımda op-amp offset hatası iki kat olur.
-     - SEÇİLEN YÖN (kullanıcı, 20.10.2026): ELV1'deki gibi kanal başına
-       2 x VMS-R100 paralel = 0.05 Ohm. Kart başına 4 direnç. İnceleme:
-       Isı:
-         * Kanal başına 5 A -> direnç başına 2.5 A -> 0.625 W (%21).
-         * Kanal başına 6 A (tam skala) -> 0.9 W (%30).
-         * Kanal toplamı 1.25 W (0.1 Ohm'da 2.5 W).
-       Setpoint ölçeği (bölüm 6):
-         * Şu an: R2 10k / R4 2.2k, k = 0.1803, tam skala Vset 595 mV.
-           0.05 Ohm ile kanal başına 11.9 A, toplam ~24 A. DAC aralığının
-           yarısı boşa gider; firmware hatası ya da I2C bozulması 24 A
-           isteyebilir.
-         * ÖNERİ: R2 10k -> 22k (R4 2.2k kalır).
-             - k = 2.2 / 24.2 = 0.0909, tam skala Vset 300 mV.
-             - Kanal başına 6.0 A, toplam 12.0 A (bugünkü ~11.9 A ile aynı).
-             - 1 LSB = 0.0733 mV = kanal başına 1.47 mA (bugünkü 1.45 mA).
-             - Thevenin direnci 2.0 k: C11 + C13 ile tau ~20 ms (bugün
-               18 ms); kondansatörler değişmez.
-             - (R4'ü 1k yapmak da aynı k'yı verir, ama tau 9 ms'ye düşer.)
-       Op-amp hata terimi (bölüm 6, Vgate/220):
-         * 14-20 mV, 0.05 Ohm'da kanal başına 0.28-0.4 A (0.1'de 0.14-0.2).
-         * Firmware zaten ADS ile kapalı döngü düzelttiği için hedef akım
-           tutulur. Başlama kodu ~270 LSB olur (bugün ~138).
-         * İki MOSFET'in Vth farkından gelen kanal dengesizliği de iki kat:
-           ±45 mA yerine ±90 mA.
-         * OPA2197 offset (en kötü 100 µV) = kanal başına 2 mA, önemsiz.
-       ADS #1 (bölüm 7.1):
-         * 6 A x 0.05 = 0.3 V -> PGA ±0.512 V (kod 100).
-         * 1 LSB = 15.625 µV = 0.3125 mA. Çözünürlük aynı kalır.
-         * Doyum kanal başına 10.24 A.
-         * Formül: I_ch = (kod x 15.625 µV - ofset_ch) / 0.05 Ohm x kazanç_ch.
-       Ters batarya (bölüm 8 / H3): body diyotları üzerinden kısa devre
-       direnci yarıya iner. 3 V'luk hücrede ~46 A yerine ~92 A.
-       Düşük gerilim: kanal başına 5 A'de şönt düşümü 0.5 V -> 0.25 V;
-       cihaz daha düşük gerilimli kaynakları yükleyebilir.
-       Şematik değişikliği (UYGULANDI 20.10.2026; PCB'de yerleşim bekliyor):
-         * R18 ve R19'a paralel birer VMS-R100 eklenir (yeni R116, R117,
-           aynı 2512 footprint).
-         * NetTie'ler (NT1-NT4) iki direncin ortak düğümüne alınır.
-           Kelvin uçları simetrik noktadan çıkar; tek direncin pad'inden
-           alınırsa okuma kayar.
-         * R2: 10k -> 22k.
-         * Firmware: 6. bölüm (k = 0.0909, 1 LSB 1.47 mA) ve 7.1 (PGA
-           ±0.512 V, 0.05 Ohm) güncellenir.
-
-
--------------------------------------------------------------------------------
- 16. AÇIK MADDELER / YAPILACAKLAR
--------------------------------------------------------------------------------
- [x] H1 (LED yönü) ve H2 (I2C pull-up) şematikte düzeltildi (18.10.2026).
- [ ] ELV2'deki D11 STATUS LED'i de ters; ELV2'ye dönülünce düzeltilecek.
- [ ] Kart gelince ters algılama eşikleri ölçülecek (RCP ve U10 gate).
- [ ] OPP değeri soğutucu testine göre belirlenecek.
- [ ] "Kaynak hangi girişte" (J6/J7) kuralı kartta doğrulanacak (7.2).
- [ ] U10 açılış glitch'i ölçülecek (H8).
- [ ] Kalibrasyon menüsü ve UART komut seti yazılacak.
- [x] J1 değeri düzeltildi (H5), TH1 0 Ohm yapıldı (H4), 20V SENSE eklendi
-     (H13).
- [ ] Kartta 20V hattının en kötü dibi ölçülecek; 17 V altındaysa U1 ->
-     LM7812 (H12).
- [x] Buzzer flyback diyotları (D15, D16 SS14) ve polarite düzeltmesi (H15).
- [x] Piezolara paralel 1 kΩ (R114, R115) + footprint Buzzer_15x7.5RM7.6 (H17).
- [ ] (İsteğe bağlı) Daha yüksek ses için piezo beslemesi +12V (H17).
- [ ] ERTELENDİ (18.10.2026, kullanıcı: şimdilik olduğu gibi kalsın): güç
-     bloğu sadeleştirme. Mevcut durum: 5V TPS54302 + 12V TPS54302 +
-     LM7815 (+15V). +15V'u kaldırıp
-     op-amp ve U10 gate'ini 12V'tan beslemek; 12V buck mı lineer mi?
-     Öneri: TPS54302 12V kalsın, LM7815 kalksın, op-amp kolu ferrit +
-     10 µF ile filtrelensin. Lineer 12V fanlarla 3-5 W ısı ve ~3 W fazla
-     trafo yükü demek (H10 bütçesi).
-     7812 hesabı (fanlar 0.45 A + op-amp/gate ~20 mA):
-       - Kayıp: Vin 19 V'ta ~3.3 W, 22 V'ta ~4.7 W, en kötü ~5.6 W.
-       - TO-220 soğutucusuz ~50-65 °C/W -> termal kapanma.
-       - PCB bakırı ~30-40 °C/W -> sınırda.
-       - En az ~9 °C/W soğutucu gerekir (7812'de tab = GND).
-       - Termal kapanmada 12V düşer: op-amp beslemesi gider (MOSFET'ler
-         kapanır, güvenli yön) ve fanlar durur.
-     Lineer yerine pin uyumlu anahtarlamalı modüller (7812 yerine doğrudan):
-       - Murata OKI-78SR-12/1.0-W36-C: giriş 15-36 V, ~%95, ısınmaz.
-         ÖNERİLEN; giriş aralığı en kötü 25.6 V için geniş.
-       - RECOM R-78E12-1.0: giriş 15-27 V, ~%91. Üst sınır 25.6 V'a yakın.
-       - Alt sınır 15 V; 20V hattının en kötü dibi ~16 V, 1 V pay var.
-       - Değerler distribütör verisi; datasheet'ten teyit edilmeli.
-     Amaç: layout'u sadeleştirmek (kullanıcı, 18.10.2026).
-     Öneri:
-       - U17 TPS54302 bloğu yerine 3 pinli OKI-78SR-12 modülü.
-         Kalkacak parçalar: U17, L3, C50, C53, R63, R64, R65, R66, R67.
-         Kalan: giriş kondansatörleri, çıkışta C51/C52.
-       - LM7815 (U1) kalkar. +15V neti -> 12V'tan FB + 10 µF ile
-         filtrelenmiş besleme (op-amp ve U10 gate).
-       - Regülatör sayısı 3 -> 2. Anahtarlamalı layout adası 2 -> 1
-         (sadece 5V TPS54302 kalır).
- [x] J4.8 / J4.14 GND'ye geri bağlandı (H16).
- [ ] Şebeke girişine X kondansatörü boşaltma direnci eklenecek, PE bağlantısı
-     kontrol edilecek (H14). ELV1'de 1 MΩ 1 W takıldı (20.10.2026);
-     revizyonda yapılacak.
- [x] Şönt ısınması (H18): R116/R117 (VMS-R100) R18/R19'a paralel, R2 22k.
-     Şematikte uygulandı (20.10.2026).
- [ ] PCB: R116/R117 yerleşimi. Kelvin (NT1-NT4) iki direncin ortak
-     düğümünden, simetrik; her pad'e geniş bakır ve termal via.
- [ ] J4 (20 pin, 2x10, 2.00 mm) konnektör tedariki (18.10.2026):
-     - KLS L-KLS1-XL4-2.00-2X10-H housing (KLS çiziminde "PHB 2.0") Özdisan,
-       Uraz ve KomponentStore'da stok 0.
-     - KLS gövdesi JST PHD ya da PUD ile birebir aynı değil:
-         KLS housing 22.7 x 8.6 x 8.4 mm
-         PHDR-20VS   21.9 x 5.0 x 7.3 mm
-         PUDP-20V-S  22.0 x 8.3 x 9.1 mm
-       Housing'ler birbirinin başlığına takılmaz; başlık + housing + terminal
-       aynı seriden alınmalı.
-     - Footprint (JST_PUD_B20B-PUDSS) ped ızgarası PHD/PUD/KLS üçünde de
-       aynı: 2 x 2 mm, delik Ø0.75. PCB değişmeden JST PHD takılabilir.
-     - Mouser TR'de stokta olan set:
-         B20B-PHDSS-B(LF)(SN) başlık: 744 stok, 0,58 €
-         PHDR-20VS housing:           15.073 stok, 0,28 €
-         SPHD-001T-P0.5 terminal:     319.492 stok, 0,09 € (AWG 26-22)
-     - PUDP-20V-S Mouser'da stok 0 (17.11.2026 bekleniyor).
-     - KARAR (18.10.2026, kullanıcı): konnektör DEĞİŞMEZ.
-         * KLS PHB 2.0 kalır.
-         * J4'ü PHD'ye çeviren commit (97f4282) geri alındı; footprint yine
-           JST_PUD_B20B-PUDSS.
-         * Gereken: KLS başlığa uyan bir PHB 2.0 2x10 housing (KLS ya da
-           başka marka PHB 2.0 klonu) ve terminali.
-         * Klon alınacaksa ölçüleri KLS çizimiyle karşılaştır:
-           22.7 x 8.6 x 8.4 mm, kilit yanda.
-     - 3D baskı önerilmez: 2 mm aralıkta terminal kilit dilleri ~0.3 mm et
-       kalınlığı ister. FDM'de olmaz, reçinede kırılgan olur.
-
-===============================================================================
- Son güncelleme: 22.11.2026 (güncel tasarım eki; eski bölümler tarihsel)
-===============================================================================
+Teknik kaynaklar:
+ - KiCad şeması ve bu incelemede dışa aktarılan netlist.
+ - ST STM32G071x8/xB DS12232: https://www.st.com/resource/en/datasheet/stm32g071cb.pdf
+ - ST ES0418: https://www.st.com/resource/en/errata_sheet/dm00463881-stm32g071xx-device-errata-stmicroelectronics.pdf
+ - TI ADS1115: https://www.ti.com/lit/ds/symlink/ads1115.pdf
+ - TI TPSI3052: https://www.ti.com/lit/ds/symlink/tpsi3052.pdf
+ - TI TPS54302: https://www.ti.com/lit/ds/symlink/tps54302.pdf
+ - TI PCF8574: https://www.ti.com/lit/ds/symlink/pcf8574.pdf

@@ -5,4 +5,5 @@
   (lib (name "myNTC") (type "KiCad") (uri "${KIPRJMOD}/../libraries/footprints/myNTC.pretty") (options "") (descr "Project-local library"))
   (lib (name "myTO247") (type "KiCad") (uri "${KIPRJMOD}/../libraries/footprints/myTO247.pretty") (options "") (descr "Project-local library"))
   (lib (name "myFuse") (type "KiCad") (uri "${KIPRJMOD}/../libraries/footprints/myFuse.pretty") (options "") (descr "Project-local library"))
+  (lib (name "myRELAY") (type "KiCad") (uri "${KIPRJMOD}/../libraries/footprints/myRELAY.pretty") (options "") (descr "Project-local library"))
 )

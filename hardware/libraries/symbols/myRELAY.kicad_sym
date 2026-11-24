@@ -31,7 +31,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Relay_THT:Relay_DPDT_Hongfa_HF115F-2Z-x4"
+		(property "Footprint" "myRELAY:Relay_SPDT_Hongfa_HF115F-1Z-x3"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -67,7 +67,7 @@
 		(symbol "HF115F/012-1ZS3_0_1"
 			(rectangle
 				(start -5.08 11.43)
-				(end 5.08 -10.668)
+				(end 5.08 -8.636)
 				(stroke
 					(width 0.254)
 					(type default)
@@ -220,18 +220,6 @@
 					(type none)
 				)
 			)
-			(polyline
-				(pts
-					(xy 0 -6.985) (xy 0 -7.62)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
 			(rectangle
 				(start 1.905 9.525)
 				(end -1.905 3.175)
@@ -276,40 +264,22 @@
 					(type default)
 				)
 				(fill
-					(type none)
+					(type outline)
 				)
 			)
 		)
 		(symbol "HF115F/012-1ZS3_1_1"
-			(pin passive line
-				(at -7.62 -3.81 0)
-				(length 2.54)
-				(name "11"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "11"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin passive line
+			(pin no_connect line
 				(at 7.62 -1.27 180)
 				(length 2.54)
-				(name "12"
+				(name "NC"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "12"
+				(number "3"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -320,33 +290,14 @@
 			(pin passive line
 				(at 7.62 -6.35 180)
 				(length 2.54)
-				(name "14"
+				(name "1"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "14"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin input line
-				(at 1.27 -17.78 180)
-				(length 2.54)
-				(hide yes)
-				(name ""
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "21"
+				(number "1"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -354,37 +305,17 @@
 					)
 				)
 			)
-			(pin input line
-				(at 1.27 -21.59 180)
+			(pin passive line
+				(at -7.62 -3.81 0)
 				(length 2.54)
-				(hide yes)
-				(name ""
+				(name "2"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "22"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin input line
-				(at 1.27 -13.97 180)
-				(length 2.54)
-				(hide yes)
-				(name ""
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "24"
+				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)
