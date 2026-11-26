@@ -18,8 +18,8 @@ Referans:
 -------------------------------------------------------------------------------
  - Dahili yardımcı besleme metal kasalı, izole Mean Well AC/DC kaynaktan
    gelir. PCB'nin tek yardımcı besleme girişi J1 DC INPUT.
- - F1 mevcut 2 A gecikmeli sigorta. DC kesme kapasitesi ve ters
-   polaritede paralel D1 ile davranışı tezgâhta doğrulanacak.
+ - F1 mevcut 2 A gecikmeli sigorta. DC kesme kapasitesi tezgâh
+   doğrulamasına dahil. D1, pozitif beslemeye seri koruma sağlar.
  - Yük MOSFET'leri doğrudan PCB'ye lehimlenecek. Soğutucu ve PCB montajı
    birlikte ele alınacak.
  - K1'in parça, footprint ve kontak uygunluğu montajda doğrulanacak.
@@ -121,9 +121,9 @@ Referans:
    230 VAC → Mean Well L/N → Mean Well V+ / V− → ön panel DC açma/kapama
            → PCB J1 DC INPUT → 5 V ve 12 V regülatörleri
 
- - J1.1 = DC pozitif (V+, seri F1 üzerinden /20V).
-   J1.2 = DC negatif (V−, kart GND). D1 kart girişinde paralel ters
-   polarite korumasıdır. J1'e yalnızca DC bağlanır.
+ - J1.1 = DC pozitif (V+ → D1 anot → D1 katot → F1 → /20V).
+   J1.2 = DC negatif (V−, doğrudan kart GND). D1 ters polaritede
+   akımı bloke eder. J1'e yalnızca DC bağlanır.
  - Mean Well FG, şebeke koruma toprağına (PE) bağlanır. Erişilebilir
    metal gövdenin koruma topraklaması ayrı doğrulanır. DC V−, kart
    dönüşüdür. V− ile PE arasında ilave bağlantı yapmadan önce USB ve

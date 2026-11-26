@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELV1 Revision | Ürün veri sayfası</title>
+<style>
+@page { size: A4; margin: 0; }
+:root { --ink:#152332; --navy:#143454; --blue:#16537b; --muted:#475b6b; --line:#ccdae5; --soft:#edf5fa; }
+* { box-sizing:border-box; }
+body { margin:0; background:#e7edf1; color:var(--ink); font:10.5pt/1.48 Arial, sans-serif; }
+.sheet { position:relative; width:210mm; min-height:297mm; margin:10mm auto; padding:14mm 16mm 17mm; background:white; }
+header { color:var(--navy); display:flex; justify-content:space-between; align-items:center; border-bottom:2pt solid var(--blue); padding-bottom:3mm; margin-bottom:8mm; font-size:9pt; }
+header .product { font-size:12pt; font-weight:700; }
+footer { position:absolute; bottom:10mm; left:16mm; right:16mm; display:flex; justify-content:space-between; border-top:1pt solid var(--line); padding-top:2mm; color:var(--muted); font-size:8.5pt; }
+h1,h2,h3 { color:var(--navy); line-height:1.13; }
+h1 { font-size:34pt; letter-spacing:-.8pt; margin:0 0 2mm; }
+h2 { font-size:22pt; margin:0 0 4mm; }
+h3 { font-size:12pt; margin:5mm 0 2mm; }
+p { margin:0 0 3mm; }
+.subtitle { font-size:16pt; color:var(--blue); margin-bottom:3mm; }
+.small { font-size:9pt; color:var(--muted); }
+.note { border-left:3pt solid var(--blue); background:var(--soft); padding:3mm 4mm; margin:4mm 0; }
+.note p:last-child { margin:0; }
+table { width:100%; border-collapse:collapse; margin:2mm 0 4mm; font-size:9.4pt; }
+th,td { padding:1.65mm 2.1mm; border-bottom:1px solid var(--line); vertical-align:top; text-align:left; }
+thead th { color:var(--navy); background:var(--soft); font-weight:700; }
+tbody th { color:var(--navy); }
+tbody tr:nth-child(even) { background:#f8fafc; }
+.fill { color:#46586a; letter-spacing:.4pt; }
+figcaption { color:var(--muted); font-size:8.8pt; margin-top:1mm; }
+figure { margin:4mm 0; break-inside:avoid; }
+svg { width:100%; height:auto; display:block; }
+ol,ul { padding-left:6mm; margin:2mm 0 4mm; }
+li { margin-bottom:1.2mm; }
+a { color:var(--blue); }
+.chain { font-size:10pt; font-weight:700; color:var(--navy); text-align:center; padding:3mm; border:1px solid var(--line); background:var(--soft); margin:3mm 0; }
+@media screen and (max-width: 850px) {
+ .sheet { width:100%; min-height:0; margin:0 auto 4mm; padding:8mm; }
+ footer { position:static; margin-top:8mm; }
+}
+@media print {
+ body { background:white; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+ .sheet { height:297mm; min-height:0; margin:0; break-after:page; }
+ .sheet:last-child { break-after:auto; }
+ thead { display:table-header-group; }
+ tr { break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+<section class="sheet">
+<header><span class="product">ELV1 Revision</span><span>Ürün veri sayfası · Taslak 0.1</span></header>
+<h1>ELV1 Revision</h1>
+<p class="subtitle">Programlanabilir DC elektronik yük</p>
+<p>Güç kaynakları, pil paketleri ve kesikli DC çıkışların yük altında değerlendirilmesi için geliştirilen açık donanım projesi. Testler ön panelden seçilir. PC kontrolü ve ESP32 üzerinden kablosuz kontrol planlanıyor.</p>
+<div class="note"><p><strong>Geliştirme durumu.</strong> Aşağıdaki çalışma değerleri tasarım hedefidir. Revizyonun tezgâh doğrulaması bekliyor. Ölçülen değerler, test koşulları ve ilgili donanım/firmware sürümü bu belgenin sonraki sürümlerinde eklenecek.</p></div>
+<table aria-label="Başlıca tasarım hedefleri">
+<thead><tr><th>Parametre</th><th>Tasarım hedefi</th><th>Uygulama koşulu</th></tr></thead>
+<tbody>
+<tr><th>DUT gerilimi</th><td>1-30 V DC</td><td>1 V, kaynak tanıma hedefi. Düşük gerilimde erişilebilir akım ölçülecek.</td></tr>
+<tr><th>Yük akımı</th><td>En fazla 10 A</td><td>Gerilim, güç, sıcaklık ve MOSFET güvenli çalışma alanına bağlı.</td></tr>
+<tr><th>Yük gücü</th><td>150-160 W</td><td>Sürekli güç ve çevre sıcaklığına göre düşüm testle belirlenecek.</td></tr>
+<tr><th>Yük modları</th><td>CC, CV, CP, CC Akım Senaryosu</td><td>Planlanan firmware işlevleri.</td></tr>
+</tbody></table>
+<figure aria-label="Kuramsal akım sınırı grafiği">
+<svg viewBox="0 0 600 220" role="img" aria-labelledby="curve-title">
+<title id="curve-title">150 ve 160 W güç sınırlarının 10 A üst sınırıyla birlikte kuramsal etkisi</title>
+<rect x="0" y="0" width="600" height="220" fill="#f5f9fc"/>
+<path d="M55 38H492 M55 104H492 M55 170H492 M273.5 38V170 M492 38V170" fill="none" stroke="#d3dfe8"/>
+<path d="M55 32V170H510" fill="none" stroke="#60788c" stroke-width="1.2"/>
+<path d="M69.6 38H273.5 L288.1 46.3 L317.2 60 L346.3 71 L375.5 80 L404.6 87.5 L433.7 93.8 L462.9 99.3 L492 104" fill="none" stroke="#185374" stroke-width="2.7"/>
+<path d="M69.6 38H288.1 L317.2 52.7 L346.3 64.4 L375.5 74 L404.6 82 L433.7 88.8 L462.9 94.6 L492 99.6" fill="none" stroke="#288b85" stroke-width="2.6" stroke-dasharray="6 4"/>
+<g fill="#324b60" font-size="13" font-family="Arial">
+<text x="14" y="19">Akım (A)</text><text x="34" y="43">10</text><text x="40" y="109">5</text><text x="40" y="175">0</text>
+<text x="51" y="189">0</text><text x="266" y="189">15</text><text x="485" y="189">30</text><text x="509" y="190">DUT (V)</text>
+<text x="502" y="95" fill="#247971">160 W</text><text x="502" y="118" fill="#185374">150 W</text>
+<text x="55" y="209">İdeal üst sınır = min(10 A, P / V)</text></g>
+</svg>
+<figcaption>Şekil 1. Hesaplanan tavan. 30 V’ta 150 W ≈ 5,00 A, 160 W ≈ 5,33 A. Düşük gerilimde regülasyon marjı ve ısıl sınırlar ayrıca ölçülecek.</figcaption>
+</figure>
+<footer><span>25.11.2026 · ELV1 Revision · Tasarım hedefleri</span><span>1 / 5</span></footer>
+</section>
+
+<section class="sheet">
+<header><span class="product">ELV1 Revision</span><span>Taslak 0.1</span></header>
+<h2>Elektriksel özellikler</h2>
+<p>Ölçüm sonuçlarına örnek seri/revizyonunu, ortam sıcaklığını, kullanılan ölçü aletini ve test bağlantısını ekle.</p>
+<table aria-label="Elektriksel özellikler ve sonuç alanları">
+<thead><tr><th style="width:25%">Özellik</th><th style="width:28%">Hedef / durum</th><th style="width:30%">Test koşulu</th><th>Sonuç</th></tr></thead>
+<tbody>
+<tr><th>DUT gerilim aralığı</th><td>1-30 V DC</td><td>Minimum tanıma ve maksimum çalışma gerilimi</td><td class="fill">____ V</td></tr>
+<tr><th>Sürekli akım</th><td>10 A hedef</td><td>Belirtilen DUT gerilimi, kapalı kasa</td><td class="fill">____ A</td></tr>
+<tr><th>Sürekli güç</th><td>150-160 W hedef</td><td>Isıl denge, ortam ____ °C</td><td class="fill">____ W</td></tr>
+<tr><th>Akım regülasyonu</th><td>Alt gerilim ölçülecek</td><td>1 A, 5 A ve 10 A hedeflerinde</td><td class="fill">____ V</td></tr>
+<tr><th>Gerilim doğruluğu</th><td>Kalibrasyon sonrası ölçülecek</td><td>Referans DMM, düşük/orta/yüksek aralık</td><td class="fill">____ mV / %</td></tr>
+<tr><th>Akım doğruluğu</th><td>Kalibrasyon sonrası ölçülecek</td><td>Akım referansı, her iki şönt</td><td class="fill">____ mA / %</td></tr>
+<tr><th>Akım setpoint adımı</th><td>Etkin adım ölçülecek</td><td>Kararlı CC ve küçük adım taraması</td><td class="fill">____ mA</td></tr>
+<tr><th>Adım tepkisi</th><td>Yerleşme ve aşım ölçülecek</td><td>Belirtilen V, I adımı ve kablo düzeni</td><td class="fill">____ ms / %</td></tr>
+<tr><th>Yardımcı DC besleme</th><td>Dahili izole Mean Well</td><td>Model, çıkış ayarı, kartın tepe/dip gerilimi</td><td class="fill">____ V / A</td></tr>
+<tr><th>USB şarj</th><td>5 V, nominal 1 A</td><td>USB çıkışı yük altında, iki fan ve ESP açık</td><td class="fill">____ V / A</td></tr>
+<tr><th>Yanlış bağlantı hedefi</th><td>±60 V, K1 açıkken değerlendirme hedefi</td><td>Enerjili/enerjisiz ölçüm kolu ve açık K1 ayrı test</td><td class="fill">____ V</td></tr>
+</tbody></table>
+<div class="note"><p><strong>Çalışma aralığı.</strong> 30 V, tasarlanan DUT çalışma üst sınırıdır. ±60 V ön ölçüm dayanımı ayrı bir hedeftir. Mevcut TLP222A ve bölücüyle bu hedef doğrulanmayı bekliyor.</p></div>
+<h3>Mekanik ve çevresel veriler</h3>
+<table><thead><tr><th>Özellik</th><th>Ölçülen değer / doğrulanacak koşul</th></tr></thead>
+<tbody>
+<tr><th>Kasa boyutları / kütle</th><td class="fill">____ × ____ × ____ mm / ____ g</td></tr>
+<tr><th>Çalışma ortamı / soğutma</th><td class="fill">____ °C ile ____ °C / Fan yönü ve sıcaklık eğrisi ____</td></tr>
+<tr><th>Bağlantı elemanları</th><td class="fill">DUT panel konnektörü ____ / yardımcı DC seçeneği ____</td></tr>
+</tbody></table>
+<footer><span>25.11.2026 · ELV1 Revision · Tasarım hedefleri</span><span>2 / 5</span></footer>
+</section>
+
+<section class="sheet">
+<header><span class="product">ELV1 Revision</span><span>Taslak 0.1</span></header>
+<h2>Yük modları ve akım senaryosu</h2>
+<table aria-label="Planlanan yük modları">
+<thead><tr><th>Mod</th><th>İşlev</th></tr></thead>
+<tbody>
+<tr><th>CC</th><td>Kaynak ve cihaz sınırları içinde sabit akım çeker.</td></tr>
+<tr><th>CV</th><td>DUT gerilimini hedefte tutmak için çekilen akımı ayarlar.</td></tr>
+<tr><th>CP</th><td>Geçerli çalışma aralığında akımı güç hedefinden hesaplar.</td></tr>
+<tr><th>Pil kapasite testi</th><td>NiMH, Li-ion ve LiPo profilleri. Hücre sayısı, deşarj akımı ve kesme gerilimi seçilir. Sonuç mAh, Wh ve süre.</td></tr>
+<tr><th>Darbe bekleme</th><td>Kaynak gerilimi düştüğünde test bitirilebilir veya geçerli sonraki darbe beklenebilir.</td></tr>
+</tbody></table>
+<h3>CC Akım Senaryosu · planlanan özellik</h3>
+<p><strong>Menü → Yük Modu → Akım Senaryosu.</strong> Her adım için akımı ve süreyi gir. Başlatmadan önce diziyi önizle. Çalışırken adım numarası, kalan süre, hedef akım ve ölçülen akım görünür. Ön paneldeki durdurma komutu diziyi sonlandırır.</p>
+<table aria-label="Örnek akım senaryosu">
+<thead><tr><th>Adım</th><th>Hedef akım</th><th>Süre</th><th>Başlangıç</th></tr></thead>
+<tbody>
+<tr><th>1</th><td>4,0 A</td><td>1,0 s</td><td>0 s</td></tr>
+<tr><th>2</th><td>3,0 A</td><td>10,0 s</td><td>1,0 s</td></tr>
+<tr><th>3</th><td>0 A</td><td>0,5 s</td><td>11,0 s</td></tr>
+</tbody></table>
+<figure>
+<svg viewBox="0 0 600 160" role="img" aria-labelledby="step-title">
+<title id="step-title">Örnek CC senaryosunun hedef akımı, toplam 11,5 saniye</title>
+<rect width="600" height="160" fill="#f5f9fc"/>
+<path d="M55 38H535 M55 55H535 M97 38V106 M514 55V106 M535 55V106" fill="none" stroke="#ccdce8" stroke-dasharray="3 3"/>
+<path d="M55 25V106H551" fill="none" stroke="#60788c"/>
+<path d="M55 38H97V55H514V106H535" fill="none" stroke="#185374" stroke-width="3"/>
+<g fill="#324b60" font-size="13" font-family="Arial">
+<text x="14" y="17">Akım (A)</text><text x="40" y="42">4</text><text x="40" y="59">3</text><text x="40" y="111">0</text>
+<text x="52" y="126">0</text><text x="93" y="126">1</text><text x="502" y="126">11</text><text x="524" y="146">11,5</text><text x="551" y="126">s</text>
+</g>
+</svg>
+<figcaption>Şekil 2. 11,5 s’lik örnek hedef komutu. Gerçek akım eğrisi prototipte kaydedilecek.</figcaption>
+</figure>
+<p><strong>0 A adımı</strong> diziyi bitirmeden akım talebini sıfırlar. Adım geçişlerinde korumalar etkin kalır. Adım süresi sınırı, azami adım sayısı, tekrarlama seçenekleri ve zamanlama doğruluğu doğrulanacak.</p>
+<footer><span>25.11.2026 · ELV1 Revision · Tasarım hedefleri</span><span>3 / 5</span></footer>
+</section>
+
+<section class="sheet">
+<header><span class="product">ELV1 Revision</span><span>Taslak 0.1</span></header>
+<h2>Bağlantılar ve donanım mimarisi</h2>
+<table aria-label="Bağlantılar">
+<thead><tr><th>Bağlantı</th><th>İşlev / pin</th></tr></thead>
+<tbody>
+<tr><th>DUT · J6</th><td>J6.2 pozitif, J6.1 kart GND. Test edilen kaynak veya pil buraya bağlanır.</td></tr>
+<tr><th>DC INPUT · J1</th><td>J1.1 V+, J1.2 V−. Kart içi Mean Well DC beslemesi. Şebeke Mean Well’in AC tarafına gider.</td></tr>
+<tr><th>USB PC kontrolü</th><td>CH340G üzerinden seri haberleşme. Protokol ve sürüm eşlemesi yayımlanacak.</td></tr>
+<tr><th>USB şarj</th><td>SY6280 ile anahtarlanan 5 V çıkış. Nominal 1 A tasarım ayarı.</td></tr>
+<tr><th>Kablosuz</th><td>ESP32-C3 üzerinden BLE/Wi-Fi planlanıyor.</td></tr>
+</tbody></table>
+<div class="chain">J6+ → K1 → U22/U10 → F2 → U7/U8 → Kelvin şöntler</div>
+<table aria-label="Tasarım blokları">
+<thead><tr><th>Blok</th><th>Şemadaki rolü</th></tr></thead>
+<tbody>
+<tr><th>ADS1115 × 2</th><td>Bir ADC iki Kelvin şöntü ölçer. Diğeri DUT ön gerilimini, K1 sonrası gerilimi ve yük hattını izler.</td></tr>
+<tr><th>TLP222A ve MCP6541</th><td>TLP222A, cihaz enerjisizken röle öncesi ölçüm kolunu ayırmak için kullanılır. MCP6541 K1 sonrasında ters polariteyi denetler.</td></tr>
+<tr><th>TPSI3052, IRFB4110 × 2</th><td>İzole gate sürücüsü, ortak source bağlı iki seri MOSFET’i sürer. Sağlıklı çift kapalıyken ana yük akımını iki yönde engeller.</td></tr>
+<tr><th>MCP4725, OPA2197, IRFP260N</th><td>Ortak akım hedefi iki analog yük kanalına verilir. Her kanalın akımı 0,05 Ω nominal eşdeğer Kelvin şöntten ölçülür.</td></tr>
+<tr><th>STM32G071CBT6</th><td>Ölçüm, koruma, kullanıcı arayüzü ve yük modlarını yürütür. Bağımsız seri hatlarla CH340G ve ESP32-C3’e bağlanır.</td></tr>
+</tbody></table>
+<h3>Koruma ve durdurma</h3>
+<ol>
+<li><strong>Açılış:</strong> K1 açıkken DUT gerilimini ölç. Geçerli kaynak doğrulanırsa K1’i çek, tekrar doğrula, ardından seri MOSFET çiftini aç ve yük akımını rampala.</li>
+<li><strong>Normal duruş:</strong> Akım hedefini sıfırla, şöntlerden akımın düştüğünü doğrula, seri MOSFET çiftini kapat ve K1’i akımsız bırak.</li>
+<li><strong>Kritik arıza:</strong> Yükü ve seri MOSFET çiftini kapat. Akım sürerse veya kesildiği doğrulanamazsa K1 son çare olarak bırakılır. Sabit sesli uyarı ve DUT’u ayırma mesajı verilir. F2 bağımsız koruma olarak kalır.</li>
+</ol>
+<p class="small">Aşırı gerilim, akım, güç ve sıcaklık için eşikler ve tepki süreleri prototipte doğrulanacak. K1’in DC arıza akımı kesme kapasitesi ayrı doğrulama konusudur.</p>
+<footer><span>25.11.2026 · ELV1 Revision · Tasarım hedefleri</span><span>4 / 5</span></footer>
+</section>
+
+<section class="sheet">
+<header><span class="product">ELV1 Revision</span><span>Taslak 0.1</span></header>
+<h2>Doğrulama ve tasarım kaynakları</h2>
+<p>Her sonuçla birlikte donanım revizyonunu, firmware sürümünü, numune sayısını ve ölçüm tarihini kaydet.</p>
+<table aria-label="Prototip doğrulama planı">
+<thead><tr><th>Doğrulama</th><th>Kaydedilecek koşul</th><th style="width:22%">Sonuç / kayıt</th></tr></thead>
+<tbody>
+<tr><th>V-I çalışma sınırı</th><td>Her DUT geriliminde kararlı azami akım ve güç. Ortam ve kasa durumu.</td><td class="fill">____</td></tr>
+<tr><th>Termal denge</th><td>Yük MOSFET’leri, şöntler ve soğutucu sıcaklığı. Güç, süre, fan durumu.</td><td class="fill">____</td></tr>
+<tr><th>Akım senaryosu</th><td>4 A / 1 s, 3 A / 10 s, 0 A / 0,5 s. Hedef ve ölçüm izleri, süre hatası.</td><td class="fill">____</td></tr>
+<tr><th>Koruma ve geri besleme</th><td>Ters DUT, aşırı gerilim, kapalı kartta besleme geri akımı ve akımın kesilmemesi.</td><td class="fill">____</td></tr>
+<tr><th>Pil kapasitesi</th><td>Referans test ile mAh ve Wh karşılaştırması. Akım ve kesme ayarı.</td><td class="fill">____</td></tr>
+<tr><th>PC / kablosuz bağlantı</th><td>Komut işleme, telemetri, bağlantı kaybı ve yerel durdurma davranışı.</td><td class="fill">____</td></tr>
+</tbody></table>
+<p class="small">Ölçüm ortamı ____ °C · Kart revizyonu ____ · Firmware ____ · Numune ____ · Tarih ____</p>
+<h3>Açık kaynak yayın kapsamı</h3>
+<p>Yayın hedefi. Düzenlenebilir KiCad şeması ve PCB, proje kütüphaneleri, BOM, kasa/kablaj çizimleri, STM32 ve ESP32 kaynakları, PC protokolü, kalibrasyon adımları ve doğrulama kayıtları.</p>
+<table>
+<thead><tr><th>Kaynak</th><th>Durum</th></tr></thead>
+<tbody>
+<tr><th>Proje deposu</th><td><a href="https://github.com/omerikinci/ELV1-revision">github.com/omerikinci/ELV1-revision</a></td></tr>
+<tr><th>Şema dayanağı</th><td>KiCad çalışma kaydı <a href="https://github.com/omerikinci/ELV1-revision/commit/5b80af5ae7e67dc61ba90e1052f17352db759143">5b80af5</a>. PCB yerleşimi prototip doğrulaması sonrasında devam edecek.</td></tr>
+<tr><th>Lisanslar</th><td>Donanım ____ · Firmware/yazılım ____ · Dokümantasyon ____</td></tr>
+<tr><th>Yayın ve ürün durumu</th><td>Prototip geliştirme. Nihai sürüm, uygunluk bilgisi ve satış duyurusu yayımlandığında eklenecek.</td></tr>
+</tbody></table>
+<h3>Bileşen referansları</h3>
+<p class="small"><a href="https://www.ti.com/lit/ds/symlink/ads1115.pdf">TI ADS1115</a> · <a href="https://www.ti.com/lit/ds/symlink/tpsi3052.pdf">TI TPSI3052</a> · <a href="https://www.ti.com/lit/ds/symlink/opa2197.pdf">TI OPA2197</a> · <a href="https://www.st.com/resource/en/datasheet/stm32g071cb.pdf">ST STM32G071</a> · <a href="https://www.meanwell.com/Upload/PDF/Enclosed_Type_EN.pdf">Mean Well montaj kılavuzu</a></p>
+<footer><span>25.11.2026 · ELV1 Revision · Tasarım hedefleri</span><span>5 / 5</span></footer>
+</section>
+</body>
+</html>

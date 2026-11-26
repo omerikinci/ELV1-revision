@@ -34,10 +34,10 @@ DUT (test edilen kaynak):
    gibi J6'dan yapılır.
 
 Yardımcı besleme (J1):
- - Kaydedilmiş devre DC girişli. J1.1 pozitif uç, F1 2 A gecikmeli sigorta
-   üzerinden /20V'a gider. J1.2 GND. D1 (10A10) girişe paralel, ters
-   bağlantıda iletime geçen koruma diyodu. DC kaynakla ters bağlantıda
-   F1'in açma süresi ve diyotun maruz kalacağı enerji doğrulanacak.
+ - J1.1 pozitif uç, D1 (10A10) ve F1 (2 A gecikmeli) üzerinden
+   /20V'a gider. D1'in anodu J1.1, katodu F1 tarafında. J1.2 kart
+   GND'sine doğrudan bağlı. Ters polaritede D1 besleme akımını
+   bloke eder. Doğru polaritede diyot düşümü ve ısınması ölçülecek.
  - J1 DC INPUT, dahili Mean Well'in DC çıkışından beslenir. V+ J1.1,
    V− J1.2. Panel ve isteğe bağlı harici DC kablajı için mekanik rehberin
    7. bölümüne bak.
@@ -107,8 +107,11 @@ Yardımcı besleme (J1):
  - I2C adresleri (7 bit): U9 0x48, U21 0x49. MCP4725'in A0 pini GND;
    adresi sipariş edilen varyanttan doğrula. Panel LCD için PCF8574
    takılırsa adresi ve bus hızını modülden doğrula. Standart 100 kHz
-   PCF8574 ile aynı bus 100 kHz kullanır. Pull-up gerilimini panelle
-   birlikte doğrula. ADS/DAC örnekleme bütçesinde LCD trafik süresi var.
+   PCF8574 ile aynı bus 100 kHz kullanır. Panelde J4.1 (+3,3 V) LCD
+   ve I2C modülü lojik beslemesi, J4.3 (+5 V) arka ışık beslemesidir.
+   Modül üzerindeki 4,7 kΩ I2C pull-up'lar 3,3 V'a taşındı. Karttaki
+   R110/R111 ile paralel kaldıklarında hat başına yaklaşık 2,35 kΩ
+   oluşur. ADS/DAC örnekleme bütçesinde LCD trafik süresi var.
  - IWDG'yi başlat ve ölçüm/kontrol döngüsü sağlıklı ilerlediğinde besle.
    Watchdog ve brownout sonrasında yük kendiliğinden açılmasın.
 
@@ -127,11 +130,12 @@ Yardımcı besleme (J1):
    LOAD VOLTAGE ve POLARITY_OK'u doğrula.
 4. PB12=HIGH yap, DUT SENSE'i kontrol et. Sürücü ve MOSFET'ler için
    ölçülmüş yerleşme süresini bekle. Bu süre boyunca PC6=HIGH ve DAC=0.
-5. PC6=LOW yap ve akımı sıfırdan hedefe rampala.
+5. Akım hedefi sıfırdayken AIN3/AIN1 ile F2 yolunu doğrula (bölüm 4).
+   Ardından PC6=LOW yap ve akımı sıfırdan hedefe rampala.
 
 Örnek, 12 V kaynak ve 3 A hedef: AIN2 K1 açıkken +12 V okur → K1 çekilir
-→ K1 sonrası gerilim/polarite doğrulanır → U10/U22 açılır → akım 3 A'e
-rampalanır. −12 V, 0 V veya +40 V ile açılış doğrulanmaz; K1 açık kalır.
+→ K1 sonrası gerilim/polarite doğrulanır → U10/U22 açılır → F2 yolu
+doğrulanır → akım 3 A'e rampalanır. −12 V, 0 V veya +40 V ile açılış doğrulanmaz; K1 açık kalır.
 
 Normal durdurma: PC6=HIGH ve DAC=0 → iki şöntten taze örnekle sıfır
 akımı doğrula → PB12=LOW ile U10/U22'yi kapat → PB8=LOW ile K1'i bırak.
@@ -150,13 +154,16 @@ U9 ADS1115 #1 (0x48), Kelvin akım ölçümü:
  - NT1–NT4 Kelvin bağlantılarıdır. Akım paylaşımını iki şöntten izle.
 
 U21 ADS1115 #2 (0x49), giriş gerilimleri:
- - AIN0 ve AIN3: K1 sonrası LOAD VOLTAGE, PA3 ile aynı düğüm.
- - AIN1: VLINE DIV, MOSFET çifti ve F2 sonrasındaki VCC LINE.
+ - AIN0: K1 sonrası LOAD VOLTAGE, PA3 ile aynı düğüm.
+ - AIN1: VLINE DIV, F2 sonrasındaki VCC LINE.
  - AIN2: DUT PRE SENSE, K1 öncesindeki J6.2, TLP222A (U23) üzerinden.
    U23 ADS2 VDD ile açılır, kart enerjisizken ölçüm kolunu ayırır.
-   C80 kaldırıldı. AIN2 ve AIN3 ayrı tek uçlu girişlerdir.
+ - AIN3: F2 IN DIV, U10 drain ile F2 giriş kontağı arasındaki düğüm.
+   R133 47 kΩ ve R134 3,3 kΩ bölücüsünden, R108/C78 filtresiyle okunur.
+ - Dört giriş tek uçlu okunur. Her girişin kendi 22 nF GND filtresi var.
+   AIN0/AIN1 arasındaki C76 ve AIN2/AIN3 arasındaki C80 kaldırıldı.
  - Tek uçlu MUX sırası AIN0=100, AIN1=101, AIN2=110, AIN3=111.
-   LOAD VOLTAGE ve VLINE için nominal k = 3,3 / (47 + 3,3) = 0,065606.
+   LOAD VOLTAGE, VLINE ve F2 IN DIV için nominal k = 3,3 / (47 + 3,3) = 0,065606.
    PGA ±2,048 V (010) için 62,5 µV/LSB, yaklaşık 0,953 mV/LSB DUT
    ölçeğinde. Bu PGA ile bölücülü kanallar yaklaşık 31,2 V'ta doyar.
    Doyum bir geçersiz/üst sınır olayıdır.
@@ -168,9 +175,15 @@ U21 ADS1115 #2 (0x49), giriş gerilimleri:
    değildir. 220 kΩ R130 ve daha yüksek bloklama gerilimli PhotoMOS
    değerlendirilmiş adaylardır. Şemadaki U23 ve R130 yukarıdaki gibidir.
    30 V üzeri DUT, yük etkinleştirme için geçersizdir.
- - AIN0/AIN3 ortak düğümü okur. AIN1, giriş zincirinin ardından
-   gerilim varlığını kontrol edebilir. Tek başına sigorta veya kontak
-   arızasının yerini belirlemez. K1 açıkken kaynak varlığını AIN2'den oku.
+ - F2 açık devre kontrolü: K1 ve U10/U22 etkinleştikten ve düğümler
+   yerleştikten sonra, yük hedefi sıfırdayken AIN3 (F2 öncesi) ve AIN1
+   (F2 sonrası) için taze ölçümler al. AIN3'te geçerli kaynak gerilimi
+   varken AIN1 sıfıra yakın kalıyorsa “F2 / sigorta yolu açık” bildir
+   ve yükü etkinleştirme. Bu ölçüm sigorta kontağını ve bağlantısını da
+   kapsar. İki taraf da düşükse açılmayan koruma yolu, kaynak düşüşü
+   veya geçersiz örnek olasılığını değerlendir. Karar eşikleri ve
+   yerleşme süresi prototipte ölçülecek. K1 açıkken kaynak varlığını
+   AIN2'den oku.
 
 STM32 ADC:
  - HAL_ADCEx_Calibration_Start çağrısını ADC ölçümlerinden önce çalıştır.
@@ -228,6 +241,22 @@ Akım setpoint'i:
    etkinleştirme. İlk darbede K1 ve akım rampası nedeniyle gecikme var.
  - 1 V, doğru bağlanmış DUT'u tanıma hedefidir. Regüle edilebilen en
    düşük gerilim, ayarlanan akıma göre prototipte ölçülür.
+
+
+CC Akım Senaryosu (planlanan):
+ - Menü → Yük Modu → Akım Senaryosu. Kullanıcı her adım için akım
+   hedefi ve süre girer, senaryoyu gözden geçirip açıkça başlatır.
+   Örnek: 4 A / 1 s → 3 A / 10 s → 0 A / 0,5 s.
+ - Zaman damgasıyla ilerle. Bekleme çağrısı kullanmadan mevcut CC
+   döngüsüne hedef gönder. 0 A adımında akım hedefini sıfırla,
+   profil çalışmaya devam eder. Normal adım geçişleri K1'i çevrimlemez.
+ - Ekranda adım numarası, kalan süre, hedef ve ölçülen akımı göster.
+   Kullanıcı durdurursa veya koruma tetiklenirse senaryoyu sonlandır
+   ve mevcut kapatma sırasına geç. Son adımda akım güvenli şekilde
+   sıfırlanır. Tekrar sayısı ve döngü tercihi arayüzle belirlenecek.
+ - Azami adım sayısı, asgari süre, akım rampası, zamanlama hatası ve
+   ölçüm bant genişliği prototipte doğrulanacak. Bellek bütçesini ilk
+   tam derlemede senaryo adım tabloları ve arayüzüyle birlikte ölç.
 
 -------------------------------------------------------------------------------
 6. KORUMALAR VE KRİTİK ARIZA
@@ -297,9 +326,10 @@ Akım setpoint'i:
    kapalıyken iki şöntün sıfır ofsetini ölç. Sıfır bandını gürültü ve
    sıcaklık değişimine göre belirle.
  - Gerilim kalibrasyonu: J6 üzerinde örneğin 2 V ve 25 V kullan.
-   K1 açıkken AIN2 ofset/eğim kalibrasyonu yap. LOAD VOLTAGE, PA3 ve
-   VLINE'ı eriştikleri düğümlerde ayrı kalibre et. VLINE ölçümü için
-   sağlıklı F2 ve iletimdeki U10/U22 gerekir. Kalibrasyon yük hedefini
+   K1 açıkken AIN2 ofset/eğim kalibrasyonu yap. LOAD VOLTAGE, PA3,
+   F2 IN DIV ve VLINE'ı eriştikleri düğümlerde ayrı kalibre et.
+   AIN3 için K1 ve U10/U22 iletimde olmalı. AIN1 kalibrasyonunda F2
+   yolu da sağlam olmalı. Kalibrasyon yük hedefini
    sıfırda tutabilir. K1 ve MOSFET durumunu test prosedüründe belirt.
  - Akımda iki referans noktasıyla toplamı doğrula. Kanal kazancını ayrı
    ayarlayacaksan her kanal için bağımsız referans kullan. Düşük ve
